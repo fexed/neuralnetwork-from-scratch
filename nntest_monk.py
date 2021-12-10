@@ -1,8 +1,9 @@
 import numpy as np
-from activationfunctions import softmax, softmax_deriv
-from losses import binary_crossentropy, binary_crossentropy_deriv
+from activationfunctions import softmax, softmax_deriv, tanh, tanh_prime
+from losses import binary_crossentropy, binary_crossentropy_deriv, MSE, MSE_deriv
 from layers import FullyConnectedLayer, ActivationLayer
 from neuralnetwork import Network
+from regularizators import L2
 import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
 
@@ -20,12 +21,12 @@ def test_MONK(monk=1):
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     print("Training set of " + str(X.size) + " elements")
-    net = Network("MONK" + str(monk) + " test", binary_crossentropy, binary_crossentropy_deriv)
-    net.add(FullyConnectedLayer(6, 15, softmax, softmax_deriv))
-    net.add(FullyConnectedLayer(15, 1, softmax, softmax_deriv))
+    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv, regularizator=L2)
+    net.add(FullyConnectedLayer(6, 15, tanh, tanh_prime))
+    net.add(FullyConnectedLayer(15, 1, tanh, tanh_prime))
     # train
     net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=500, learning_rate=0.01, batch_size=5)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=500, learning_rate=0.01)
 
     # test
     monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".test", "r")
@@ -52,6 +53,7 @@ def test_MONK(monk=1):
     suffix = "MONK" + str(monk) + "_{:.2f}%".format(accuracy)
     plot.savefig("/home/fexed/ML/fromscratch/plots/" + suffix + "_history.png")
     plot.clf()
+
 
 print("Beginning tests")
 for i in range(1, 4):
