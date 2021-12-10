@@ -11,7 +11,7 @@ def MSE_deriv(labels, outputs):
 
 def binary_crossentropy(labels, outputs):
     outputs_clipped = np.clip(outputs, 1e-15, 1-1e-15)  # avoids div by 0
-    return np.mean((1 - labels) * np.log(1 - outputs_clipped) + labels * np.log(outputs_clipped))
+    return -np.mean((1 - labels) * np.log(1 - outputs_clipped) + labels * np.log(outputs_clipped))
 
 
 def binary_crossentropy_deriv(labels, outputs):

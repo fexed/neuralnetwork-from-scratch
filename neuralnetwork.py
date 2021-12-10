@@ -14,9 +14,9 @@ class Network:
         print("Neural Network \"" + self.name + "\"")
         print("+==== Structure")
         for index, layer in enumerate(self.layers):
-            print("|\t" + str(index) + ". " + type(layer).__name__, end = "")
+            print("|\t" + str(index+1) + ". " + type(layer).__name__, end = "")
             try:
-                print(" of " + str(layer.weights[0].size) + " units", end = "")
+                print(" of " +  str(len(layer.weights)) + " -> " + str(layer.weights[0].size) + " units", end = "")
                 trainable_parameters += layer.weights.size
                 trainable_parameters += layer.bias.size
             except AttributeError:
