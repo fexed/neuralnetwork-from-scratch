@@ -21,7 +21,7 @@ def test_MONK(monk=1):
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     print("Training set of " + str(X.size) + " elements")
-    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv, regularizator=L2)
+    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv, momentum = 0.9)
     net.add(FullyConnectedLayer(6, 15, tanh, tanh_prime))
     net.add(FullyConnectedLayer(15, 1, tanh, tanh_prime))
     # train

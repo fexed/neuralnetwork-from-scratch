@@ -2,12 +2,13 @@ import numpy as np
 
 
 class Network:
-    def __init__(self, name="-unnamed-", loss=None, loss_deriv=None, regularizator=None):
+    def __init__(self, name="-unnamed-", loss=None, loss_deriv=None, regularizator=None, momentum=0):
         self.name = name
         self.layers = []
         self.loss = loss
         self.loss_deriv = loss_deriv
         self.regularizator = regularizator
+        self.momentum = momentum
 
 
     def summary(self):
@@ -27,7 +28,7 @@ class Network:
             except AttributeError:
                 pass
             print("")
-        print("+==== Loss " + self.loss.__name__, end="")
+        print("+==== Loss: " + self.loss.__name__, end="")
         if not(self.regularizator is None):
             print(" and " + self.regularizator.__name__ + " regularizator")
         else:
@@ -90,7 +91,7 @@ class Network:
                             for layer in self.layers:
                                 gradient += self.regularizator(layer.weights)
                         for layer in reversed(self.layers):
-                            gradient = layer.backward_propagation(gradient, learning_rate)
+                            gradient = layer.backward_propagation(gradient, learning_rate, self.momentum)
                         outputs = []
                         targets = []
                 else:
@@ -99,7 +100,7 @@ class Network:
                         for layer in self.layers:
                             gradient += self.regularizator(layer.weights)
                     for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate)
+                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum)
             error /= N
             history.append(error)
             if not(val_history is None):
