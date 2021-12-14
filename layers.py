@@ -14,7 +14,7 @@ class Layer:
 
     # computes the delta-error over the input for a given delta-error over the
     # output and updates any parameter
-    def backward_propagation(self, output_error, learning_rate, momentum = 0):
+    def backward_propagation(self, output_error, learning_rate, momentum = 0, regularizator=None):
         raise NotImplementedError
 
 
@@ -39,13 +39,17 @@ class FullyConnectedLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, gradient, eta, momentum = 0):
+    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
         if not(self.activation_deriv is None):
             gradient = np.multiply(self.activation_deriv(self.activation_input), gradient)
         weights_update = np.dot(self.input.T, gradient)
 
-        self.weights -= eta * weights_update
-        self.bias -= eta * gradient
+        if not(regularizator is None):
+            self.weights = self.weights - eta * weights_update + 2*0.005*self.weights
+            self.bias = self.bias - eta * gradient + 2*0.005*self.bias
+        else:
+            self.weights -= eta * weights_update
+            self.bias -= eta * gradient
         if (momentum > 0):
             self.weights -= momentum * self.prev_weight_update
             self.bias -= momentum * self.prev_bias_update
@@ -68,5 +72,5 @@ class ActivationLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, gradient, eta, momentum = 0):
+    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
         return np.multiply(self.activation_deriv(self.input), gradient)
