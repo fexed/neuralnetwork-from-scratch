@@ -94,11 +94,11 @@ class Network:
                         targets = []
                 else:
                     gradient = self.loss_deriv(Y[j], output)
-                    if not(self.regularizator is None):
-                        for layer in self.layers:
-                            gradient += self.regularizator(layer.weights)
+                    #if not(self.regularizator is None):
+                    #    for layer in self.layers:
+                    #        gradient += self.regularizator(layer.weights)
                     for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum)
+                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
             error /= N
             history.append(error)
             if not(val_history is None):

@@ -45,11 +45,9 @@ class FullyConnectedLayer(Layer):
         weights_update = np.dot(self.input.T, gradient)
 
         if not(regularizator is None):
-            self.weights = self.weights - eta * weights_update + 2*0.005*self.weights
-            self.bias = self.bias - eta * gradient + 2*0.005*self.bias
-        else:
-            self.weights -= eta * weights_update
-            self.bias -= eta * gradient
+            weights_update += 0.005*self.weights
+        self.weights -= eta * weights_update
+        self.bias -= eta * gradient
         if (momentum > 0):
             self.weights -= momentum * self.prev_weight_update
             self.bias -= momentum * self.prev_bias_update
