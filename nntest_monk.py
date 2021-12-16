@@ -24,12 +24,12 @@ def test_MONK(monk=1, output=True):
     if (output):
         print("Training set of " + str(X.size) + " elements")
     net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv)
-    net.add(FullyConnectedLayer(6, 15, tanh, tanh_prime))
-    net.add(FullyConnectedLayer(15, 1, tanh, tanh_prime))
+    net.add(FullyConnectedLayer(6, 10, tanh, tanh_prime))
+    net.add(FullyConnectedLayer(10, 1, tanh, tanh_prime))
     # train
     if (output):
         net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.005, early_stopping=100)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=2000, learning_rate=0.01)
 
     # accuracy on validation set
     out = net.predict(xvl)
@@ -71,15 +71,11 @@ def test_MONK(monk=1, output=True):
 
 
 print("Beginning tests")
-accuracies = []
-for i in range(1, 4):
+for i in range(2, 3):
     acc = []
-    for j in range(1, 11):
+    for j in range(0, 10):
         acc.append(test_MONK(i, output=False))
-    accuracies.append(acc)
-
-for i in range(0, 3):
-    print("MONK" + str(i+1), end=" ")
-    mean = np.mean(accuracies[i])
-    std = np.std(accuracies[i])
+    print("MONK" + str(i), end=" ")
+    mean = np.mean(acc)
+    std = np.std(acc)
     print("with an accuracy of " + "{:.2f}%".format(mean) + " and std dev of " + "{:.2f}%".format(std))
