@@ -21,12 +21,12 @@ def test_MONK(monk=1):
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     print("Training set of " + str(X.size) + " elements")
-    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv, momentum = 0.9, regularizator = L2)
+    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv, regularizator = L2)
     net.add(FullyConnectedLayer(6, 15, tanh, tanh_prime))
     net.add(FullyConnectedLayer(15, 1, tanh, tanh_prime))
     # train
     net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=500, learning_rate=0.01)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, early_stopping=100)
 
     # test
     monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".test", "r")
