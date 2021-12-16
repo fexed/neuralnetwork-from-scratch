@@ -8,8 +8,9 @@ import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
 
 
-def test_MONK(monk=1):
-    print("\n\n****MONK" + str(monk))
+def test_MONK(monk=1, output=True):
+    if (output):
+        print("\n\n****MONK" + str(monk))
     monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".train", "r")
     xtr = []
     ytr = []
@@ -20,32 +21,46 @@ def test_MONK(monk=1):
     X = np.array(xtr)
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
-    print("Training set of " + str(X.size) + " elements")
-    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv, regularizator = L2)
+    if (output):
+        print("Training set of " + str(X.size) + " elements")
+    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv)
     net.add(FullyConnectedLayer(6, 15, tanh, tanh_prime))
     net.add(FullyConnectedLayer(15, 1, tanh, tanh_prime))
     # train
-    net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, early_stopping=100)
+    if (output):
+        net.summary()
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.005, early_stopping=100)
 
-    # test
-    monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".test", "r")
-    xts = []
-    yts = []
-    for line in monkfile.readlines():
-        vals = line.split(" ")
-        xts.append([[int(vals[2]), int(vals[3]), int(vals[4]), int(vals[5]), int(vals[6]), int(vals[7])]])
-        yts.append([[int(vals[1])]])
-    xts = np.array(xts)
-    yts = np.array(yts)
-    out = net.predict(xts)
+    # accuracy on validation set
+    out = net.predict(xvl)
     accuracy = 0
     for i in range(len(out)):
         val = 0 if out[i].item() < 0.5 else 1  # "normalizing" output
-        if (yts[i].item() == val): accuracy += 1
+        if (yvl[i].item() == val): accuracy += 1
     accuracy /= len(out)
     accuracy *= 100
-    print("\n\nAccuracy on MONK" + str(monk) + " of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
+    if (output):
+        print("\n\nAccuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
+    return accuracy
+
+    # test set
+    #monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".test", "r")
+    #xts = []
+    #yts = []
+    #for line in monkfile.readlines():
+        #vals = line.split(" ")
+        #xts.append([[int(vals[2]), int(vals[3]), int(vals[4]), int(vals[5]), int(vals[6]), int(vals[7])]])
+        #yts.append([[int(vals[1])]])
+    #xts = np.array(xts)
+    #yts = np.array(yts)
+    #out = net.predict(xts)
+    #accuracy = 0
+    #for i in range(len(out)):
+        #val = 0 if out[i].item() < 0.5 else 1  # "normalizing" output
+        #if (yts[i].item() == val): accuracy += 1
+    #accuracy /= len(out)
+    #accuracy *= 100
+    #print("\n\nAccuracy on MONK" + str(monk) + " of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
 
     plot.plot(history)
@@ -56,5 +71,15 @@ def test_MONK(monk=1):
 
 
 print("Beginning tests")
+accuracies = []
 for i in range(1, 4):
-    test_MONK(i)
+    acc = []
+    for j in range(1, 11):
+        acc.append(test_MONK(i, output=False))
+    accuracies.append(acc)
+
+for i in range(0, 3):
+    print("MONK" + str(i+1), end=" ")
+    mean = np.mean(accuracies[i])
+    std = np.std(accuracies[i])
+    print("with an accuracy of " + "{:.2f}%".format(mean) + " and std dev of " + "{:.2f}%".format(std))
