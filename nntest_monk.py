@@ -6,9 +6,12 @@ from neuralnetwork import Network
 from regularizators import L2
 import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
+import time
+import pickle
 
 
 def test_MONK(monk=1, output=True):
+    ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****MONK" + str(monk))
     monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".train", "r")
     xtr = []
@@ -38,7 +41,6 @@ def test_MONK(monk=1, output=True):
     accuracy /= len(out)
     accuracy *= 100
     if (output): print("\n\nAccuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
-    return accuracy
 
     # test set
     #monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".test", "r")
@@ -62,9 +64,19 @@ def test_MONK(monk=1, output=True):
 
     plot.plot(history)
     plot.plot(val_history)
-    suffix = "MONK" + str(monk) + "_{:.2f}%".format(accuracy)
-    plot.savefig("/home/fexed/ML/fromscratch/plots/" + suffix + "_history.png")
+    suffix = "MONK" + str(monk) + "_" + ts
+    plot.savefig("plots/" + suffix + "_history.png")
     plot.clf()
+    with open("logs/" + suffix + "_history.pkl", "wb") as logfile:
+        pickle.dump(history, logfile)
+    with open("logs/" + suffix + "_valhistory.pkl", "wb") as logfile:
+        pickle.dump(val_history, logfile)
+
+    # To read, example follows:
+    # with open(filename, "rb") as logfile:
+    #   list = pickle.load(logfile)
+
+    return accuracy
 
 
 print("Beginning tests")
