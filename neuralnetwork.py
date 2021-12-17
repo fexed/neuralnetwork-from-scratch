@@ -59,7 +59,7 @@ class Network:
         return results
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=100, learning_rate=0.01, early_stopping=None, batch_size=None):
+    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=100, learning_rate=0.01, early_stopping=None, batch_size=None, verbose=True):
         N = len(X)
         history = []
         if not(X_validation is None):
@@ -108,9 +108,9 @@ class Network:
                     val_error += self.loss(Y_validation[j], output)
                 val_error /= M
                 val_history.append(val_error)
-                print('Epoch %d of %d, loss = %f, val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
+                if (verbose): print('Epoch %d of %d, loss = %f, val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
             else:
-                    print('Epoch %d of %d, loss = %f' % (i+1, epochs, error), end="\r")
+                    if (verbose): print('Epoch %d of %d, loss = %f' % (i+1, epochs, error), end="\r")
             if not(early_stopping is None):
                 if not(val_history is None):
                     check_error = val_error
@@ -120,14 +120,14 @@ class Network:
                     es_epochs += 1
                     if es_epochs == early_stopping:
                         if not(val_history is None):
-                            print('Early stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
+                            if (verbose): print('Early stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
                         else:
-                            print('Early stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error), end="\r")
+                            if (verbose): print('Early stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error), end="\r")
                         break
                 else:
                     es_epochs = 0
                     min_error = check_error
-        print("")
+        if (verbose): print("")
         if not(val_history is None):
             return history, val_history
         else:

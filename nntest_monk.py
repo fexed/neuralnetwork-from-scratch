@@ -9,8 +9,7 @@ from sklearn.model_selection import train_test_split
 
 
 def test_MONK(monk=1, output=True):
-    if (output):
-        print("\n\n****MONK" + str(monk))
+    if (output): print("\n\n****MONK" + str(monk))
     monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".train", "r")
     xtr = []
     ytr = []
@@ -21,15 +20,14 @@ def test_MONK(monk=1, output=True):
     X = np.array(xtr)
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
-    if (output):
-        print("Training set of " + str(X.size) + " elements")
+    if (output): print("Training set of " + str(X.size) + " elements")
     net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv)
     net.add(FullyConnectedLayer(6, 10, tanh, tanh_prime))
     net.add(FullyConnectedLayer(10, 1, tanh, tanh_prime))
     # train
     if (output):
         net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=2000, learning_rate=0.01)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output)
 
     # accuracy on validation set
     out = net.predict(xvl)
@@ -39,8 +37,7 @@ def test_MONK(monk=1, output=True):
         if (yvl[i].item() == val): accuracy += 1
     accuracy /= len(out)
     accuracy *= 100
-    if (output):
-        print("\n\nAccuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
+    if (output): print("\n\nAccuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
     return accuracy
 
     # test set
@@ -71,10 +68,12 @@ def test_MONK(monk=1, output=True):
 
 
 print("Beginning tests")
-for i in range(2, 3):
+for i in range(1, 4):
     acc = []
     for j in range(0, 10):
         acc.append(test_MONK(i, output=False))
+        print(str(j+1), end=" ", flush=True)
+    print("")
     print("MONK" + str(i), end=" ")
     mean = np.mean(acc)
     std = np.std(acc)
