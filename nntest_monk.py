@@ -38,7 +38,7 @@ def test_MONK(monk=1, output=True):
     accuracy /= len(out)
     accuracy *= 100
     if (output): print("\n\nAccuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
-    return accuracy
+
 
     # test set
     #monkfile = open("datasets/MONK/monks-" + str(monk) + ".test", "r")
@@ -65,6 +65,7 @@ def test_MONK(monk=1, output=True):
     suffix = "MONK" + str(monk) + "_{:.2f}%".format(accuracy)
     plot.savefig("plots/" + suffix + "_history.png")
     plot.clf()
+    return accuracy
 
 
 print("Beginning tests")
