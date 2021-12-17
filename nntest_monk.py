@@ -62,9 +62,16 @@ def test_MONK(monk=1, output=True):
     #print("\n\nAccuracy on MONK" + str(monk) + " of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
 
-    plot.plot(history)
-    plot.plot(val_history)
     suffix = "MONK" + str(monk) + "_" + ts
+
+    fig, ax = plot.subplots()
+    ax.plot(history)
+    ax.plot(val_history)
+    ax.set_ylabel("Loss")
+    ax.set_xlabel("Epochs")
+    ax.set_title(suffix)
+    plot.gca().margins(x=0)
+    fig.set_size_inches(18.5, 10.5)
     plot.savefig("plots/" + suffix + "_history.png")
     plot.clf()
     with open("logs/" + suffix + "_history.pkl", "wb") as logfile:
