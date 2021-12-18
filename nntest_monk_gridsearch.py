@@ -1,10 +1,4 @@
 import numpy as np
-from activationfunctions import softmax, softmax_deriv, tanh, tanh_prime
-from losses import binary_crossentropy, binary_crossentropy_deriv, MSE, MSE_deriv
-from layers import FullyConnectedLayer, ActivationLayer
-from neuralnetwork import Network
-from regularizators import L2
-import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
 from grid_search import grid_search
 
@@ -21,3 +15,5 @@ Y = np.array(ytr)
 xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
 
 grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[1,2,3], units=[5,10,15], learning_rates=[0.005, 0.01, 0.1], epochs=500)
+
+# Best: 0.00016 with {'layers': 3, 'units': 15, 'learning_rate': 0.01}
