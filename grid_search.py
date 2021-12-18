@@ -24,7 +24,7 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                     history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, verbose=verbose)
                     results.append(history[-1])
                 else:
-                    history = net.training_loop(xtr, ytr, epochs=500, learning_rate=E, verbose=verbose)
+                    history = net.training_loop(xtr, ytr, epochs=epochs, learning_rate=E, verbose=verbose)
                     results.append(history[-1])
 
                 parameters.append({"layers":N, "units":M, "learning_rate":E})
