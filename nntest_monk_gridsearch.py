@@ -16,4 +16,4 @@ xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
 
 grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[1,2,3,4,5], units=[5,10,15,20], learning_rates=[0.005, 0.01, 0.1], epochs=500)
 
-# Best: 0.37021 with {'layers': 3, 'units': 5, 'learning_rate': 0.1}
+# Best: 0.00005 with {'layers': 5, 'units': 15, 'learning_rate': 0.01}

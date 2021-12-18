@@ -22,10 +22,10 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
 
                 if not(X_validation is None):
                     history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, verbose=verbose)
-                    results.append(val_history[-1])  # better to use val_loss if vlset is present
+                    results.append(history[-1])
                 else:
                     history = net.training_loop(xtr, ytr, epochs=500, learning_rate=E, verbose=verbose)
-                    results.append(history[-1])  # if no vlset given, can only use training error
+                    results.append(history[-1])
 
                 parameters.append({"layers":N, "units":M, "learning_rate":E})
 
