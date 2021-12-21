@@ -2,6 +2,7 @@ import numpy as np
 
 
 class Layer:
+    # simple empty layer structure
     def __init__(self):
         self.input = None
         self.output = None
@@ -19,6 +20,7 @@ class Layer:
 
 
 class FullyConnectedLayer(Layer):
+    # a simple layer, linear or with an activation function
     # in_size = number of input neurons
     # out_size = number of output neurons
     def __init__(self, in_size, out_size, activation = None, activation_deriv = None):
@@ -26,14 +28,15 @@ class FullyConnectedLayer(Layer):
         self.bias = np.random.rand(1, out_size) - 0.5  # so to have few <0 and few >0
         self.activation = activation
         self.activation_deriv = activation_deriv
-        self.prev_weight_update = 0
-        self.prev_bias_update = 0
+        self.prev_weight_update = 0  # for momentum purposes
+        self.prev_bias_update = 0  # for momentum purposes
 
 
     def forward_propagation(self, input):
         self.input = input
-        self.output = np.dot(self.input, self.weights) + self.bias
+        self.output = np.dot(self.input, self.weights) + self.bias  # net output
         if not(self.activation is None):
+            # the activation function is optional
             self.activation_input = self.output
             self.output = self.activation(self.output)
         return self.output
@@ -41,16 +44,26 @@ class FullyConnectedLayer(Layer):
 
     def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
         if not(self.activation_deriv is None):
+            # if there's activation function specified, then we compute its
+            # derivative
             gradient = np.multiply(self.activation_deriv(self.activation_input), gradient)
+        # the weights are updated according to their contribution to the error
         weights_update = np.dot(self.input.T, gradient)
 
         if not(regularizator is None):
+            # TODO check this
+            # the regularizator is optional
             weights_update += 0.005*self.weights
+
+        # the basic parameter update
         self.weights -= eta * weights_update
         self.bias -= eta * gradient
         if (momentum > 0):
+            # with momentum we consider the previous update too
             self.weights -= momentum * self.prev_weight_update
             self.bias -= momentum * self.prev_bias_update
+
+            # store this update for the next backprop in this layer
             self.prev_weight_update = eta * weights_update
             self.prev_bias_update = eta * gradient
 
@@ -59,6 +72,7 @@ class FullyConnectedLayer(Layer):
 
 
 class ActivationLayer(Layer):
+    # a layer with just an activation function
     def __init__(self, activation, activation_deriv):
         self.activation = activation
         self.activation_deriv = activation_deriv
@@ -66,9 +80,10 @@ class ActivationLayer(Layer):
 
     def forward_propagation(self, input):
         self.input = input
-        self.output = self.activation(self.input)
+        self.output = self.activation(self.input)  # simple value of the activation
         return self.output
 
 
     def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
+        # simple derivative of the activation function
         return np.multiply(self.activation_deriv(self.input), gradient)

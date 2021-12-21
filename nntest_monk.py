@@ -13,7 +13,7 @@ import pickle
 def test_MONK(monk=1, output=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****MONK" + str(monk))
-    monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".train", "r")
+    monkfile = open("datasets/MONK/monks-" + str(monk) + ".train", "r")
     xtr = []
     ytr = []
     for line in monkfile.readlines():
@@ -43,7 +43,7 @@ def test_MONK(monk=1, output=True):
     if (output): print("\n\nAccuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
     # test set
-    #monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-" + str(monk) + ".test", "r")
+    #monkfile = open("datasets/MONK/monks-" + str(monk) + ".test", "r")
     #xts = []
     #yts = []
     #for line in monkfile.readlines():
@@ -60,7 +60,6 @@ def test_MONK(monk=1, output=True):
     #accuracy /= len(out)
     #accuracy *= 100
     #print("\n\nAccuracy on MONK" + str(monk) + " of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
-
 
     suffix = "MONK" + str(monk) + "_" + ts
 
@@ -82,6 +81,12 @@ def test_MONK(monk=1, output=True):
     # To read, example follows:
     # with open(filename, "rb") as logfile:
     #   list = pickle.load(logfile)
+
+    #    plot.plot(history)
+    #    plot.plot(val_history)
+    #    suffix = "MONK" + str(monk) + "_{:.2f}%".format(accuracy)
+    #    plot.savefig("plots/" + suffix + "_history.png")
+    #    plot.clf()
 
     return accuracy
 
