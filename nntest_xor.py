@@ -12,9 +12,7 @@ def test_xor():
     y_train = np.array([ [ [0] ], [ [1] ], [ [1] ], [ [0] ] ])
     net = Network("XOR test")
     net.add(FullyConnectedLayer(2, 3, tanh, tanh_prime))
-    #net.add(ActivationLayer(tanh, tanh_prime))
     net.add(FullyConnectedLayer(3, 1, tanh, tanh_prime))
-    #net.add(ActivationLayer(tanh, tanh_prime))
     # train
     net.set_loss(MSE, MSE_prime)
     net.summary()

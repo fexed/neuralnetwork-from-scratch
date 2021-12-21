@@ -49,7 +49,7 @@ def softmax(x):
     return exp / exp.sum(axis = 0)
 
 
-def softmax_deriv(x):
+def softmax_prime(x):
     # TODO: check this
     # derivative of the softmax function
     jacobian_m = np.diag(x)

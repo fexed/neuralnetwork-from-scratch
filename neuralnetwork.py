@@ -2,11 +2,11 @@ import numpy as np
 
 
 class Network:
-    def __init__(self, name="-unnamed-", loss=None, loss_deriv=None, regularizator=None, momentum=0):
+    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, momentum=0):
         self.name = name  # for logging and output purposes
         self.layers = []  # all the layers will be stored here
         self.loss = loss
-        self.loss_deriv = loss_deriv
+        self.loss_prime = loss_prime
         self.regularizator = regularizator
         self.momentum = momentum
 
@@ -38,11 +38,11 @@ class Network:
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
 
 
-    def set_loss(self, loss, loss_deriv):
+    def set_loss(self, loss, loss_prime):
         # TODO delete this?
         # changes the losses of the net
         self.loss = loss
-        self.loss_deriv = loss_deriv
+        self.loss_prime = loss_prime
 
 
     def add(self, layer):
@@ -96,7 +96,7 @@ class Network:
                     if ((j+1) % batch_size == 0) or (j == N-1):
                         gradient = 0
                         for k in range(len(outputs)):
-                            gradient += self.loss_deriv(targets[k], outputs[k])
+                            gradient += self.loss_prime(targets[k], outputs[k])
                         gradient /= len(outputs)
                         for layer in reversed(self.layers):
                             gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
@@ -105,7 +105,7 @@ class Network:
                 else:
                     # compute the gradient through each layer, while applying
                     # the backward propagation algorithm
-                    gradient = self.loss_deriv(Y[j], output)
+                    gradient = self.loss_prime(Y[j], output)
                     for layer in reversed(self.layers):
                         gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
             error /= N  # mean error over the set

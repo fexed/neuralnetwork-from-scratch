@@ -23,11 +23,11 @@ class FullyConnectedLayer(Layer):
     # a simple layer, linear or with an activation function
     # in_size = number of input neurons
     # out_size = number of output neurons
-    def __init__(self, in_size, out_size, activation = None, activation_deriv = None):
+    def __init__(self, in_size, out_size, activation = None, activation_prime = None):
         self.weights = np.random.rand(in_size, out_size) - 0.5  # so to have few <0 and few >0
         self.bias = np.random.rand(1, out_size) - 0.5  # so to have few <0 and few >0
         self.activation = activation
-        self.activation_deriv = activation_deriv
+        self.activation_prime = activation_prime
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
 
@@ -43,10 +43,10 @@ class FullyConnectedLayer(Layer):
 
 
     def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
-        if not(self.activation_deriv is None):
+        if not(self.activation_prime is None):
             # if there's activation function specified, then we compute its
             # derivative
-            gradient = np.multiply(self.activation_deriv(self.activation_input), gradient)
+            gradient = np.multiply(self.activation_prime(self.activation_input), gradient)
         # the weights are updated according to their contribution to the error
         weights_update = np.dot(self.input.T, gradient)
 
@@ -73,9 +73,9 @@ class FullyConnectedLayer(Layer):
 
 class ActivationLayer(Layer):
     # a layer with just an activation function
-    def __init__(self, activation, activation_deriv):
+    def __init__(self, activation, activation_prime):
         self.activation = activation
-        self.activation_deriv = activation_deriv
+        self.activation_prime = activation_prime
 
 
     def forward_propagation(self, input):
@@ -86,4 +86,4 @@ class ActivationLayer(Layer):
 
     def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
         # simple derivative of the activation function
-        return np.multiply(self.activation_deriv(self.input), gradient)
+        return np.multiply(self.activation_prime(self.input), gradient)

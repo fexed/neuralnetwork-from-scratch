@@ -1,6 +1,6 @@
 import numpy as np
-from activationfunctions import softmax, softmax_deriv, tanh, tanh_prime
-from losses import binary_crossentropy, binary_crossentropy_deriv, MSE, MSE_deriv
+from activationfunctions import softmax, softmax_prime, tanh, tanh_prime
+from losses import binary_crossentropy, binary_crossentropy_prime, MSE, MSE_prime
 from layers import FullyConnectedLayer, ActivationLayer
 from neuralnetwork import Network
 from regularizators import L2
@@ -24,7 +24,7 @@ def test_MONK(monk=1, output=True):
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     if (output): print("Training set of " + str(X.size) + " elements")
-    net = Network("MONK" + str(monk) + " test", MSE, MSE_deriv)
+    net = Network("MONK" + str(monk) + " test", MSE, MSE_prime)
     net.add(FullyConnectedLayer(6, 10, tanh, tanh_prime))
     net.add(FullyConnectedLayer(10, 1, tanh, tanh_prime))
     # train

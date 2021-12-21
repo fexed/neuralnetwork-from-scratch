@@ -1,6 +1,6 @@
 import numpy as np
 from activationfunctions import tanh, tanh_prime
-from losses import MSE, MSE_deriv
+from losses import MSE, MSE_prime
 from layers import FullyConnectedLayer, ActivationLayer
 from neuralnetwork import Network
 
@@ -13,7 +13,7 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
     for N in layers:
         for M in units:
             for E in learning_rates:
-                net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MSE, MSE_deriv)
+                net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MSE, MSE_prime)
                 net.add(FullyConnectedLayer(input_size, M, tanh, tanh_prime))
                 for i in range(N):  # N -hidden- layers, plus input and output layers
                     net.add(FullyConnectedLayer(M, M, tanh, tanh_prime))
