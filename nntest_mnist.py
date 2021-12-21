@@ -39,7 +39,7 @@ def test_mnist():
 
     plot.plot(history)
     suffix = "MNIST"
-    plot.savefig("/home/fexed/ML/fromscratch/plots/" + suffix + "_history.png")
+    plot.savefig("plots/" + suffix + "_history.png")
 
 
 test_mnist()

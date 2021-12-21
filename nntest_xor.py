@@ -34,6 +34,6 @@ def test_xor():
 
     plot.plot(history)
     suffix = "XOR"
-    plot.savefig("/home/fexed/ML/fromscratch/plots/" + suffix + "_history.png")
+    plot.savefig("plots/" + suffix + "_history.png")
 
 test_xor()
