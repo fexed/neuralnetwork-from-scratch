@@ -3,8 +3,8 @@ import numpy as np
 
 class Network:
     def __init__(self, name="-unnamed-", loss=None, loss_deriv=None, regularizator=None, momentum=0):
-        self.name = name
-        self.layers = []
+        self.name = name  # for logging and output purposes
+        self.layers = []  # all the layers will be stored here
         self.loss = loss
         self.loss_deriv = loss_deriv
         self.regularizator = regularizator
@@ -12,7 +12,8 @@ class Network:
 
 
     def summary(self):
-        trainable_parameters = 0
+        # a summary of the network, for logging and output purposes
+        trainable_parameters = 0  # output purposes
         print("Neural Network \"" + self.name + "\"")
         print("+==== Structure")
         for index, layer in enumerate(self.layers):
@@ -38,15 +39,20 @@ class Network:
 
 
     def set_loss(self, loss, loss_deriv):
+        # TODO delete this?
+        # changes the losses of the net
         self.loss = loss
         self.loss_deriv = loss_deriv
 
 
-    def add(self, layer):  # TODO check input-output dimensions?
+    def add(self, layer):
+        # TODO check input-output dimensions?
+        # adds another layer at the bottom of the network
         self.layers.append(layer)
 
 
     def predict(self, data):
+        # applies the network to the data and returns the computed values
         N = len(data)
         results = []
 
@@ -61,26 +67,30 @@ class Network:
 
     def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=100, learning_rate=0.01, early_stopping=None, batch_size=None, verbose=True):
         N = len(X)
-        history = []
+        history = []  # for logging purposes
         if not(X_validation is None):
             val_history = []
         else:
-            val_history = None
+            val_history = None  # used to check if validation set is present
 
-        es_epochs = 0
+        es_epochs = 0  # counting early stopping epochs if needed
         min_error = float('inf')
         for i in range(epochs):
             error = 0
             for j in range(N):
                 if not(batch_size is None):
+                    # output and target for each element in the batch, if needed
                     outputs = []
                     targets = []
+                # compute the output iteratively through each layer
                 output = X[j]
                 for layer in self.layers:
                     output = layer.forward_propagation(output)
                 error += self.loss(Y[j], output)
 
                 if not(batch_size is None):
+                    # TODO check, the batch is not used correctly
+                    #      just one element is used
                     outputs.append(output)
                     targets.append(Y[j])
                     if ((j+1) % batch_size == 0) or (j == N-1):
@@ -93,12 +103,15 @@ class Network:
                         outputs = []
                         targets = []
                 else:
+                    # compute the gradient through each layer, while applying
+                    # the backward propagation algorithm
                     gradient = self.loss_deriv(Y[j], output)
                     for layer in reversed(self.layers):
                         gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
-            error /= N
+            error /= N  # mean error over the set
             history.append(error)
             if not(val_history is None):
+                # if a validation set is given, we now compute the error over it
                 M = len(X_validation)
                 val_error = 0
                 for j in range(M):
@@ -110,13 +123,20 @@ class Network:
                 val_history.append(val_error)
                 if (verbose): print('Epoch %d of %d, loss = %f, val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
             else:
+                # if no validation set, we simply output the current status
                     if (verbose): print('Epoch %d of %d, loss = %f' % (i+1, epochs, error), end="\r")
             if not(early_stopping is None):
+                # with early stopping we need to check the current situation and
+                # stop if needed
                 if not(val_history is None):
+                    # we use the validation error if a validation set is given
                     check_error = val_error
                 else:
+                    # otherwise we just use what we have, the training error
                     check_error = error
                 if check_error >= min_error:
+                    # the error is increasing or is stable, we are going toward
+                    # an early stopping
                     es_epochs += 1
                     if es_epochs == early_stopping:
                         if not(val_history is None):
@@ -125,9 +145,12 @@ class Network:
                             if (verbose): print('Early stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error), end="\r")
                         break
                 else:
+                    # we're good
                     es_epochs = 0
                     min_error = check_error
         if (verbose): print("")
+
+        # return the data that we have gathered
         if not(val_history is None):
             return history, val_history
         else:
