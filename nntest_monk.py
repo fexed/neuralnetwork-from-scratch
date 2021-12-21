@@ -6,9 +6,12 @@ from neuralnetwork import Network
 from regularizators import L2
 import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
+import time
+import pickle
 
 
 def test_MONK(monk=1, output=True):
+    ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****MONK" + str(monk))
     monkfile = open("datasets/MONK/monks-" + str(monk) + ".train", "r")
     xtr = []
@@ -39,7 +42,6 @@ def test_MONK(monk=1, output=True):
     accuracy *= 100
     if (output): print("\n\nAccuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
-
     # test set
     #monkfile = open("datasets/MONK/monks-" + str(monk) + ".test", "r")
     #xts = []
@@ -59,12 +61,33 @@ def test_MONK(monk=1, output=True):
     #accuracy *= 100
     #print("\n\nAccuracy on MONK" + str(monk) + " of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
+    suffix = "MONK" + str(monk) + "_" + ts
 
-    plot.plot(history)
-    plot.plot(val_history)
-    suffix = "MONK" + str(monk) + "_{:.2f}%".format(accuracy)
+    fig, ax = plot.subplots()
+    ax.plot(history)
+    ax.plot(val_history)
+    ax.set_ylabel("Loss")
+    ax.set_xlabel("Epochs")
+    ax.set_title(suffix)
+    plot.gca().margins(x=0)
+    fig.set_size_inches(18.5, 10.5)
     plot.savefig("plots/" + suffix + "_history.png")
     plot.clf()
+    with open("logs/" + suffix + "_history.pkl", "wb") as logfile:
+        pickle.dump(history, logfile)
+    with open("logs/" + suffix + "_valhistory.pkl", "wb") as logfile:
+        pickle.dump(val_history, logfile)
+
+    # To read, example follows:
+    # with open(filename, "rb") as logfile:
+    #   list = pickle.load(logfile)
+
+    #    plot.plot(history)
+    #    plot.plot(val_history)
+    #    suffix = "MONK" + str(monk) + "_{:.2f}%".format(accuracy)
+    #    plot.savefig("plots/" + suffix + "_history.png")
+    #    plot.clf()
+
     return accuracy
 
 
