@@ -52,9 +52,9 @@ class FullyConnectedLayer(Layer):
         bias_update = eta * gradient
 
         if not(regularizator is None):
-            # TODO check this
             # the regularizator is optional
-            weights_update += 0.005*self.weights
+            weights_update -= regularizator(self.weights)
+            bias_update -= regularizator(self.bias)
 
         if (momentum > 0):
             # with momentum we consider the previous update too
