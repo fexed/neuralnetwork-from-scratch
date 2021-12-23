@@ -48,25 +48,27 @@ class FullyConnectedLayer(Layer):
             # derivative
             gradient = np.multiply(self.activation_prime(self.activation_input), gradient)
         # the weights are updated according to their contribution to the error
-        weights_update = np.dot(self.input.T, gradient)
+        weights_update = eta * np.dot(self.input.T, gradient)
+        bias_update = eta * gradient
 
         if not(regularizator is None):
-            # TODO check this
             # the regularizator is optional
-            weights_update += 0.005*self.weights
+            weights_update -= regularizator(self.weights)
+            bias_update -= regularizator(self.bias)
 
-        # the basic parameter update
-        self.weights -= eta * weights_update
-        self.bias -= eta * gradient
         if (momentum > 0):
             # with momentum we consider the previous update too
-            self.weights -= momentum * self.prev_weight_update
-            self.bias -= momentum * self.prev_bias_update
-
+            weights_update += momentum * self.prev_weight_update
+            bias_update += momentum * self.prev_bias_update
+            
             # store this update for the next backprop in this layer
-            self.prev_weight_update = eta * weights_update
-            self.prev_bias_update = eta * gradient
-
+            self.prev_weight_update = weights_update
+            self.prev_bias_update = bias_update
+        
+        # the basic parameter update
+        self.weights -= weights_update
+        self.bias -= bias_update
+        
         input_error = np.dot(gradient, self.weights.T)
         return input_error
 
