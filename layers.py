@@ -1,4 +1,5 @@
 import numpy as np
+from math import sqrt
 
 
 class Layer:
@@ -23,9 +24,24 @@ class FullyConnectedLayer(Layer):
     # a simple layer, linear or with an activation function
     # in_size = number of input neurons
     # out_size = number of output neurons
-    def __init__(self, in_size, out_size, activation = None, activation_prime = None):
-        self.weights = np.random.rand(in_size, out_size) - 0.5  # so to have few <0 and few >0
-        self.bias = np.random.rand(1, out_size) - 0.5  # so to have few <0 and few >0
+    def __init__(self, in_size, out_size, activation = None, activation_prime = None, initialization_func = None):
+        if not(initialization_func is None):
+            if (initialization_func == "xavier"):  # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/#:~:text=each%20in%20turn.-,Xavier%20Weight%20Initialization,-The%20xavier%20initialization
+                l, u = -(1.0 / sqrt(in_size)), (1.0 / sqrt(in_size))
+                self.weights = np.random.uniform(low=l, high=u, size=(in_size, out_size))
+                self.bias = np.random.uniform(low=l, high=u, size=(1, out_size))
+            elif (initialization_func == "normalized_xavier"):  # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/#:~:text=to%20One%20Hundred-,Normalized%20Xavier%20Weight%20Initialization,-The%20normalized%20xavier
+                l, u = -(6.0 / sqrt(in_size + out_size)), (6.0 / sqrt(in_size + out_size))
+                self.weights = np.random.uniform(low=l, high=u, size=(in_size, out_size))
+                self.bias = np.random.uniform(low=l, high=u, size=(1, out_size))
+            elif (initialization_func == "he"):  # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/#:~:text=on%20ImageNet%20Classification.%E2%80%9D-,He%20Weight%20Initialization,-The%20he%20initialization
+                # for ReLU
+                dev = sqrt(2.0 / in_size)
+                self.weights = np.random.normal(loc=0.0, scale=dev, size=(in_size, out_size))
+                self.bias = np.random.normal(loc=0.0, scale=dev, size=(1, out_size))
+        else:
+            self.weights = np.random.rand(in_size, out_size) - 0.5  # so to have few <0 and few >0
+            self.bias = np.random.rand(1, out_size) - 0.5  # so to have few <0 and few >0
         self.activation = activation
         self.activation_prime = activation_prime
         self.prev_weight_update = 0  # for momentum purposes
@@ -60,15 +76,15 @@ class FullyConnectedLayer(Layer):
             # with momentum we consider the previous update too
             weights_update += momentum * self.prev_weight_update
             bias_update += momentum * self.prev_bias_update
-            
+
             # store this update for the next backprop in this layer
             self.prev_weight_update = weights_update
             self.prev_bias_update = bias_update
-        
+
         # the basic parameter update
         self.weights -= weights_update
         self.bias -= bias_update
-        
+
         input_error = np.dot(gradient, self.weights.T)
         return input_error
 
