@@ -30,7 +30,7 @@ def test_MONK(monk=1, output=True):
     # train
     if (output):
         net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25)
 
     # accuracy on validation set
     out = net.predict(xvl)
