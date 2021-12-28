@@ -68,8 +68,8 @@ class Network:
     def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=100, learning_rate=0.01, early_stopping=None, batch_size=None, verbose=True):
         N = len(X)
         history = []  # for logging purposes
-        if not(X_validation is None):
-            val_history = []
+        if not(X_validation is None): #If validation set is provided
+            val_history = [] #Initialize val history to an empty array
         else:
             val_history = None  # used to check if validation set is present
 
@@ -115,7 +115,7 @@ class Network:
                 M = len(X_validation)
                 val_error = 0
                 for j in range(M):
-                    output = X[j]
+                    output = X_validation[j] #We passed X traing instead of X_validation with Y_Val as label!
                     for layer in self.layers:
                         output = layer.forward_propagation(output)
                     val_error += self.loss(Y_validation[j], output)
