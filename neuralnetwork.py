@@ -86,7 +86,7 @@ class Network:
                     output = layer.forward_propagation(output)
                 error += self.loss(Y[j], output)
 
-                if not(batch_size is None):
+                if not(batch_size is None): #TODO use batch_size=1 for online/stochastic?
                     outputs.append(output)
                     targets.append(Y[j])
                     if ((j+1) % batch_size == 0) or (j == N-1):
