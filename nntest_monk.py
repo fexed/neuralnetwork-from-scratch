@@ -1,9 +1,8 @@
 import numpy as np
 from activationfunctions import sigmoid, sigmoid_prime
 from losses import binary_crossentropy, binary_crossentropy_prime
-from layers import FullyConnectedLayer, ActivationLayer
+from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from regularizators import L2
 import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
 import time
@@ -30,7 +29,7 @@ def test_MONK(monk=1, output=True):
     # train
     if (output):
         net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, batch_size=2, verbose=output, early_stopping=25)
 
     # accuracy on validation set
     out = net.predict(xvl)

@@ -77,11 +77,9 @@ class Network:
         min_error = float('inf')
         for i in range(epochs):
             error = 0
+            outputs = []
+            targets = []
             for j in range(N):
-                if not(batch_size is None):
-                    # output and target for each element in the batch, if needed
-                    outputs = []
-                    targets = []
                 # compute the output iteratively through each layer
                 output = X[j]
                 for layer in self.layers:
@@ -89,8 +87,6 @@ class Network:
                 error += self.loss(Y[j], output)
 
                 if not(batch_size is None):
-                    # TODO check, the batch is not used correctly
-                    #      just one element is used
                     outputs.append(output)
                     targets.append(Y[j])
                     if ((j+1) % batch_size == 0) or (j == N-1):
