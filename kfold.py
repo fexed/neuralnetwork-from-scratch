@@ -1,31 +1,35 @@
 class KFold:
     # KFold data structure to easily get the folds of a given dataset
-    def __init__(self, K, dataset):
+    def __init__(self, K, X, Y):
         self.K = K
+        
+        # builds the folds, dividing the dataset in K parts
+        self.current_fold = -1 #call next_fold to build the first fold
+        self.x_folds = []
+        self.y_folds = []
+        self.elements_per_fold = len(X)//self.K
+        for i in range(0, len(X), self.elements_per_fold):
+            self.x_folds.append(X[i : i + self.elements_per_fold])
+            self.y_folds.append(Y[i : i + self.elements_per_fold])
 
-        # builds the first fold, made from the first elements_per_fold elements
-        # of the dataset for the validation set and the rest of the dataset for
-        # the training set
-        self.current_fold = 0
-        self.folds = []
-        self.elements_per_fold = len(dataset)//self.K
-        for i in range(0, len(dataset), self.elements_per_fold):
-            self.folds.append(dataset[i : i + self.elements_per_fold])
-        self.trset = [elem for sublist in self.folds[1:] for elem in sublist]
-        self.vlset = self.folds[0]
+   # def current_folds(self):
+   #     return self.x_trset, self.x_vlset, self.y_trset, self.y_vlset
 
-    def current_folds(self):
-        return self.trset, self.vlset
-
+    def hasNext(self):
+        return self.current_fold+1<self.K
+    
     def next_fold(self):
         self.current_fold += 1
         if (self.current_fold < self.K):
             # the validation set will be the current_fold-th fold, and the
             # training set will be the remaining elements of the dataset
-            self.vlset = self.folds[self.current_fold]
-            self.trset = [elem for sublist in self.folds[0:self.current_fold] for elem in sublist]
-            self.trset.extend([elem for sublist in self.folds[self.current_fold+1:] for elem in sublist])
-            return self.trset, self.vlset
+            self.x_vlset = self.x_folds[self.current_fold]
+            self.y_vlset = self.y_folds[self.current_fold]
+            self.x_trset = [elem for sublist in self.x_folds[0:self.current_fold] for elem in sublist]
+            self.x_trset.extend([elem for sublist in self.x_folds[self.current_fold+1:] for elem in sublist])
+            self.y_trset = [elem for sublist in self.y_folds[0:self.current_fold] for elem in sublist]
+            self.y_trset.extend([elem for sublist in self.y_folds[self.current_fold+1:] for elem in sublist])
+            return self.x_trset, self.x_vlset, self.y_trset, self.y_vlset
         else:
             # no more folds left
             # TODO: better error handling? Not important for now
