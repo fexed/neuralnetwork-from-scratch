@@ -33,6 +33,8 @@ def test_MONK(monk=1, output=True):
     mean_accuracy = 0 #mean accuracy over the kfolds
     folds = 3
     kfold = KFold(folds, X, Y)
+    suffix = "MONK" + str(monk) + "_" + ts
+    fig, ax = plot.subplots()
     while (kfold.hasNext()):
         xtr, xvl, ytr, yvl = kfold.next_fold()
         history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25)
@@ -66,12 +68,10 @@ def test_MONK(monk=1, output=True):
         #accuracy /= len(out)
         #accuracy *= 100
         #print("\n\nAccuracy on MONK" + str(monk) + " of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
-    
-        suffix = "MONK" + str(monk) + "_" + ts
-    
-        fig, ax = plot.subplots()
+
         ax.plot(history)
         ax.plot(val_history)
+        #ax.plot(val_history)
         ax.set_ylabel("Loss")
         ax.set_xlabel("Epochs")
         ax.set_title(suffix)
@@ -95,6 +95,11 @@ def test_MONK(monk=1, output=True):
         #    plot.clf()
     mean_accuracy /= folds
     if (output): print("\n\nMean accuracy over " + str(folds) + " folds: {:.4f}%".format(mean_accuracy))
+
+    plot.gca().margins(x=0)
+    fig.set_size_inches(18.5, 10.5)
+    plot.savefig("plots/" + suffix + "_" + str(folds) + "folds_history.png")
+    plot.clf()
     return mean_accuracy
 
 
