@@ -1,4 +1,4 @@
 *.pyc
 *.pkl
-*.png
+plots/*.png
 *.Identifier
