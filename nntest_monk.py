@@ -94,7 +94,7 @@ def test_MONK(monk=1, output=True):
         #    plot.savefig("plots/" + suffix + "_history.png")
         #    plot.clf()
     mean_accuracy /= folds
-    if (output): print("\n\nMean accuracy over " + str(folds) + "folds: {:.4f}%".format(mean_accuracy))
+    if (output): print("\n\nMean accuracy over " + str(folds) + " folds: {:.4f}%".format(mean_accuracy))
     return mean_accuracy
 
 
