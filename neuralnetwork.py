@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 
 class Network:
@@ -29,7 +30,10 @@ class Network:
             except AttributeError:
                 pass
             print("")
-        print("+==== Loss: " + self.loss.__name__, end="")
+        if not(self.loss is None):
+            print("+==== Loss: " + self.loss.__name__, end="")
+        else:
+            print("+====")
         if not(self.regularizator is None):
             print(" and " + self.regularizator.__name__ + " regularizator", end="")
         if (self.momentum > 0):
@@ -151,3 +155,16 @@ class Network:
             return history, val_history
         else:
             return history
+
+
+    def savenet(self, filename):
+        with open(filename, "wb") as savefile:
+            pickle.dump(self.__dict__, savefile)
+
+
+    def loadnet(self, filename):
+        with open(filename, "rb") as savefile:
+            newnet = pickle.load(savefile)
+
+        self.__dict__.clear()  # clear current net
+        self.__dict__.update(newnet)
