@@ -28,3 +28,11 @@ def multiclass_crossentrpy(labels, outputs):
 # TODO Implement
 def multiclass_crossentrpy_prime(labels, outputs): 
     return 0
+
+def MEE(label1, label2, output1, output2):
+    # mean euclidean error loss
+    return np.mean(np.sqrt(np.power(label1-output1, 2)+np.power(label2-output2, 2)))
+
+#TODO Implement
+def MEE_prime(label1, label2, output1, output2):
+    return 0
