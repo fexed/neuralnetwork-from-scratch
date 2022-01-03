@@ -22,11 +22,11 @@ def binary_crossentropy_prime(labels, outputs):
     return np.mean(((1-labels)/(1-outputs_clipped) - labels/outputs_clipped))
 
 # TODO Implement
-def multiclass_crossentrpy(labels, outputs): 
+def multiclass_crossentropy(labels, outputs):
     return 0
-    
+
 # TODO Implement
-def multiclass_crossentrpy_prime(labels, outputs): 
+def multiclass_crossentropy_prime(labels, outputs): 
     return 0
 
 def MEE(label1, label2, output1, output2):
