@@ -26,13 +26,14 @@ def multiclass_crossentropy(labels, outputs):
     return 0
 
 # TODO Implement
-def multiclass_crossentropy_prime(labels, outputs): 
+def multiclass_crossentropy_prime(labels, outputs):
     return 0
 
-def MEE(label1, label2, output1, output2):
+def MEE(labels, outputs):
     # mean euclidean error loss
-    return np.mean(np.sqrt(np.power(label1-output1, 2)+np.power(label2-output2, 2)))
+    return np.mean(np.sqrt(np.sum(np.square(labels - outputs))))
 
-#TODO Implement
-def MEE_prime(label1, label2, output1, output2):
-    return 0
+
+def MEE_prime(labels, outputs):
+    # derivative of MEE
+    return (labels - outputs)/(np.sqrt(np.sum(np.square(labels - outputs)))*np.size(labels))
