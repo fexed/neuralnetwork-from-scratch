@@ -10,7 +10,7 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
 
     if (batch_sizes==None):
-        batch_sizes=[None, input_size]
+        batch_sizes=[1, input_size]
     results, parameters = [], []  # to store the results and return the best one
     for N in layers:
         for M in units:
@@ -30,7 +30,7 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                         history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
                         results.append(history[-1])
 
-                    parameters.append({"layers":N, "units":M, "learning_rate":E})
+                    parameters.append({"layers":N, "units":M, "learning_rate":E, "batch_size":B})
 
     results, parameters = zip(*sorted(zip(results, parameters)))  # sort both lists
     if (verbose): print("Best: " + "{:.5f}".format(results[0]) + " with " + str(parameters[0]))

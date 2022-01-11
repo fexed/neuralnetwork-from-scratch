@@ -69,7 +69,7 @@ class Network:
         return results
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=100, learning_rate=0.01, early_stopping=None, batch_size=None, verbose=True):
+    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=100, learning_rate=0.01, early_stopping=None, batch_size=1, verbose=True):
         N = len(X)
         history = []  # for logging purposes
         if not(X_validation is None): #If validation set is provided
@@ -89,25 +89,20 @@ class Network:
                 for layer in self.layers:
                     output = layer.forward_propagation(output)
                 error += self.loss(Y[j], output)
-
-                if not(batch_size is None): #TODO use batch_size=1 for online/stochastic?
-                    outputs.append(output)
-                    targets.append(Y[j])
-                    if ((j+1) % batch_size == 0) or (j == N-1):
-                        gradient = 0
-                        for k in range(len(outputs)):
-                            gradient += self.loss_prime(targets[k], outputs[k])
-                        gradient /= len(outputs)
-                        for layer in reversed(self.layers):
-                            gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
-                        outputs = []
-                        targets = []
-                else:
-                    # compute the gradient through each layer, while applying
-                    # the backward propagation algorithm
-                    gradient = self.loss_prime(Y[j], output)
+                # compute the gradient through each layer, while applying
+                # the backward propagation algorithm
+                outputs.append(output)
+                targets.append(Y[j])
+                if ((j+1) % batch_size == 0) or (j == N-1):
+                    gradient = 0
+                    for k in range(len(outputs)):
+                        gradient += self.loss_prime(targets[k], outputs[k])
+                    gradient /= len(outputs)
                     for layer in reversed(self.layers):
                         gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
+                    outputs = []
+                    targets = []
+                    
             error /= N  # mean error over the set
             history.append(error)
             if not(val_history is None):
@@ -124,7 +119,7 @@ class Network:
                 if (verbose): print('Epoch %d of %d, loss = %f, val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
             else:
                 # if no validation set, we simply output the current status
-                    if (verbose): print('Epoch %d of %d, loss = %f' % (i+1, epochs, error), end="\r")
+                if (verbose): print('Epoch %d of %d, loss = %f' % (i+1, epochs, error), end="\r")
             if not(early_stopping is None):
                 # with early stopping we need to check the current situation and
                 # stop if needed
