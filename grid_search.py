@@ -5,7 +5,7 @@ from layers import FullyConnectedLayer, ActivationLayer
 from neuralnetwork import Network
 
 
-def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(1,5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, epochs=500, verbose=True):
+def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(1,5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, epochs=500, verbose=True, early_stopping=25):
     n_combinations = len(layers)*len(units)*len(learning_rates)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
 
@@ -22,14 +22,14 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                         net.add(FullyConnectedLayer(M, M, tanh, tanh_prime))
                     net.add(FullyConnectedLayer(M, output_size, tanh, tanh_prime))
                     if (verbose): net.summary()
-    
+
                     if not(X_validation is None):
-                        history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose)
+                        history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
                         results.append(history[-1])
                     else:
-                        history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose)
+                        history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
                         results.append(history[-1])
-    
+
                     parameters.append({"layers":N, "units":M, "learning_rate":E})
 
     results, parameters = zip(*sorted(zip(results, parameters)))  # sort both lists
