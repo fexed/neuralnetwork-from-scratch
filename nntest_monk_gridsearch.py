@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from grid_search import grid_search
 
 
-monkfile = open("/home/fexed/ML/fromscratch/datasets/MONK/monks-1.train", "r")
+monkfile = open("datasets/MONK/monks-1.train", "r")
 xtr = []
 ytr = []
 for line in monkfile.readlines():
@@ -14,6 +14,6 @@ X = np.array(xtr)
 Y = np.array(ytr)
 xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[1,2,3,4,5], units=[5,10,15,20], learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1, np.size(xtr)], epochs=500)
+grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[1,2,3,4,5], units=[5,10,15,20], learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1, np.size(xtr)/2, np.size(xtr)], epochs=500)
 
 # Best: 0.00005 with {'layers': 5, 'units': 15, 'learning_rate': 0.01}
