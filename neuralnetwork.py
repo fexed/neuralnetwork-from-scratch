@@ -1,6 +1,6 @@
 import numpy as np
 import pickle
-
+import random
 
 class Network:
     def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, momentum=0):
@@ -83,6 +83,10 @@ class Network:
             error = 0
             outputs = []
             targets = []
+            #shuffle order of inputs each epoch
+            temp = list(zip(X, Y))
+            random.shuffle(temp)
+            X, Y = zip(*temp)
             for j in range(N):
                 # compute the output iteratively through each layer
                 output = X[j]
