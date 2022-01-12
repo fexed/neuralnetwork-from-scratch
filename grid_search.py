@@ -1,6 +1,6 @@
 import numpy as np
-from activationfunctions import tanh, tanh_prime
-from losses import MSE, MSE_prime
+from activationfunctions import sigmoid, sigmoid_prime
+from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer, ActivationLayer
 from neuralnetwork import Network
 
@@ -16,11 +16,11 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
         for M in units:
             for E in learning_rates:
                 for B in batch_sizes:
-                    net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MSE, MSE_prime)
-                    net.add(FullyConnectedLayer(input_size, M, tanh, tanh_prime))
+                    net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", binary_crossentropy, binary_crossentropy_prime)
+                    net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime))
                     for i in range(N):  # N -hidden- layers, plus input and output layers
-                        net.add(FullyConnectedLayer(M, M, tanh, tanh_prime))
-                    net.add(FullyConnectedLayer(M, output_size, tanh, tanh_prime))
+                        net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime))
+                    net.add(FullyConnectedLayer(M, output_size, sigmoid, sigmoid_prime))
                     if (verbose): net.summary()
 
                     if not(X_validation is None):
