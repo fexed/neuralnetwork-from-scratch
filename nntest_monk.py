@@ -8,9 +8,9 @@ from sklearn.model_selection import train_test_split
 import time
 import pickle
 from kfold import KFold
+from preprocessing import one_hot_encoding
 
-
-def test_MONK(monk=1, output=True):
+def test_MONK(monk=1, output=True, use_one_hot_encoding = True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****MONK" + str(monk))
     monkfile = open("datasets/MONK/monks-" + str(monk) + ".train", "r")
@@ -22,11 +22,17 @@ def test_MONK(monk=1, output=True):
         ytr.append([[int(vals[1])]])
     X = np.array(xtr)
     Y = np.array(ytr)
+    
+    input_size = 6
+
+    if use_one_hot_encoding:
+        X, input_size = one_hot_encoding(X)
+
     #xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     if (output): print("Training set of " + str(X.size) + " elements")
     folds = 3
     net = Network("MONK" + str(monk) + " " + str(folds) + "-fold test", binary_crossentropy, binary_crossentropy_prime)
-    net.add(FullyConnectedLayer(6, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
     # train
     if (output): net.summary()
