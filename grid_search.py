@@ -14,16 +14,6 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
     results, parameters = [], []  # to store the results and return the best one
 
     for init_f in init_functions:
-    for N in layers:
-        for M in units:
-            for E in learning_rates:
-                for B in batch_sizes:
-                    net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", binary_crossentropy, binary_crossentropy_prime)
-                    net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, init_f))
-                    for i in range(N):  # N -hidden- layers, plus input and output layers
-                        net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, init_f))
-                    net.add(FullyConnectedLayer(M, output_size, sigmoid, sigmoid_prime, init_f))
-                    if (verbose): net.summary()
         for N in layers:
             for M in units:
                 for E in learning_rates:
@@ -35,12 +25,6 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                         net.add(FullyConnectedLayer(M, output_size, sigmoid, sigmoid_prime, init_f))
                         if (verbose): net.summary()
 
-                    if not(X_validation is None):
-                        history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-                        results.append(history[-1])
-                    else:
-                        history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-                        results.append(history[-1])
                         if not(X_validation is None):
                             history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
                             results.append(history[-1])
@@ -48,9 +32,12 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                             history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
                             results.append(history[-1])
 
-                    parameters.append({"layers":N, "units":M, "learning_rate":E, "batch_size":B})
                         parameters.append({"layers":N, "units":M, "learning_rate":E, "batch_size":B})
 
     results, parameters = zip(*sorted(zip(results, parameters)))  # sort both lists
-    if (verbose): print("Best: " + "{:.5f}".format(results[0]) + " with " + str(parameters[0]))
-    return parameters[0], results[0]
+    if (verbose):
+        print("Best: " + "{:.5f}".format(results[0]) + " with " + str(parameters[0]))
+        print("Top 10:")
+        for i in range (0, 10):
+            print("\t" + "{:.5f}".format(results[i]) + " with " + str(parameters[i]))
+    return parameters[0:10], results[0:10]
