@@ -43,7 +43,9 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                                 parameters.append({"layers":N, "units":M, "learning_rate":E, "batch_size":B, "init_function":init_f, "momentum":momentum, "regularizator":regularizatorname})
                                 tested += 1
                                 progress = tested/n_combinations
-                                update_progress(progress, suffix = str(tested) + "/" + str(n_combinations))
+                                digits = len(str(n_combinations))
+                                formattedtested = ("{:0"+str(digits)+"d}").format(tested)
+                                update_progress(progress, suffix = formattedtested + "/" + str(n_combinations))
                                 if (verbose): print("")
 
     results, parameters = zip(*sorted(zip(results, parameters)))  # sort both lists
