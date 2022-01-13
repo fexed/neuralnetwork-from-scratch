@@ -8,7 +8,7 @@ from regularizators import L2, weight_decay
 
 def update_progress(progress, barlength=90, suffix="", fill="#"):
     num = int(round(barlength*progress))
-    txt = "\r" + suffix + "[" + "#"*num + "-"*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
+    txt = "\r" + suffix + " [" + "#"*num + "-"*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
     print(txt, end="")
 
 def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, init_functions=["xavier", "normalized_xavier", "he"], momentums=[0, 0.8, 0.9, 0.99, 0.999], regularizators=[None, "L2", "weight_decay"], epochs=500, verbose=True, early_stopping=25):
@@ -19,16 +19,16 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
         batch_sizes=[1, input_size]
     results, parameters = [], []  # to store the results and return the best one
 
-    i = 0
-    for init_f in init_functions:
-        for N in layers:
-            for M in units:
-                for E in learning_rates:
-                    for momentum in momentums:
-                        for regularizatorname in regularizators:
-                            if regularizatorname == "L2": regularizator = L2
-                            elif regularizatorname == "weight_decay": regularizator = weight_decay
-                            else: regularizator = None
+    tested = 0
+    for N in layers:
+        for M in units:
+            for E in learning_rates:
+                for momentum in momentums:
+                    for regularizatorname in regularizators:
+                        if regularizatorname == "L2": regularizator = L2
+                        elif regularizatorname == "weight_decay": regularizator = weight_decay
+                        else: regularizator = None
+                        for init_f in init_functions:
                             for B in batch_sizes:
                                 net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", binary_crossentropy, binary_crossentropy_prime, momentum=momentum, regularizator=regularizator)
                                 net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, init_f))
@@ -45,9 +45,9 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                                     results.append(history[-1])
 
                                 parameters.append({"layers":N, "units":M, "learning_rate":E, "batch_size":B, "init_function":init_f, "momentum":momentum, "regularizator":regularizatorname})
-                                i += 1
-                                progress = i/n_combinations
-                                update_progress(progress)
+                                tested += 1
+                                progress = tested/n_combinations
+                                update_progress(progress, suffix = str(tested) + "/" + str(n_combinations))
                                 if (verbose): print("")
 
     results, parameters = zip(*sorted(zip(results, parameters)))  # sort both lists
