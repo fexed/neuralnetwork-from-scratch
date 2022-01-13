@@ -50,6 +50,8 @@ class FullyConnectedLayer(Layer):
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
 
+    def get_weights(self):
+        return self.weights
 
     def forward_propagation(self, input):
         self.input = input
@@ -61,7 +63,7 @@ class FullyConnectedLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
+    def backward_propagation(self, gradient, eta, momentum = 0, regularizator_l=0):
         if not(self.activation_prime is None):
             # if there's activation function specified, then we compute its
             # derivative
@@ -70,10 +72,9 @@ class FullyConnectedLayer(Layer):
         weights_update = eta * np.dot(self.input.T, gradient)
         bias_update = eta * gradient
 
-        if not(regularizator is None):
-            # the regularizator is optional
-            weights_update -= regularizator(self.weights)
-            bias_update -= regularizator(self.bias)
+        # regularization
+        weights_update -= self.weights*regularizator_l
+        bias_update -= self.bias*regularizator_l
 
         if (momentum > 0):
             # with momentum we consider the previous update too
