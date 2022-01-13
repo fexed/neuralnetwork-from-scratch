@@ -16,46 +16,46 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
     results = []  # to store the results and return the best one
 
-    try:
-        tested = 0
-        start = time.time()
-        for N in layers:
-            for M in units:
-                for E in learning_rates:
-                    for momentum in momentums:
-                        for regularization_lambda in regularization_lambdas:
-                            for regularizatorname in regularizators:
-                                if regularizatorname == "L2": regularizator = L2
-                                else: regularizator = None
-                                for init_f in init_functions:
-                                    for B in batch_sizes:
-                                        net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", binary_crossentropy, binary_crossentropy_prime, momentum=momentum, regularizator=regularizator, regularization_l=regularization_lambda)
-                                        net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, init_f))
-                                        for i in range(N):  # N -hidden- layers, plus input and output layers
-                                            net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, init_f))
-                                        net.add(FullyConnectedLayer(M, output_size, sigmoid, sigmoid_prime, init_f))
-                                        if (verbose): net.summary()
-    
-                                        if not(X_validation is None):
-                                            history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-                                        else:
-                                            history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-    
-                                        results.append({"loss":history[-1], "layers":N, "units":M, "learning_rate":E, "batch_size":B, "init_function":init_f, "momentum":momentum, "regularizator":regularizatorname, "regularization_lambda":regularization_lambda})
-                                        tested += 1
-                                        progress = tested/n_combinations
-                                        digits = len(str(n_combinations))
-                                        formattedtested = ("{:0"+str(digits)+"d}").format(tested)
-                                        elapsedtime = time.time() - start
-                                        ETAtime = elapsedtime * n_combinations / tested
-                                        ETA = "ETA " + "{:8.2f}".format(ETAtime)
-                                        update_progress(progress, prefix = ETA + "s " + formattedtested + "/" + str(n_combinations), barlength=80)
-                                        if (verbose): print("")
-    finally:
-        results.sort(key = lambda x: x['loss'], reverse=False)
-        if (verbose):
-            print("Best: " + str(results[0]))
-            print("Top 10:")
-            for i in range (0, 10):
-                print("\t" + str(results[i]))
-        return results[0:10]
+    #try:
+    tested = 0
+    start = time.time()
+    for N in layers:
+        for M in units:
+            for E in learning_rates:
+                for momentum in momentums:
+                    for regularization_lambda in regularization_lambdas:
+                        for regularizatorname in regularizators:
+                            if regularizatorname == "L2": regularizator = L2
+                            else: regularizator = None
+                            for init_f in init_functions:
+                                for B in batch_sizes:
+                                    net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", binary_crossentropy, binary_crossentropy_prime, momentum=momentum, regularizator=regularizator, regularization_l=regularization_lambda)
+                                    net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, init_f))
+                                    for i in range(N):  # N -hidden- layers, plus input and output layers
+                                        net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, init_f))
+                                    net.add(FullyConnectedLayer(M, output_size, sigmoid, sigmoid_prime, init_f))
+                                    if (verbose): net.summary()
+
+                                    if not(X_validation is None):
+                                        history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
+                                    else:
+                                        history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
+
+                                    results.append({"loss":history[-1], "layers":N, "units":M, "learning_rate":E, "batch_size":B, "init_function":init_f, "momentum":momentum, "regularizator":regularizatorname, "regularization_lambda":regularization_lambda})
+                                    tested += 1
+                                    progress = tested/n_combinations
+                                    digits = len(str(n_combinations))
+                                    formattedtested = ("{:0"+str(digits)+"d}").format(tested)
+                                    elapsedtime = time.time() - start
+                                    ETAtime = elapsedtime * n_combinations / tested
+                                    ETA = "ETA " + "{:8.2f}".format(ETAtime)
+                                    update_progress(progress, prefix = ETA + "s " + formattedtested + "/" + str(n_combinations), barlength=80)
+                                    if (verbose): print("")
+    #finally:
+    results.sort(key = lambda x: x['loss'], reverse=False)
+    if (verbose):
+        print("Best: " + str(results[0]))
+        print("Top 10:")
+        for i in range (0, 10):
+            print("\t" + str(results[i]))
+    return results[0:10]

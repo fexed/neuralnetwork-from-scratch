@@ -113,8 +113,9 @@ class Network:
                     #alfa = step/fixed_step
 
             penalty_term = 0 #penalty term for regularization
-            for layer in self.layers:
-                penalty_term += self.regularizator(layer.get_weights(), self.regularization_l)
+            if not(self.regularizator is None):
+                for layer in self.layers:
+                    penalty_term += self.regularizator(layer.get_weights(), self.regularization_l)
             error /= N  # mean error over the set
             error += penalty_term
             history.append(error)
