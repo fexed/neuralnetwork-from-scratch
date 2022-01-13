@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 import random
+from utils import training_progress
 
 class Network:
     def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, momentum=0):
@@ -106,7 +107,7 @@ class Network:
                         gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
                     outputs = []
                     targets = []
-                    
+
             error /= N  # mean error over the set
             history.append(error)
             if not(val_history is None):
@@ -120,10 +121,10 @@ class Network:
                     val_error += self.loss(Y_validation[j], output)
                 val_error /= M
                 val_history.append(val_error)
-                if (verbose): print('Epoch %d of %d, loss = %f, val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
+                if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
             else:
                 # if no validation set, we simply output the current status
-                if (verbose): print('Epoch %d of %d, loss = %f' % (i+1, epochs, error), end="\r")
+                if (verbose): training_progress(i+1, epochs, suffix=("loss = %f" % (error)))
             if not(early_stopping is None):
                 # with early stopping we need to check the current situation and
                 # stop if needed

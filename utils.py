@@ -4,6 +4,15 @@ def update_progress(progress, barlength=100, prefix="", fill="\u2588"):
     print(txt, end="")
 
 
+def training_progress(current_epoch, epochs, barlength=50, suffix="", fill="\u2588"):
+    progress = current_epoch/epochs
+    digits = len(str(epochs))
+    formattedepochs = ("{:0"+str(digits)+"d}").format(current_epoch)
+    num = int(round(barlength*progress))
+    txt = "\rEpoch " + formattedepochs + " of " + str(epochs) + " " + suffix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
+    print(txt, end="")
+
+
 def tr_vl_split(X, Y, ratio=0.25, random_state=42):
     raise NotImplementedError
 
