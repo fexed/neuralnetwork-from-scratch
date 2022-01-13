@@ -11,7 +11,7 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
     if (batch_sizes==None):
         batch_sizes=[1, input_size]
         
-    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(batch_sizes)*len(batch_sizes)
+    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(batch_sizes)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
     results, parameters = [], []  # to store the results and return the best one
 
