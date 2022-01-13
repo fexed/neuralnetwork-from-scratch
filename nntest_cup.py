@@ -8,8 +8,10 @@ import time
 import pickle
 from kfold import KFold
 
+
 def compare(a, b, tollerance=1e-05):
     return abs(a - b) <= tollerance * max(abs(a), abs(b))
+
 
 def test_CUP(output=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
@@ -21,6 +23,10 @@ def test_CUP(output=True):
         if (line.startswith("#")):
             continue
         vals = line.split(",")
+        # TODO test preprocessing
+        # each feature = (feature - mean)/stddev
+        # the mean array is np.mean(X, axis=0), mean for each feature column
+        # the stddev array is np.std(X, axis=0), stddev for each feature
         xtr.append([[float(vals[1]), float(vals[2]), float(vals[3]), float(vals[4]), float(vals[5]), float(vals[6]), float(vals[7]), float(vals[8]), float(vals[9]), float(vals[10])]])
         ytr.append([[float(vals[11]), float(vals[12])]])
     X = np.array(xtr)
