@@ -5,6 +5,7 @@ from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from regularizators import L2, weight_decay
 from utils import update_progress
+import time
 
 
 def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, init_functions=["xavier", "normalized_xavier", "he"], momentums=[0, 0.8, 0.9, 0.99, 0.999], regularizators=[None, "L2", "weight_decay"], epochs=500, verbose=True, early_stopping=25):
@@ -17,6 +18,7 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
 
     try:
         tested = 0
+        start = time.time()
         for N in layers:
             for M in units:
                 for E in learning_rates:
@@ -44,7 +46,10 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                                     progress = tested/n_combinations
                                     digits = len(str(n_combinations))
                                     formattedtested = ("{:0"+str(digits)+"d}").format(tested)
-                                    update_progress(progress, prefix = formattedtested + "/" + str(n_combinations))
+                                    elapsedtime = time.time() - start
+                                    ETAtime = elapsedtime * n_combinations / tested
+                                    ETA = "ETA " + "{:8.2f}".format(ETAtime)
+                                    update_progress(progress, prefix = ETA + "s " + formattedtested + "/" + str(n_combinations), barlength=80)
                                     if (verbose): print("")
     finally:
         results.sort(key = lambda x: x['loss'], reverse=False)
