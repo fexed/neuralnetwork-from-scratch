@@ -1,4 +1,4 @@
-def update_progress(progress, barlength=90, suffix="", fill="#"):
+def update_progress(progress, barlength=100, suffix="", fill="\u2588"):
     num = int(round(barlength*progress))
     txt = "\r" + suffix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
     print(txt, end="")
