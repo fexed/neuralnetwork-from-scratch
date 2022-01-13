@@ -12,7 +12,7 @@ def update_progress(progress, barlength=90, suffix="", fill="#"):
     print(txt, end="")
 
 def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, init_functions=["xavier", "normalized_xavier", "he"], momentums=[0, 0.8, 0.9, 0.99, 0.999], regularizators=[None, "L2", "weight_decay"], epochs=500, verbose=True, early_stopping=25):
-    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)
+    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(batch_sizes)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
 
     if (batch_sizes==None):
