@@ -140,9 +140,9 @@ class Network:
                     es_epochs += 1
                     if es_epochs == early_stopping:
                         if not(val_history is None):
-                            if (verbose): print('Early stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
+                            if (verbose): print('\rEarly stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
                         else:
-                            if (verbose): print('Early stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error), end="\r")
+                            if (verbose): print('\rEarly stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error), end="\r")
                         break
                 else:
                     # we're good
