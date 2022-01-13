@@ -39,6 +39,9 @@ class FullyConnectedLayer(Layer):
                 dev = sqrt(2.0 / in_size)
                 self.weights = np.random.normal(loc=0.0, scale=dev, size=(in_size, out_size))
                 self.bias = np.random.normal(loc=0.0, scale=dev, size=(1, out_size))
+            elif (initialization_func == "basic"):
+                self.bias = [np.full(out_size, 0)]
+                self.weights = np.random.uniform(-1/in_size, 1/in_size, (in_size, out_size))
         else:
             self.weights = np.random.rand(in_size, out_size) - 0.5  # so to have few <0 and few >0
             self.bias = np.random.rand(1, out_size) - 0.5  # so to have few <0 and few >0

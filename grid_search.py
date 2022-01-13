@@ -8,7 +8,7 @@ from utils import update_progress
 import time
 
 
-def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, init_functions=["xavier", "normalized_xavier", "he"], momentums=[0, 0.8, 0.9, 0.99, 0.999], regularizators=[None, "L2", "weight_decay"], epochs=500, verbose=True, early_stopping=25):
+def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, init_functions=["xavier", "normalized_xavier", "he", "basic"], momentums=[0, 0.8, 0.9, 0.99, 0.999], regularizators=[None, "L2", "weight_decay"], epochs=500, verbose=True, early_stopping=25):
     if (batch_sizes==None):
         batch_sizes=[1, input_size]
 
