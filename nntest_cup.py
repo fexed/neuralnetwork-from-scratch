@@ -1,12 +1,15 @@
 import numpy as np
 from activationfunctions import sigmoid, sigmoid_prime
-from losses import MEE, MEE_prime
+from losses import MSE, MSE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 import matplotlib.pyplot as plot
 import time
 import pickle
 from kfold import KFold
+
+def compare(a, b, tollerance=1e-05):
+    return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
 def test_CUP(output=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
@@ -42,7 +45,8 @@ def test_CUP(output=True):
         accuracy = 0
         print(yvl[0], " ", out[0])
         for i in range(len(out)):
-            if (yvl[i][0][0] == out[i][0][0] and yvl[i][0][1] == out[i][0][1]): accuracy += 1
+            # if (yvl[i][0][0] == out[i][0][0] and yvl[i][0][1] == out[i][0][1]): accuracy += 1
+            if (compare(yvl[i][0][0], out[i][0][0]) and compare(yvl[i][0][1], out[i][0][1])): accuracy += 1
         accuracy /= len(out)
         accuracy *= 100
         mean_accuracy += accuracy
