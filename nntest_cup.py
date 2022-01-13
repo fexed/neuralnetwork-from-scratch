@@ -1,5 +1,4 @@
 import numpy as np
-from activationfunctions import sigmoid, sigmoid_prime
 from losses import MSE, MSE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
