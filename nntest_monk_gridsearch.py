@@ -14,6 +14,7 @@ X = np.array(xtr)
 Y = np.array(ytr)
 xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1,2,3,4,5], units=[5,10,15,20], learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1, np.size(xtr)/2, np.size(xtr)], epochs=500)
+#grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1,2,3,4,5], units=[5,10,15,20], learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1, np.size(xtr)/2, np.size(xtr)], epochs=500)
+grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1], units=list(range(10, 21)), learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1], init_functions=["xavier", "normalized_xavier"], momentums=[0.8, 0.99], regularizators=[None], epochs=500)
 
-# Best: 0.00005 with {'layers': 5, 'units': 15, 'learning_rate': 0.01}
+# Best: {'loss': 0.0003020542452283632, 'layers': 0, 'units': 15, 'learning_rate': 0.1, 'batch_size': 1, 'init_function': 'xavier', 'momentum': 0.8, 'regularizator': None}
