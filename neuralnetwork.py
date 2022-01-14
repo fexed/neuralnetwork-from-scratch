@@ -4,12 +4,13 @@ import random
 from utils import training_progress
 
 class Network:
-    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, momentum=0):
+    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, regularization_l=0, momentum=0):
         self.name = name  # for logging and output purposes
         self.layers = []  # all the layers will be stored here
         self.loss = loss
         self.loss_prime = loss_prime
         self.regularizator = regularizator
+        self.regularization_l = regularization_l
         self.momentum = momentum
 
 
@@ -104,11 +105,19 @@ class Network:
                         gradient += self.loss_prime(targets[k], outputs[k])
                     gradient /= len(outputs)
                     for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
+                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularization_l)
                     outputs = []
                     targets = []
+                    #TODO implement variable learning_rate?
+                    #eta = (1-alfa)*eta_init + alfa*eta_base
+                    #alfa = step/fixed_step
 
+            penalty_term = 0 #penalty term for regularization
+            if not(self.regularizator is None):
+                for layer in self.layers:
+                    penalty_term += self.regularizator(layer.get_weights(), self.regularization_l)
             error /= N  # mean error over the set
+            error += penalty_term
             history.append(error)
             if not(val_history is None):
                 # if a validation set is given, we now compute the error over it
@@ -120,6 +129,7 @@ class Network:
                         output = layer.forward_propagation(output)
                     val_error += self.loss(Y_validation[j], output)
                 val_error /= M
+                val_error += penalty_term
                 val_history.append(val_error)
                 if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
             else:

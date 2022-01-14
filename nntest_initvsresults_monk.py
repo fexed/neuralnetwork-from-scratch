@@ -24,7 +24,7 @@ def test_MONK(monk=1, output=True, initialization="normalized_xavier"):
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     if (output): print("Training set of " + str(X.size) + " elements")
-    net = Network("MONK" + str(monk) + " test", binary_crossentropy, binary_crossentropy_prime)
+    net = Network("MONK" + str(monk) + " test", binary_crossentropy, binary_crossentropy_prime, regularizator=L2, regularization_l=0.005, momentum=0.5)
     net.add(FullyConnectedLayer(6, 10, sigmoid, sigmoid_prime, initialization_func=initialization))
     net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func=initialization))
     # train

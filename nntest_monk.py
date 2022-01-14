@@ -9,6 +9,7 @@ import time
 import pickle
 from kfold import KFold
 from preprocessing import one_hot_encoding
+from regularizators import L2
 
 def test_MONK(monk=1, output=True, use_one_hot_encoding = True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
@@ -31,7 +32,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding = True):
     #xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     if (output): print("Training set of " + str(X.size) + " elements")
     folds = 3
-    net = Network("MONK" + str(monk) + " " + str(folds) + "-fold test", binary_crossentropy, binary_crossentropy_prime)
+    net = Network("MONK" + str(monk) + " " + str(folds) + "-fold test", binary_crossentropy, binary_crossentropy_prime, regularizator=L2, regularization_l=0.005, momentum=0.5)
     net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
     # train

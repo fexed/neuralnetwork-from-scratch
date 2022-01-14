@@ -39,6 +39,9 @@ class FullyConnectedLayer(Layer):
                 dev = sqrt(2.0 / in_size)
                 self.weights = np.random.normal(loc=0.0, scale=dev, size=(in_size, out_size))
                 self.bias = np.random.normal(loc=0.0, scale=dev, size=(1, out_size))
+            elif (initialization_func == "basic"):
+                self.bias = [np.full(out_size, 0)]
+                self.weights = np.random.uniform(-1/in_size, 1/in_size, (in_size, out_size))
         else:
             self.weights = np.random.rand(in_size, out_size) - 0.5  # so to have few <0 and few >0
             self.bias = np.random.rand(1, out_size) - 0.5  # so to have few <0 and few >0
@@ -47,6 +50,8 @@ class FullyConnectedLayer(Layer):
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
 
+    def get_weights(self):
+        return self.weights
 
     def forward_propagation(self, input):
         self.input = input
@@ -58,7 +63,7 @@ class FullyConnectedLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
+    def backward_propagation(self, gradient, eta, momentum = 0, regularizator_l=0):
         if not(self.activation_prime is None):
             # if there's activation function specified, then we compute its
             # derivative
@@ -67,15 +72,14 @@ class FullyConnectedLayer(Layer):
         weights_update = eta * np.dot(self.input.T, gradient)
         bias_update = eta * gradient
 
-        if not(regularizator is None):
-            # the regularizator is optional
-            weights_update -= regularizator(self.weights)
-            bias_update -= regularizator(self.bias)
+        # regularization
+        weights_update -= np.multiply(self.weights, regularizator_l)
+        bias_update -= np.multiply(self.bias, regularizator_l)
 
         if (momentum > 0):
             # with momentum we consider the previous update too
-            weights_update += momentum * self.prev_weight_update
-            bias_update += momentum * self.prev_bias_update
+            weights_update += np.multiply(self.prev_weight_update, momentum)
+            bias_update += np.multiply(self.prev_bias_update, momentum)
 
             # store this update for the next backprop in this layer
             self.prev_weight_update = weights_update
