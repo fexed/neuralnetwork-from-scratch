@@ -45,9 +45,10 @@ def test_CUP(output=True):
     fig, ax = plot.subplots()
     while (kfold.hasNext()):
         net = Network("CUP " + str(folds) + "-fold test", MSE, MSE_prime)
-        net.add(FullyConnectedLayer(10, 15, tanh, tanh_prime, initialization_func="normalized_xavier"))
-        net.add(FullyConnectedLayer(15, 10, tanh, tanh_prime, initialization_func="normalized_xavier"))
-        net.add(FullyConnectedLayer(10, 2, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(10, 19, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(19, 19, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(19, 19, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(19, 2, initialization_func="normalized_xavier"))
         xtr, xvl, ytr, yvl = kfold.next_fold()
         history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=600, learning_rate=0.001, verbose=output, early_stopping=50)
 
