@@ -144,9 +144,9 @@ class Network:
                 else:
                     # otherwise we just use what we have, the training error
                     check_error = error
-                if check_error >= min_error:
-                    # the error is increasing or is stable, we are going toward
-                    # an early stopping
+                if check_error >= min_error or np.isnan(check_error):
+                    # the error is increasing or is stable, or there was an
+                    # overflow situation, hence we are going toward an ES
                     es_epochs += 1
                     if es_epochs == early_stopping:
                         if not(val_history is None):
