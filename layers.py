@@ -87,6 +87,7 @@ class FullyConnectedLayer(Layer):
             self.prev_bias_update = bias_update
 
         # the basic parameter update
+        # TODO check overflow situations
         self.weights -= weights_update
         self.bias -= bias_update
 
