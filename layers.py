@@ -55,6 +55,7 @@ class FullyConnectedLayer(Layer):
 
     def forward_propagation(self, input):
         self.input = input
+        # TODO: check overflow situations
         self.output = np.dot(self.input, self.weights) + self.bias  # net output
         if not(self.activation is None):
             # the activation function is optional
