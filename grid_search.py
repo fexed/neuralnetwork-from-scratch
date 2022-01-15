@@ -67,7 +67,7 @@ def grid_search(input_size, output_size, X, y,
                                         digits = len(str(n_combinations))
                                         formattedtested = ("{:0"+str(digits)+"d}").format(tested)
                                         elapsedtime = time.time() - start
-                                        ETAtime = time.gmtime(elapsedtime * (n_combinations / tested))
+                                        ETAtime = time.gmtime((elapsedtime * (n_combinations / tested)) - elapsedtime)
                                         ETA = "ETA " + time.strftime("%Hh %Mm %Ss", ETAtime)
                                         update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
                                         if (verbose): print("")
