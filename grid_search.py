@@ -74,6 +74,9 @@ def grid_search(input_size, output_size, X, y,
     finally:
         results.sort(key = lambda x: x['loss'], reverse=False)
         if (verbose):
+            elapsedtime = time.time() - start
+            elapsed = time.strftime("%Hh %Mm %Ss", elapsedtime)
+            print("Finished in " + elapsed)
             print("Best: " + str(results[0]))
             print("Top 10:")
             for i in range (0, 10):
