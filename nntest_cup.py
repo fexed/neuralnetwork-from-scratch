@@ -1,4 +1,5 @@
 import numpy as np
+from activationfunctions import tanh, tanh_prime, sigmoid, sigmoid_prime
 from losses import MSE, MSE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
@@ -8,7 +9,7 @@ import pickle
 from kfold import KFold
 
 
-def compare(a, b, tollerance=1e-05):
+def compare(a, b, tollerance=1e-03):
     return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
 
@@ -31,19 +32,24 @@ def test_CUP(output=True):
     X = np.array(xtr)
     Y = np.array(ytr)
     if (output): print("Training set of " + str(X.size) + " elements")
-    folds = 3
-    net = Network("CUP " + str(folds) + "-fold test", MEE, MEE_prime)
-    net.add(FullyConnectedLayer(10, 10, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(10, 2, initialization_func="normalized_xavier"))
+    folds = 5
     # train
+    net = Network("CUP " + str(folds) + "-fold test", MSE, MSE_prime)
+    net.add(FullyConnectedLayer(10, 15, tanh, tanh_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(15, 10, tanh, tanh_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(10, 2, initialization_func="normalized_xavier"))
     if (output): net.summary()
     mean_accuracy = 0 #mean accuracy over the kfolds
     kfold = KFold(folds, X, Y)
     suffix = "CUP_" + ts
     fig, ax = plot.subplots()
     while (kfold.hasNext()):
+        net = Network("CUP " + str(folds) + "-fold test", MSE, MSE_prime)
+        net.add(FullyConnectedLayer(10, 15, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(15, 10, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(10, 2, initialization_func="normalized_xavier"))
         xtr, xvl, ytr, yvl = kfold.next_fold()
-        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25)
+        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=600, learning_rate=0.001, verbose=output, early_stopping=50)
 
         # accuracy on validation set
         out = net.predict(xvl)
