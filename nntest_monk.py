@@ -11,6 +11,7 @@ from kfold import KFold
 from preprocessing import one_hot_encoding
 from regularizators import L2
 
+
 def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****MONK" + str(monk))
@@ -29,21 +30,32 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     if use_one_hot_encoding:
         X, input_size = one_hot_encoding(X)
 
-    if (output): print("Training set of " + str(X.size) + " elements")
     folds = 1
-    net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0)
-    net.add(FullyConnectedLayer(input_size, 5, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(5, 5, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(5, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
     # train
-    if (output): net.summary()
     mean_accuracy = 0 #mean accuracy over the kfolds
     #kfold = KFold(folds, X, Y)
     suffix = "MONK" + str(monk) + "_" + ts
     fig, ax = plot.subplots()
     #while (kfold.hasNext()):
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.005, verbose=output, early_stopping=25)
+    if (monk == 1):
+        net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
+        net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
+    elif (monk == 2):
+        net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
+        net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
+    elif (monk == 3):
+        net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
+        net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
 
     # accuracy on validation set
     out = net.predict(xvl)
@@ -56,6 +68,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     mean_accuracy += accuracy
     if (output): print("Accuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
+    ax.plot(history)
     ax.plot(val_history)
     #ax.plot(val_history)
     ax.set_ylabel("Val Loss")
