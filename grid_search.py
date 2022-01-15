@@ -8,17 +8,28 @@ from utils import update_progress
 import time
 
 
-def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=None, layers=list(range(5)), units=list(range(5, 100, 5)), learning_rates=list(np.arange(0.01, 0.1, 0.01)), batch_sizes=None, init_functions=["xavier", "normalized_xavier", "he", "basic"], momentums=[0, 0.8, 0.9, 0.99, 0.999], regularizators=[None, "L2"], regularization_lambdas=[0.005, 0.01, 0.15], epochs=500, verbose=True, early_stopping=25):
+def grid_search(input_size, output_size, X, y,
+                X_validation=None, Y_validation=None,
+                layers=list(range(5)),  # number of -hidden- layers
+                units=list(range(5, 100, 5)),
+                learning_rates=list(np.arange(0.01, 0.1, 0.01)),
+                batch_sizes=None,
+                init_functions=["xavier", "normalized_xavier", "he", "basic"],
+                momentums=[0, 0.8, 0.9, 0.99, 0.999],
+                regularizators=[None, "L2"],
+                regularization_lambdas=[0.005, 0.01, 0.15],
+                epochs=500, verbose=True, early_stopping=25):
+
     if (batch_sizes==None):
         batch_sizes=[1, input_size]
 
     n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(regularization_lambdas)*len(batch_sizes)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
-    results = []  # to store the results and return the best one
+    results = []  # to store the results and return the best 10
 
     try:
-        tested = 0
-        start = time.time()
+        tested = 0  # for the progressbar
+        start = time.time()  # for ETA calc
         for N in layers:
             for M in units:
                 for E in learning_rates:
@@ -41,7 +52,16 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                                         else:
                                             history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
 
-                                        results.append({"loss":history[-1], "layers":N, "units":M, "learning_rate":E, "batch_size":B, "init_function":init_f, "momentum":momentum, "regularizator":regularizatorname, "regularization_lambda":regularization_lambda})
+                                        results.append({"loss":history[-1],
+                                                        "layers":N,
+                                                        "units":M,
+                                                        "learning_rate":E,
+                                                        "batch_size":B,
+                                                        "init_function":init_f,
+                                                        "momentum":momentum,
+                                                        "regularizator":regularizatorname,
+                                                        "regularization_lambda":regularization_lambda})
+                                                        
                                         tested += 1
                                         progress = tested/n_combinations
                                         digits = len(str(n_combinations))
