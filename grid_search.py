@@ -35,21 +35,21 @@ def grid_search(input_size, output_size, X, y, X_validation=None, Y_validation=N
                                             net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, init_f))
                                         net.add(FullyConnectedLayer(M, output_size, sigmoid, sigmoid_prime, init_f))
                                         if (verbose): net.summary()
-    
+
                                         if not(X_validation is None):
                                             history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
                                         else:
                                             history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-    
+
                                         results.append({"loss":history[-1], "layers":N, "units":M, "learning_rate":E, "batch_size":B, "init_function":init_f, "momentum":momentum, "regularizator":regularizatorname, "regularization_lambda":regularization_lambda})
                                         tested += 1
                                         progress = tested/n_combinations
                                         digits = len(str(n_combinations))
                                         formattedtested = ("{:0"+str(digits)+"d}").format(tested)
                                         elapsedtime = time.time() - start
-                                        ETAtime = elapsedtime * n_combinations / tested
-                                        ETA = "ETA " + "{:8.2f}".format(ETAtime)
-                                        update_progress(progress, prefix = ETA + "s " + formattedtested + "/" + str(n_combinations), barlength=80)
+                                        ETAtime = time.gmtime(elapsedtime * n_combinations / tested)
+                                        ETA = "ETA " + time.strftime("%Hh %Mm %Ss", ETAtime)
+                                        update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
                                         if (verbose): print("")
     finally:
         results.sort(key = lambda x: x['loss'], reverse=False)
