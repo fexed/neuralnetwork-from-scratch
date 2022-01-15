@@ -73,7 +73,7 @@ class FullyConnectedLayer(Layer):
         weights_update = eta * np.dot(self.input.T, gradient)
         bias_update = eta * gradient
 
-        if not(regularizator==None):
+        if not(regularizator is None):
             # regularization
             weights_update -= regularizator(self.weights, regularizator_l)
             bias_update -= regularizator(self.bias, regularizator_l)
