@@ -105,7 +105,7 @@ class Network:
                         gradient += self.loss_prime(targets[k], outputs[k])
                     gradient /= len(outputs)
                     for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularization_l)
+                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, self.regularization_l)
                     outputs = []
                     targets = []
                     #TODO implement variable learning_rate?
@@ -117,7 +117,6 @@ class Network:
                 for layer in self.layers:
                     penalty_term += self.regularizator(layer.get_weights(), self.regularization_l)
             error /= N  # mean error over the set
-            error += penalty_term
             history.append(error)
             if not(val_history is None):
                 # if a validation set is given, we now compute the error over it
@@ -129,7 +128,6 @@ class Network:
                         output = layer.forward_propagation(output)
                     val_error += self.loss(Y_validation[j], output)
                 val_error /= M
-                val_error += penalty_term
                 val_history.append(val_error)
                 if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
             else:
