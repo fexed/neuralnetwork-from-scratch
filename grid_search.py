@@ -44,7 +44,7 @@ def grid_search(input_size, output_size, X, y,
                                         net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, init_f))
                                         for i in range(N):  # N -hidden- layers, plus input and output layers
                                             net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, init_f))
-                                        net.add(FullyConnectedLayer(M, output_size, sigmoid, sigmoid_prime, init_f))
+                                        net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
                                         if (verbose): net.summary()
 
                                         if not(X_validation is None):
