@@ -8,7 +8,7 @@ import matplotlib.pyplot as plot
 from preprocessing import one_hot_encoding
 
 
-monk = 1
+monk = 3
 print("\n\n****TESTING NETWORK ON MONK" + str(monk))
 
 # Training
@@ -28,12 +28,12 @@ Y = np.array(ytr)
 X, input_size = one_hot_encoding(X)
 
 # training
-net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
-net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
+net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
+net.add(FullyConnectedLayer(10, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
+net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
 net.summary()
-history = net.training_loop(X, Y, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
+history = net.training_loop(X, Y, epochs=1000, learning_rate=0.01, verbose=True, early_stopping=50)
 
 # Model evaluation
 
@@ -62,7 +62,7 @@ accuracy *= 100
 print("Accuracy on the test set: {:.4f}%".format(accuracy))
 
 # plotting data
-plot_loss(title="MONK1 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK1TEST")
+plot_loss(title="MONK3 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK3TEST")
 
 # saving the net
-net.savenet("models/MONK1TESTED_1L_20U_0.8M_0.1LR_xavier.pkl")
+net.savenet("models/MONK3TESTED_1L_10U_0.01LR_xavier.pkl")
