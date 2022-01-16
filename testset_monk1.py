@@ -1,14 +1,19 @@
-import numpy as np
 from activationfunctions import sigmoid, sigmoid_prime
 from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
+from utils import plot_loss
+import numpy as np
 import matplotlib.pyplot as plot
 from preprocessing import one_hot_encoding
 
 
 monk = 1
 print("\n\n****TESTING NETWORK ON MONK" + str(monk))
+
+# Training
+
+# training set loading
 monkfile = open("datasets/MONK/monks-" + str(monk) + ".train", "r")
 xtr = []
 ytr = []
@@ -19,14 +24,20 @@ for line in monkfile.readlines():
 X = np.array(xtr)
 Y = np.array(ytr)
 
+# preprocessing
 X, input_size = one_hot_encoding(X)
+
+# training
 net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
 net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
 net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
 net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+net.summary()
 history = net.training_loop(X, Y, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
 
+# Model evaluation
 
+# test set loading
 monkfile = open("datasets/MONK/monks-" + str(monk) + ".test", "r")
 xts = []
 yts = []
@@ -36,7 +47,11 @@ for line in monkfile.readlines():
     yts.append([[int(vals[1])]])
 X = np.array(xts)
 Y = np.array(yts)
+
+# preprocessing
 X, input_size = one_hot_encoding(X)
+
+# evaluating
 out = net.predict(X)
 accuracy = 0
 for i in range(len(out)):
@@ -44,16 +59,10 @@ for i in range(len(out)):
     if (Y[i].item() == val): accuracy += 1
 accuracy /= len(out)
 accuracy *= 100
-fig, ax = plot.subplots()
-ax.plot(history)
-ax.set_ylabel("Loss")
-ax.set_xlabel("Epochs")
-ax.set_title("MONK1 Test")
+print("Accuracy on the test set: {:.4f}%".format(accuracy))
 
-print("\n\nAccuracy on the test set: {:.4f}%".format(accuracy))
+# plotting data
+plot_loss(title="MONK1 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK1TEST")
 
-plot.gca().margins(x=0)
-fig.set_size_inches(18.5, 10.5)
-plot.savefig("plots/MONKTEST.png")
-plot.clf()
-net.savenet("models/MONKTESTED_1L_20U_xavier_momentum0.8_LR0.1.pkl")
+# saving the net
+net.savenet("models/MONK1TESTED_1L_20U_xavier_momentum0.8_LR0.1.pkl")
