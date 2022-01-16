@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from grid_search import grid_search
 from regularizators import L2
+from dataset_loader import load_monk
 
 result_file = open("datasets/MONK/grid_search/results.txt", "w")
 for monk in range(1,4):
