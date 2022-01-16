@@ -46,10 +46,10 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
     elif (monk == 2):
         net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
-        net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(10, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        suffix += "_1L_10U_0.05LR_xavier"
+        net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(10, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+        suffix += "_1L_10U_0.05LR_normxavier"
         if (output): net.summary()
         history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50)
     elif (monk == 3):
