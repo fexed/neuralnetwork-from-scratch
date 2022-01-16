@@ -114,10 +114,6 @@ class Network:
                     #eta = (1-alfa)*eta_init + alfa*eta_base
                     #alfa = step/fixed_step
 
-            #penalty_term = 0 #penalty term for regularization
-            #if not(self.regularizator is None):
-                #for layer in self.layers:
-                    #penalty_term += self.regularizator(layer.get_weights(), self.regularization_l)
             error /= N  # mean error over the set
             history.append(error)
             if not(val_history is None):
@@ -149,9 +145,9 @@ class Network:
                     es_epochs += 1
                     if es_epochs == early_stopping:
                         if not(val_history is None):
-                            if (verbose): print('\rEarly stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, error, val_error), end="\r")
+                            if (verbose): print('\nEarly stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, error, val_error))
                         else:
-                            if (verbose): print('\rEarly stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error), end="\r")
+                            if (verbose): print('\nEarly stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error))
                         break
                 else:
                     # we're good
