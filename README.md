@@ -2,7 +2,7 @@
 
 ### 16/01/2022
 ##### MONK1
-100% with std dev of 0% on validation set
+100% with std dev of 0% on validation set, 100% on test set
   - 1 hidden layer
   - initialized with xavier
   - 20 units
@@ -11,7 +11,7 @@
   - learning rate = 0.1
   - loss = binary crossentropy
 ##### MONK2
-98.82% with std dev of 3.53% on validation set
+98.82% with std dev of 3.53% on validation set, 100% on test set
   - 1 hidden layer
   - initialized with normalized xavier
   - 10 units
@@ -19,7 +19,7 @@
   - learning rate = 0.05
   - loss = binary crossentropy
 ##### MONK3
-94.80% with std dev of 1.83% on validation set
+94.80% with std dev of 1.83% on validation set, 94.21% on test set
   - 1 hidden layer
   - initialized with xavier
   - 10 units
