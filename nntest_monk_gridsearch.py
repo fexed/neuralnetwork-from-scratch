@@ -20,8 +20,9 @@ for monk in range(1,4):
     print("MONK "+str(monk)+"\n")
     result_file.write("MONK "+str(monk)+":\n")
     for i in range (0, 10):
-        result_file.write("1: "+str(res[i]))
+        result_file.write(str(i+1)+": "+str(res[i]))
         print("\t" + str(res[i]))
+result_file.close()
 # Best: 'loss': 3.956661378148177e-05, 'layers': 1, 'units': 20, 'learning_rate': 0.1, 'batch_size': 1, 'init_function': 'xavier', 'momentum': 0.8, 'regularizator': None
 # Top 10:
         #{'loss': 3.956661378148177e-05, 'layers': 1, 'units': 20, 'learning_rate': 0.1, 'batch_size': 1, 'init_function': 'xavier', 'momentum': 0.8, 'regularizator': None}

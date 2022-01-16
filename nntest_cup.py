@@ -7,6 +7,8 @@ import matplotlib.pyplot as plot
 import time
 import pickle
 from kfold import KFold
+from preprocessing import continuous_standardizer
+from regularizators import L2
 
 
 def compare(a, b, tollerance=1e-03):
@@ -23,34 +25,26 @@ def test_CUP(output=True):
         if (line.startswith("#")):
             continue
         vals = line.split(",")
-        # TODO test preprocessing
-        # each feature = (feature - mean)/stddev
-        # the mean array is np.mean(X, axis=0), mean for each feature column
-        # the stddev array is np.std(X, axis=0), stddev for each feature
         xtr.append([[float(vals[1]), float(vals[2]), float(vals[3]), float(vals[4]), float(vals[5]), float(vals[6]), float(vals[7]), float(vals[8]), float(vals[9]), float(vals[10])]])
         ytr.append([[float(vals[11]), float(vals[12])]])
-    X = np.array(xtr)
+    X, m, s = continuous_standardizer(np.array(xtr))
     Y = np.array(ytr)
-    if (output): print("Training set of " + str(X.size) + " elements")
+    if (output): print("Training set of " + str(np.size(X)) + " elements")
     folds = 5
     # train
-    net = Network("CUP " + str(folds) + "-fold test", MSE, MSE_prime)
-    net.add(FullyConnectedLayer(10, 15, tanh, tanh_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(15, 10, tanh, tanh_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(10, 2, initialization_func="normalized_xavier"))
-    if (output): net.summary()
+    #if (output): net.summary()
     mean_accuracy = 0 #mean accuracy over the kfolds
     kfold = KFold(folds, X, Y)
     suffix = "CUP_" + ts
     fig, ax = plot.subplots()
     while (kfold.hasNext()):
-        net = Network("CUP " + str(folds) + "-fold test", MSE, MSE_prime)
-        net.add(FullyConnectedLayer(10, 19, tanh, tanh_prime, initialization_func="normalized_xavier"))
-        net.add(FullyConnectedLayer(19, 19, tanh, tanh_prime, initialization_func="normalized_xavier"))
-        net.add(FullyConnectedLayer(19, 19, tanh, tanh_prime, initialization_func="normalized_xavier"))
-        net.add(FullyConnectedLayer(19, 2, initialization_func="normalized_xavier"))
+        net = Network("CUP " + str(folds) + "-fold test", MSE, MSE_prime, regularizator=L2, regularization_l=0.005, momentum=0.8)        
+        net.add(FullyConnectedLayer(10, 20, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(20, 20, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(20, 20, tanh, tanh_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(20, 2, initialization_func="normalized_xavier"))
         xtr, xvl, ytr, yvl = kfold.next_fold()
-        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=600, learning_rate=0.001, verbose=output, early_stopping=50)
+        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=600, learning_rate=0.1, verbose=output, early_stopping=50)
 
         # accuracy on validation set
         out = net.predict(xvl)
@@ -89,7 +83,6 @@ acc = []
 #for j in range(0, 10):
 #    acc.append(test_CUP(output=False))
 acc.append(test_CUP(output=True))
-print("CUP", end=" ")
 mean = np.mean(acc)
 std = np.std(acc)
-print("with an accuracy of " + "{:.2f}%".format(mean) + " and std dev of " + "{:.2f}%".format(std))
+print("CUP with an accuracy of " + "{:.2f}%".format(mean) + " and std dev of " + "{:.2f}%".format(std))
