@@ -1,0 +1,11 @@
+CUP:
+1: {'loss': 0.5756607967715841, 'layers': 4, 'units': 30, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': <function L2 at 0x7f3da6ecd160>, 'regularization_lambda': 0.005}
+2: {'loss': 0.6883442840236633, 'layers': 4, 'units': 25, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': <function L2 at 0x7f3da6ecd160>, 'regularization_lambda': 0.15}
+3: {'loss': 0.7268117476869936, 'layers': 4, 'units': 10, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': None, 'regularization_lambda': 0.01}
+4: {'loss': 0.7272513460430577, 'layers': 1, 'units': 30, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': <function L2 at 0x7f3da6ecd160>, 'regularization_lambda': 0.01}
+5: {'loss': 0.7289501400564908, 'layers': 4, 'units': 10, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': None, 'regularization_lambda': 0.15}
+6: {'loss': 0.7300659852104966, 'layers': 4, 'units': 20, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': None, 'regularization_lambda': 0.15}
+7: {'loss': 0.730213338987997, 'layers': 3, 'units': 25, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': <function L2 at 0x7f3da6ecd160>, 'regularization_lambda': 0.15}
+8: {'loss': 0.7350593781030329, 'layers': 2, 'units': 30, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': <function L2 at 0x7f3da6ecd160>, 'regularization_lambda': 0.005}
+9: {'loss': 0.735155209487064, 'layers': 2, 'units': 30, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': None, 'regularization_lambda': 0.005}
+10: {'loss': 0.7382670335662677, 'layers': 1, 'units': 15, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': <function L2 at 0x7f3da6ecd160>, 'regularization_lambda': 0.15}
