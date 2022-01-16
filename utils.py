@@ -17,7 +17,7 @@ def tr_vl_split(X, Y, ratio=0.25, random_state=42):
     raise NotImplementedError
 
 
-def plot(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs", savefile=None):
+def plot_loss(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs", savefile=None):
     import matplotlib.pyplot as plot
     fig, ax = plot.subplots()
     ax.plot(history)
@@ -28,6 +28,7 @@ def plot(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs"
     plot.gca().margins(x=0)
     fig.set_size_inches(18.5, 10.5)
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
+    plot.clf()
 
 
 def log(filename, data):
