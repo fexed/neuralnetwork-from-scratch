@@ -5,27 +5,15 @@ from neuralnetwork import Network
 from utils import plot_loss
 import numpy as np
 import matplotlib.pyplot as plot
-from preprocessing import one_hot_encoding
-
+from dataset_loader import load_monk
 
 monk = 1
 print("\n\n****TESTING NETWORK ON MONK" + str(monk))
 
 # Training
 
-# training set loading
-monkfile = open("datasets/MONK/monks-" + str(monk) + ".train", "r")
-xtr = []
-ytr = []
-for line in monkfile.readlines():
-    vals = line.split(" ")
-    xtr.append([[int(vals[2]), int(vals[3]), int(vals[4]), int(vals[5]), int(vals[6]), int(vals[7])]])
-    ytr.append([[int(vals[1])]])
-X = np.array(xtr)
-Y = np.array(ytr)
-
-# preprocessing
-X, input_size = one_hot_encoding(X)
+# training set loading + preprocessing
+X_TR, Y_TR,input_size = load_monk(monk, use_one_hot=True)
 
 # training
 net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
@@ -33,30 +21,19 @@ net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initializati
 net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
 net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
 net.summary()
-history = net.training_loop(X, Y, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
+history = net.training_loop(X_TR, Y_TR, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
 
 # Model evaluation
 
 # test set loading
-monkfile = open("datasets/MONK/monks-" + str(monk) + ".test", "r")
-xts = []
-yts = []
-for line in monkfile.readlines():
-    vals = line.split(" ")
-    xts.append([[int(vals[2]), int(vals[3]), int(vals[4]), int(vals[5]), int(vals[6]), int(vals[7])]])
-    yts.append([[int(vals[1])]])
-X = np.array(xts)
-Y = np.array(yts)
-
-# preprocessing
-X, input_size = one_hot_encoding(X)
+X_TS,Y_TS, input_size = load_monk(monk, use_one_hot=True, test=True)
 
 # evaluating
-out = net.predict(X)
+out = net.predict(X_TS)
 accuracy = 0
 for i in range(len(out)):
     val = 0 if out[i].item() < 0.5 else 1
-    if (Y[i].item() == val): accuracy += 1
+    if (Y_TS[i].item() == val): accuracy += 1
 accuracy /= len(out)
 accuracy *= 100
 print("Accuracy on the test set: {:.4f}%".format(accuracy))
