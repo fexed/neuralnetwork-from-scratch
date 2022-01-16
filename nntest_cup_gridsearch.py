@@ -2,19 +2,18 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from grid_search import grid_search
 from regularizators import L2
-from dataset_loader import load_monk
+from dataset_loader import load_cup
 
-result_file = open("datasets/MONK/grid_search/results.txt", "w")
-for monk in range(1,4):
-    X, Y, input_size = load_monk(monk, use_one_hot=True)
-    xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
+result_file = open("datasets/CUP/grid_search/results.txt", "w")
+X, Y = load_cup(verbose=True, test=False)
+xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-    res = grid_search(input_size, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1,2], units=list(range(15, 20)), learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1], init_functions=["xavier", "normalized_xavier"], momentums=[0, 0.8, 0.99], regularizators=[None, L2], epochs=1000, verbose=False)
-    print("MONK "+str(monk)+"\n")
-    result_file.write("MONK "+str(monk)+":\n")
-    for i in range (0, 10):
-        result_file.write(str(i+1)+": "+str(res[i]))
-        print("\t" + str(res[i]))
+res = grid_search(10, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1,2], units=list(range(5, 20)), learning_rates=[0.001, 0.005, 0.01], batch_sizes=[1], init_functions=["xavier", "normalized_xavier"], momentums=[0, 0.8, 0.99], regularizators=[None, L2], epochs=1000, verbose=True)
+print("CUP\n")
+result_file.write("CUP:\n")
+for i in range (0, 10):
+    result_file.write(str(i+1)+": "+str(res[i]))
+    print("\t" + str(res[i]))
 result_file.close()
 # Best: 'loss': 3.956661378148177e-05, 'layers': 1, 'units': 20, 'learning_rate': 0.1, 'batch_size': 1, 'init_function': 'xavier', 'momentum': 0.8, 'regularizator': None
 # Top 10:
