@@ -41,25 +41,25 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
         net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
         net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        suffix += "_1L_20U_0.8M_xavier"
-        net.summary()
+        suffix += "_1L_20U_0.8M_0.1LR_xavier"
+        if (output): net.summary()
         history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
     elif (monk == 2):
-        net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
-        net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        suffix += "_1L_20U_0.8M_xavier"
-        net.summary()
-        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
+        net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
+        net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(10, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        suffix += "_1L_10U_0.05LR_xavier"
+        if (output): net.summary()
+        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50)
     elif (monk == 3):
-        net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
-        net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        suffix += "_1L_20U_0.8M_xavier"
-        net.summary()
-        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
+        net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
+        net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(10, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        suffix += "_1L_10U_0.01LR_xavier"
+        if (output): net.summary()
+        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50)
 
     # accuracy on validation set
     out = net.predict(xvl)
@@ -78,9 +78,9 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
 print("Beginning tests")
 for i in range(1, 4):
     acc = []
-    for j in range(0, 1):
-        acc.append(test_MONK(i, output=True))
-        #print(str(j+1), end=" ", flush=True)
+    for j in range(0, 10):
+        acc.append(test_MONK(i, output=False))
+        print(str(j+1), end=" ", flush=True)
     print("")
     print("MONK" + str(i), end=" ")
     mean = np.mean(acc)
