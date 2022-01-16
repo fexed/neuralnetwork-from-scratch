@@ -38,11 +38,14 @@ def continuous_standardizer(input):
         mean.append(np.mean(feature[0]))
         std.append(np.std(feature[0]))
 
+    mean = np.array(mean)
+    std = np.array(std)
+    
     # Scale each pattern of the dataset
     for pattern in input:
         standardized_input.append((pattern - mean)/std)
     
-    return standardized_input, mean, std
+    return np.array(standardized_input), mean, std
 
 # Returns normalized input, min and max of each fdeature (pre normalization)
 def min_max_normalizer(input): 
@@ -55,10 +58,12 @@ def min_max_normalizer(input):
         mins.append(min(feature[0]))
         maxs.append(max(feature[0]))
 
-    diffs = np.array(maxs)-mins
+    mins = np.array(mins)
+    maxs = np.array(maxs)
+    diffs = maxs - mins
     
     # Normalized each pattern of the dataset
     for pattern in input:
-        normalized_input.append((pattern - np.array(mins))/diffs )
+        normalized_input.append((pattern - mins)/diffs )
              
-    return normalized_input, mins, maxs
+    return np.array(normalized_input), mins, maxs
