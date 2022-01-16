@@ -114,10 +114,10 @@ class Network:
                     #eta = (1-alfa)*eta_init + alfa*eta_base
                     #alfa = step/fixed_step
 
-            penalty_term = 0 #penalty term for regularization
-            if not(self.regularizator is None):
-                for layer in self.layers:
-                    penalty_term += self.regularizator(layer.get_weights(), self.regularization_l)
+            #penalty_term = 0 #penalty term for regularization
+            #if not(self.regularizator is None):
+                #for layer in self.layers:
+                    #penalty_term += self.regularizator(layer.get_weights(), self.regularization_l)
             error /= N  # mean error over the set
             history.append(error)
             if not(val_history is None):

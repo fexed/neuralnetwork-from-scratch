@@ -16,7 +16,7 @@ for monk in range(1,4):
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-    res = grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1,2], units=list(range(15, 20)), learning_rates=[0.005, 0.1, 0.2], batch_sizes=[1], init_functions=["xavier", "normalized_xavier"], momentums=[0, 0.8, 0.99], regularizators=[None, L2], epochs=1000, verbose=False)
+    res = grid_search(6, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1,2], units=list(range(15, 20)), learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1], init_functions=["xavier", "normalized_xavier"], momentums=[0, 0.8, 0.99], regularizators=[None, L2], epochs=1000, verbose=False)
     print("MONK "+str(monk)+"\n")
     result_file.write("MONK "+str(monk)+":\n")
     for i in range (0, 10):
