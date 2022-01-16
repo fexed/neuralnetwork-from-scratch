@@ -62,7 +62,7 @@ accuracy *= 100
 print("Accuracy on the test set: {:.4f}%".format(accuracy))
 
 # plotting data
-plot_loss(title="MONK3 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK1TEST")
+plot_loss(title="MONK3 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK3TEST")
 
 # saving the net
 net.savenet("models/MONK3TESTED_1L_10U_0.01LR_xavier.pkl")
