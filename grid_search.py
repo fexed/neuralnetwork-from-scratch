@@ -30,6 +30,11 @@ def grid_search(input_size, output_size, X, y,
     try:
         tested = 0  # for the progressbar
         start = time.time()  # for ETA calc
+        progress = 0
+        digits = len(str(n_combinations))
+        formattedtested = ("{:0"+str(digits)+"d}").format(tested)
+        ETA = "ETA --h --m --s"
+        update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
         for N in layers:
             for M in units:
                 for E in learning_rates:
