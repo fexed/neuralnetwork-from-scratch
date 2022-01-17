@@ -60,7 +60,8 @@ def grid_search(input_size, output_size, X, y,
                                                         "init_function":init_f,
                                                         "momentum":momentum,
                                                         "regularizator":regularizatorname,
-                                                        "regularization_lambda":regularization_lambda})
+                                                        "regularization_lambda":regularization_lambda,
+                                                        "epochs":len(history)})
 
                                         tested += 1
                                         progress = tested/n_combinations
