@@ -31,9 +31,9 @@ def multiclass_crossentropy_prime(labels, outputs):
 
 def MEE(labels, outputs):
     # mean euclidean error loss
-    return np.mean(np.sqrt(np.sum(np.square(labels - outputs))))
+    return np.average(np.abs(labels - outputs))
 
 
 def MEE_prime(labels, outputs):
     # derivative of MEE
-    return (labels - outputs)/(np.sqrt(np.sum(np.square(labels - outputs)))*np.size(labels))
+    return -((labels - outputs) / np.abs(labels - outputs)) / labels.shape[0]
