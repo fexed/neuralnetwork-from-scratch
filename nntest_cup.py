@@ -1,5 +1,5 @@
 from activationfunctions import sigmoid, sigmoid_prime
-from losses import MSE, MSE_prime
+from losses import MEE, MEE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from kfold import KFold
@@ -7,7 +7,7 @@ from preprocessing import continuous_standardizer
 from regularizators import L2
 from dataset_loader import load_cup
 from preprocessing import continuous_standardizer, min_max_normalizer
-import matplotlib.pyplot as plot
+from utils import plot_loss
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plot
@@ -28,14 +28,12 @@ def test_CUP(output=True):
     X, means, std = continuous_standardizer(X)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     suffix = "CUP_" + ts
-    net = Network("CUP test", MSE, MSE_prime, momentum=0)
-    net.add(FullyConnectedLayer(10, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 2, initialization_func="normalized_xavier"))
+    net = Network("CUP test", MEE, MEE_prime, momentum=0)
+    net.add(FullyConnectedLayer(10, 5, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(5, 5, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(5, 2, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=150, batch_size=1)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=10, batch_size=1)
 
     # accuracy on validation set
     out = net.predict(xvl)

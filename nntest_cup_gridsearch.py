@@ -11,7 +11,7 @@ X, n_min, n_max = min_max_normalizer(X)
 X, means, std = continuous_standardizer(X)
 xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
 
-res = grid_search(10, 2, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=list(range(5)), units=list(range(5, 31, 5)), learning_rates=[0.001], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0], regularizators=[None, L2], epochs=1000, verbose=True, early_stopping=150)
+res = grid_search(10, 2, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=list(range(3, 4)), units=list(range(28, 32)), learning_rates=[0.001], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0], regularizators=[None, L2], regularization_lambdas=[0.005, 0.15], epochs=1000, verbose=False, early_stopping=150)
 print("CUP\n")
 result_file.write("CUP:\n")
 for i in range (0, 10):
