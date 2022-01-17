@@ -27,16 +27,15 @@ def test_CUP(output=True):
     X, means, std = continuous_standardizer(X)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     suffix = "CUP_" + ts
-    fig, ax = plot.subplots()
-    net = Network("CUP test", MSE, MSE_prime, regularizator=L2, regularization_l=0.005)
-    net.add(FullyConnectedLayer(10, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(30, 2, initialization_func="normalized_xavier"))
+    net = Network("CUP test", MSE, MSE_prime, regularizator=L2, regularization_l=0.15, momentum=0)
+    net.add(FullyConnectedLayer(10, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(29, 2, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=10000, learning_rate=0.001, verbose=output, early_stopping=50, batch_size=1)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=150, batch_size=1)
 
     # accuracy on validation set
     out = net.predict(xvl)
@@ -49,6 +48,7 @@ def test_CUP(output=True):
 
     if (output): print("Accuracy: {:.4f}%".format(accuracy))
 
+    fig, ax = plot.subplots()
     ax.plot(history)
     ax.set_ylabel("Loss")
     ax.set_xlabel("Epochs")
