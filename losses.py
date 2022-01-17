@@ -36,4 +36,4 @@ def MEE(labels, outputs):
 
 def MEE_prime(labels, outputs):
     # derivative of MEE
-    return (labels - outputs)/(np.sqrt(np.sum(np.square(labels - outputs)))*np.size(labels))
+    return (outputs - labels)/(np.sqrt(np.sum(np.square(labels - outputs)))*np.size(labels))
