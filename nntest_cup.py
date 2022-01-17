@@ -7,6 +7,7 @@ from preprocessing import continuous_standardizer
 from regularizators import L2
 from dataset_loader import load_cup
 from preprocessing import continuous_standardizer, min_max_normalizer
+import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plot
@@ -14,26 +15,25 @@ import time
 import pickle
 
 
-def compare(a, b, tollerance=1e-03):
+def compare(a, b, tollerance=1e-09):
     return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
 
 def test_CUP(output=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****CUP")
-    X, Y = load_cup(verbose=True, test=False)
+    X, Y = load_cup(verbose=output, test=False)
     # train
     X, n_min, n_max = min_max_normalizer(X)
     X, means, std = continuous_standardizer(X)
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     suffix = "CUP_" + ts
-    net = Network("CUP test", MSE, MSE_prime, regularizator=L2, regularization_l=0.15, momentum=0)
-    net.add(FullyConnectedLayer(10, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(29, 29, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(29, 2, initialization_func="normalized_xavier"))
+    net = Network("CUP test", MSE, MSE_prime, momentum=0)
+    net.add(FullyConnectedLayer(10, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(30, 30, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(30, 2, initialization_func="normalized_xavier"))
     if (output): net.summary()
     history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=150, batch_size=1)
 
@@ -48,22 +48,6 @@ def test_CUP(output=True):
 
     if (output): print("Accuracy: {:.4f}%".format(accuracy))
 
-    fig, ax = plot.subplots()
-    ax.plot(history)
-    ax.set_ylabel("Loss")
-    ax.set_xlabel("Epochs")
-    ax.set_title(suffix)
-    plot.gca().margins(x=0)
-    fig.set_size_inches(18.5, 10.5)
-    plot.savefig("plots/" + suffix + "_history.png")
-    plot.clf()
+    plot_loss(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
 
-
-print("Beginning tests\n")
-acc = []
-#for j in range(0, 10):
-#    acc.append(test_CUP(output=False))
-acc.append(test_CUP(output=True))
-mean = np.mean(acc)
-std = np.std(acc)
-print("CUP with an accuracy of " + "{:.2f}%".format(mean) + " and std dev of " + "{:.2f}%".format(std))
+test_CUP(output=True)
