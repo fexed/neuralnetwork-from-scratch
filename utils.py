@@ -36,3 +36,7 @@ def log(filename, data):
     import pickle
     with open("logs/"+ filename + ".pkl", "wb") as logfile:
         pickle.dump(data, logfile)
+
+
+def compare(a, b, tollerance=1e-03):
+    return abs(a - b) <= tollerance * max(abs(a), abs(b))
