@@ -41,9 +41,9 @@ def grid_search(input_size, output_size, X, y,
                                 for init_f in init_functions:
                                     for B in batch_sizes:
                                         net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MSE, MSE_prime, momentum=momentum, regularizator=regularizator, regularization_l=regularization_lambda)
-                                        net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, init_f))
+                                        net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, initialization_func = init_f))
                                         for i in range(N):  # N -hidden- layers, plus input and output layers
-                                            net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, init_f))
+                                            net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, initialization_func = init_f))
                                         net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
                                         if (verbose): net.summary()
 
