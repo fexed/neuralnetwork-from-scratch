@@ -39,7 +39,7 @@ def grid_search(input_size, output_size, X, y,
         for N in layers:
             for M in units:
                 for E in learning_rates:
-                    for dropout in dropouts
+                    for dropout in dropouts:
                         for momentum in momentums:
                             for regularization_lambda in regularization_lambdas:
                                 for regularizatorname in regularizators:
