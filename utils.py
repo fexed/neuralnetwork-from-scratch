@@ -13,8 +13,13 @@ def training_progress(current_epoch, epochs, barlength=50, suffix="", fill="\u25
     print(txt, end="")
 
 
-def tr_vl_split(X, Y, ratio=0.25, random_state=42):
-    raise NotImplementedError
+def tr_vl_split(X, Y, ratio=0.25):
+    import numpy as np
+    import math
+    ix = np.random.randint(low = 0, high = len(X), size = math.floor(ratio * len(X)))
+    X_vl, Y_vl = X[ix], Y[ix]
+    X_tr, Y_tr = np.delete(X, ix, axis = 0), np.delete(Y, ix, axis = 0)
+    return X_tr, X_vl, Y_tr, Y_vl
 
 
 def plot_loss(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs", savefile=None):
