@@ -3,12 +3,11 @@ from activationfunctions import tanh, tanh_prime
 from losses import MSE, MSE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from utils import plot_loss
+from utils import plot_and_save, tr_vl_split
 import numpy as np
 import matplotlib.pyplot as plot
 from preprocessing import continuous_standardizer, min_max_normalizer
 from dataset_loader import load_cup
-from sklearn.model_selection import train_test_split
 
 print("\n\n****TESTING NETWORK ON CUP" )
 
@@ -18,15 +17,15 @@ def compare(a, b, tollerance=1e-03):
 
 # Training
 
-# training set loading + 
+# training set loading +
 X, Y = load_cup()
 
 # preprocessing
 X, n_min, n_max = min_max_normalizer(X)
 X, means, std = continuous_standardizer(X)
- 
 
-X_TR,  X_VAL, Y_TR, Y_VAL = train_test_split(X, Y, test_size=0.2, random_state=18) 
+
+X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
 # training
 net = Network("CUP", MSE, MSE_prime)
@@ -54,5 +53,4 @@ accuracy *= 100
 print("\n\nAccuracy on CUP validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
 # plotting data
-plot_loss(title="CUP model evaluation", history=history, validation_history=validation_history, ylabel="Loss", xlabel="Epochs", savefile="CUP_HOLDOUT")
-
+plot_and_save(title="CUP model evaluation", history=history, validation_history=validation_history, ylabel="Loss", xlabel="Epochs", savefile="CUP_HOLDOUT")

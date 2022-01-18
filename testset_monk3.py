@@ -2,7 +2,7 @@ from activationfunctions import sigmoid, sigmoid_prime
 from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from utils import plot_loss
+from utils import plot_and_save
 import numpy as np
 import matplotlib.pyplot as plot
 from dataset_loader import load_monk
@@ -39,7 +39,7 @@ accuracy *= 100
 print("Accuracy on the test set: {:.4f}%".format(accuracy))
 
 # plotting data
-plot_loss(title="MONK3 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK3TEST")
+plot_and_save(title="MONK3 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK3TEST")
 
 # saving the net
 net.savenet("models/MONK3TESTED_1L_10U_0.01LR_xavier.pkl")

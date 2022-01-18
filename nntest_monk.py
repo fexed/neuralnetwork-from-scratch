@@ -2,7 +2,7 @@ from activationfunctions import sigmoid, sigmoid_prime
 from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from utils import plot_loss
+from utils import plot_and_save
 from kfold import KFold
 from preprocessing import one_hot_encoding
 from regularizators import L2
@@ -71,7 +71,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     accuracy *= 100
     if (output): print("Accuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
-    plot_loss(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
+    plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
     return accuracy
 
 

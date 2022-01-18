@@ -22,7 +22,7 @@ def tr_vl_split(X, Y, ratio=0.25):
     return X_tr, X_vl, Y_tr, Y_vl
 
 
-def plot_loss(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs", savefile=None):
+def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs", savefile=None):
     import matplotlib.pyplot as plot
     fig, ax = plot.subplots()
     ax.plot(history, label='Loss')

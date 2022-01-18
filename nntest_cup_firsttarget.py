@@ -7,7 +7,7 @@ from preprocessing import continuous_standardizer
 from regularizators import L2
 from dataset_loader import load_cup
 from preprocessing import continuous_standardizer, min_max_normalizer
-from utils import plot_loss, tr_vl_split
+from utils import plot_and_save, tr_vl_split
 import numpy as np
 import matplotlib.pyplot as plot
 import time
@@ -43,7 +43,7 @@ def test_CUP(output=True):
 
     if (output): print("Accuracy: {:.4f}%".format(accuracy))
 
-    plot_loss(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
+    plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
     return accuracy
 
 acc = []
