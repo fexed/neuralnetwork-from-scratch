@@ -12,7 +12,7 @@ class Network:
         self.regularizator = regularizator
         self.regularization_l = regularization_l
         self.momentum = momentum
-        self.dropout = 1 - dropout
+        self.dropout = 1 - dropout  # prob of keeping the neuron
 
 
     def summary(self):

@@ -56,6 +56,8 @@ class FullyConnectedLayer(Layer):
     def forward_propagation(self, input, dropout=1):
         self.input = input
         # TODO: check overflow situations
+
+        # check how many neurons to keep
         keep = np.random.rand(self.weights.shape[0], self.weights.shape[1]) < dropout
         newweights = np.multiply(self.weights, keep)
         keep = np.random.rand(self.bias.shape[0], self.bias.shape[1]) < dropout
@@ -63,6 +65,7 @@ class FullyConnectedLayer(Layer):
         self.output = np.dot(self.input, newweights) + newbias  # net output
         if not(self.activation is None):
             # the activation function is optional
+            # without it the output value is linear
             self.activation_input = self.output
             self.output = self.activation(self.output)
         return self.output
