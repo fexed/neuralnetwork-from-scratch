@@ -74,7 +74,7 @@ class Network:
         return results
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, verbose=True, weight_decay=None, weight_decay_finalstep=500, final_learning_rate=0.00001):
+    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, verbose=True, weight_decay=None, weight_decay_finalstep=500, final_learning_rate=0.00001, metric=None):
         N = len(X)
         history = []  # for logging purposes
         M = 0
@@ -83,6 +83,9 @@ class Network:
             M = len(X_validation)
         else:
             val_history = None  # used to check if validation set is present
+
+        if not(metric is None):
+            metric_history = []
 
         if not (weight_decay is None):
             initial_learning_rate = learning_rate
@@ -134,6 +137,8 @@ class Network:
                     val_error += self.loss(Y_validation[j], output)
                 val_error /= M
                 val_history.append(val_error)
+                if not(metric is None):
+                    metric_history.append(metric(self, X_validation, Y_validation))
                 if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
             else:
                 # if no validation set, we simply output the current status
@@ -165,9 +170,15 @@ class Network:
 
         # return the data that we have gathered
         if not(val_history is None):
-            return history, val_history
+            if not(metric is None):
+                return history, val_history, metric_history
+            else:
+                return history, val_history
         else:
-            return history
+            if not(metric is None):
+                return history, metric_history
+            else:
+                return history
 
 
     def savenet(self, filename):
