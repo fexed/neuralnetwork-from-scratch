@@ -23,19 +23,15 @@ def test_CUP(output=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****CUP")
     X, Y = load_cup(verbose=output, test=False)
-    # train
-    # X, n_min, n_max = min_max_normalizer(X)
-    # X, means, std = continuous_standardizer(X)
     Y = Y[0:,0:,1]  # first target
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.1, random_state=42)
     suffix = "CUP_" + ts
     net = Network("CUP test", MEE, MEE_prime)
-    net.add(FullyConnectedLayer(10, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(35, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(35, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(35, 1, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(10, 15, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(15, 15, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(15, 1, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=25, batch_size=1)
 
     # accuracy on validation set
     out = net.predict(xvl)
@@ -49,5 +45,10 @@ def test_CUP(output=True):
     if (output): print("Accuracy: {:.4f}%".format(accuracy))
 
     plot_loss(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
+    return accuracy
 
-test_CUP(output=True)
+acc = []
+for i in range(100):
+    acc.append(test_CUP(output=True))
+print("Media: " + "{:.5f}%".format(np.mean(acc)))
+print("Dev: " + "{:.5f}%".format(np.std(acc)))
