@@ -1,4 +1,4 @@
-from activationfunctions import sigmoid, sigmoid_prime
+from activationfunctions import tanh, tanh_prime
 from losses import MEE, MEE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
@@ -7,15 +7,11 @@ from preprocessing import continuous_standardizer
 from regularizators import L2
 from dataset_loader import load_cup
 from preprocessing import continuous_standardizer, min_max_normalizer
-from utils import plot_and_save, tr_vl_split
+from utils import plot_and_save, tr_vl_split, compare
 import numpy as np
 import matplotlib.pyplot as plot
 import time
 import pickle
-
-
-def compare(a, b, tollerance=1e-03):
-    return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
 
 def test_CUP(output=True):
@@ -27,13 +23,14 @@ def test_CUP(output=True):
     # X, means, std = continuous_standardizer(X)
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.25)
     suffix = "CUP_" + ts
-    net = Network("CUP test", MEE, MEE_prime)
-    net.add(FullyConnectedLayer(10, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(35, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(35, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(35, 2, initialization_func="normalized_xavier"))
+    net = Network("CUP test", MEE, MEE_prime, regularizator = L2)
+    net.add(FullyConnectedLayer(10, 20, tanh, tanh_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(20, 20, tanh, tanh_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(20, 20, tanh, tanh_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(20, 20, tanh, tanh_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(20, 2, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, weight_decay="linear")
 
     # accuracy on validation set
     out = net.predict(xvl)

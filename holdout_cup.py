@@ -3,7 +3,7 @@ from activationfunctions import tanh, tanh_prime
 from losses import MSE, MSE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from utils import plot_and_save, tr_vl_split
+from utils import plot_and_save, tr_vl_split, compare
 import numpy as np
 import matplotlib.pyplot as plot
 from preprocessing import continuous_standardizer, min_max_normalizer
@@ -11,9 +11,6 @@ from dataset_loader import load_cup
 
 print("\n\n****TESTING NETWORK ON CUP" )
 
-
-def compare(a, b, tollerance=1e-03):
-    return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
 # Training
 

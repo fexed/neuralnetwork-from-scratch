@@ -7,15 +7,11 @@ from preprocessing import continuous_standardizer
 from regularizators import L2
 from dataset_loader import load_cup
 from preprocessing import continuous_standardizer, min_max_normalizer
-from utils import plot_and_save, tr_vl_split
+from utils import plot_and_save, tr_vl_split, compare
 import numpy as np
 import matplotlib.pyplot as plot
 import time
 import pickle
-
-
-def compare(a, b, tollerance=1e-03):
-    return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
 
 def test_CUP(output=True):
