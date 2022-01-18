@@ -68,6 +68,7 @@ def grid_search(input_size, output_size, X, y,
                                                             "momentum":momentum,
                                                             "regularizator":regularizatorname,
                                                             "regularization_lambda":regularization_lambda,
+                                                            "dropout":dropout,
                                                             "epochs":len(history)})
 
                                             tested += 1
