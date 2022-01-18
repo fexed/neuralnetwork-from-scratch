@@ -7,8 +7,7 @@ from preprocessing import continuous_standardizer
 from regularizators import L2
 from dataset_loader import load_cup
 from preprocessing import continuous_standardizer, min_max_normalizer
-from utils import plot_loss
-from sklearn.model_selection import train_test_split
+from utils import plot_loss, tr_vl_split
 import numpy as np
 import matplotlib.pyplot as plot
 import time
@@ -26,7 +25,10 @@ def test_CUP(output=True):
     # train
     # X, n_min, n_max = min_max_normalizer(X)
     # X, means, std = continuous_standardizer(X)
-    xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.1, random_state=42)
+    xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.25)
+    print(len(xtr))
+    print(len(xtr2))
+    exit()
     suffix = "CUP_" + ts
     net = Network("CUP test", MEE, MEE_prime)
     net.add(FullyConnectedLayer(10, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))

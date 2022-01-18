@@ -1,13 +1,13 @@
 import numpy as np
-from sklearn.model_selection import train_test_split
 from grid_search import grid_search
 from regularizators import L2
 from dataset_loader import load_monk
+from utils import tr_vl_split
 
 result_file = open("datasets/MONK/grid_search/results.txt", "w")
 for monk in range(1,4):
     X, Y, input_size = load_monk(monk, use_one_hot=True)
-    xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
+    xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.2)
 
     res = grid_search(input_size, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[0,1,2], units=list(range(15, 20)), learning_rates=[0.005, 0.01, 0.1], batch_sizes=[1], init_functions=["xavier", "normalized_xavier"], momentums=[0, 0.8, 0.99], regularizators=[None, L2], epochs=1000, verbose=False)
     print("MONK "+str(monk)+"\n")

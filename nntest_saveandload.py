@@ -2,9 +2,9 @@ import numpy as np
 from activationfunctions import sigmoid, sigmoid_prime
 from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer
+from utils import tr_vl_split
 from neuralnetwork import Network
 import matplotlib.pyplot as plot
-from sklearn.model_selection import train_test_split
 import time
 
 
@@ -21,7 +21,7 @@ for line in monkfile.readlines():
     ytr.append([[int(vals[1])]])
 X = np.array(xtr)
 Y = np.array(ytr)
-xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
+xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.2)
 print("Training set of " + str(X.size) + " elements")
 net = Network("MONK" + str(monk) + " test", binary_crossentropy, binary_crossentropy_prime)
 net.add(FullyConnectedLayer(6, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
