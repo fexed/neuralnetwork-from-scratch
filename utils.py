@@ -25,7 +25,7 @@ def tr_vl_split(X, Y, ratio=0.25):
 def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs", savefile=None):
     import matplotlib.pyplot as plot
     fig, ax = plot.subplots()
-    ax.plot(history, label='Loss')
+    ax.plot(history, label=ylabel)
     if not(validation_history is None): ax.plot(validation_history, label='Validation Loss')
     ax.set_ylabel(ylabel)
     ax.set_xlabel(xlabel)
