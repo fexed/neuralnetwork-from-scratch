@@ -10,7 +10,7 @@ class Layer:
 
 
     # computes the output of the layer for a given input
-    def forward_propagation(self, input):
+    def forward_propagation(self, input, dropout=1):
         raise NotImplementedError
 
 
@@ -53,10 +53,14 @@ class FullyConnectedLayer(Layer):
     def get_weights(self):
         return self.weights
 
-    def forward_propagation(self, input):
+    def forward_propagation(self, input, dropout=1):
         self.input = input
         # TODO: check overflow situations
-        self.output = np.dot(self.input, self.weights) + self.bias  # net output
+        keep = np.random.rand(self.weights.shape[0], self.weights.shape[1]) < dropout
+        newweights = np.multiply(self.weights, keep)
+        keep = np.random.rand(self.bias.shape[0], self.bias.shape[1]) < dropout
+        newbias = np.multiply(self.bias, keep)
+        self.output = np.dot(self.input, newweights) + newbias  # net output
         if not(self.activation is None):
             # the activation function is optional
             self.activation_input = self.output
@@ -102,7 +106,7 @@ class ActivationLayer(Layer):
         self.activation_prime = activation_prime
 
 
-    def forward_propagation(self, input):
+    def forward_propagation(self, input, dropout=1):
         self.input = input
         self.output = self.activation(self.input)  # simple value of the activation
         return self.output

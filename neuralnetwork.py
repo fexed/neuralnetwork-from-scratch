@@ -4,7 +4,7 @@ import random
 from utils import training_progress
 
 class Network:
-    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, regularization_l=0, momentum=0, dropout_input=0.3, dropout_hidden=0.5):
+    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, regularization_l=0, momentum=0, dropout=0):
         self.name = name  # for logging and output purposes
         self.layers = []  # all the layers will be stored here
         self.loss = loss
@@ -12,8 +12,7 @@ class Network:
         self.regularizator = regularizator
         self.regularization_l = regularization_l
         self.momentum = momentum
-        self.dropout_in = dropout_input  # not used
-        self.dropout_h = dropout_hidden  # not used
+        self.dropout = 1 - dropout
 
 
     def summary(self):
@@ -42,6 +41,8 @@ class Network:
             print(" and " + self.regularizator.__name__ + " regularizator", end="")
         if (self.momentum > 0):
             print(" and momentum = " + str(self.momentum), end="")
+        if (self.dropout < 1):
+            print(" and dropout = " + str(self.dropout), end="")
         print("")
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
 
@@ -97,7 +98,7 @@ class Network:
                 # compute the output iteratively through each layer
                 output = X[j]
                 for layer in self.layers:
-                    output = layer.forward_propagation(output)
+                    output = layer.forward_propagation(output, dropout=self.dropout)
                 error += self.loss(Y[j], output)
                 # compute the gradient through each layer, while applying
                 # the backward propagation algorithm
