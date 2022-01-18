@@ -15,7 +15,7 @@ import time
 import pickle
 
 
-def compare(a, b, tollerance=1e-09):
+def compare(a, b, tollerance=1e-03):
     return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
 
@@ -24,16 +24,17 @@ def test_CUP(output=True):
     if (output): print("\n\n****CUP")
     X, Y = load_cup(verbose=output, test=False)
     # train
-    X, n_min, n_max = min_max_normalizer(X)
-    X, means, std = continuous_standardizer(X)
-    xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
+    # X, n_min, n_max = min_max_normalizer(X)
+    # X, means, std = continuous_standardizer(X)
+    xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.1, random_state=42)
     suffix = "CUP_" + ts
-    net = Network("CUP test", MEE, MEE_prime, momentum=0)
-    net.add(FullyConnectedLayer(10, 5, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(5, 5, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(5, 2, initialization_func="normalized_xavier"))
+    net = Network("CUP test", MEE, MEE_prime)
+    net.add(FullyConnectedLayer(10, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(35, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(35, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(35, 2, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=10, batch_size=1)
+    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1)
 
     # accuracy on validation set
     out = net.predict(xvl)
