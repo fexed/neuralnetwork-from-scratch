@@ -4,7 +4,7 @@ import random
 from utils import training_progress
 
 class Network:
-    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, regularization_l=0, momentum=0):
+    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, regularization_l=0, momentum=0, dropout_input=0.3, dropout_hidden=0.5):
         self.name = name  # for logging and output purposes
         self.layers = []  # all the layers will be stored here
         self.loss = loss
@@ -12,6 +12,8 @@ class Network:
         self.regularizator = regularizator
         self.regularization_l = regularization_l
         self.momentum = momentum
+        self.dropout_in = dropout_input  # not used
+        self.dropout_h = dropout_hidden  # not used
 
 
     def summary(self):
