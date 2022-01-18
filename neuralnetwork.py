@@ -74,7 +74,7 @@ class Network:
         return results
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=100, learning_rate=0.01, early_stopping=None, batch_size=1, verbose=True):
+    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, verbose=True, weight_decay=None, weight_decay_finalstep=500, final_learning_rate=0.00001):
         N = len(X)
         history = []  # for logging purposes
         M = 0
@@ -83,6 +83,9 @@ class Network:
             M = len(X_validation)
         else:
             val_history = None  # used to check if validation set is present
+
+        if not (weight_decay is None):
+            initial_learning_rate = learning_rate
 
         es_epochs = 0  # counting early stopping epochs if needed
         min_error = float('inf')
@@ -113,9 +116,11 @@ class Network:
                         gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, self.regularization_l)
                     outputs = []
                     targets = []
-                    #TODO implement variable learning_rate?
-                    #eta = (1-alfa)*eta_init + alfa*eta_base
-                    #alfa = step/fixed_step
+                    if not (weight_decay is None):
+                        if (weight_decay == "linear"):
+                            if learning_rate > final_learning_rate:
+                                weight_decay_alpha = i/weight_decay_finalstep
+                                learning_rate = (1 - weight_decay_alpha) * initial_learning_rate + weight_decay_alpha * final_learning_rate
 
             error /= N  # mean error over the set
             history.append(error)
