@@ -26,9 +26,6 @@ def test_CUP(output=True):
     # X, n_min, n_max = min_max_normalizer(X)
     # X, means, std = continuous_standardizer(X)
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.25)
-    print(len(xtr))
-    print(len(xtr2))
-    exit()
     suffix = "CUP_" + ts
     net = Network("CUP test", MEE, MEE_prime)
     net.add(FullyConnectedLayer(10, 35, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
