@@ -18,12 +18,13 @@ def grid_search(input_size, output_size, X, y,
                 momentums=[0, 0.8, 0.9, 0.99, 0.999],
                 regularizators=[None, "L2"],
                 regularization_lambdas=[0.005, 0.01, 0.15],
+                dropouts=[0, 0.5],
                 epochs=500, verbose=True, early_stopping=25):
 
     if (batch_sizes==None):
         batch_sizes=[1, input_size]
 
-    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(regularization_lambdas)*len(batch_sizes)
+    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(regularization_lambdas)*len(batch_sizes)*len(dropouts)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
     results = []  # to store the results and return the best 10
 
@@ -38,45 +39,46 @@ def grid_search(input_size, output_size, X, y,
         for N in layers:
             for M in units:
                 for E in learning_rates:
-                    for momentum in momentums:
-                        for regularization_lambda in regularization_lambdas:
-                            for regularizatorname in regularizators:
-                                if regularizatorname == "L2": regularizator = L2
-                                else: regularizator = None
-                                for init_f in init_functions:
-                                    for B in batch_sizes:
-                                        net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MEE, MEE_prime, momentum=momentum, regularizator=regularizator, regularization_l=regularization_lambda)
-                                        net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, initialization_func = init_f))
-                                        for i in range(N):  # N -hidden- layers, plus input and output layers
-                                            net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, initialization_func = init_f))
-                                        net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
-                                        if (verbose): net.summary()
+                    for dropout in dropouts
+                        for momentum in momentums:
+                            for regularization_lambda in regularization_lambdas:
+                                for regularizatorname in regularizators:
+                                    if regularizatorname == "L2": regularizator = L2
+                                    else: regularizator = None
+                                    for init_f in init_functions:
+                                        for B in batch_sizes:
+                                            net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MEE, MEE_prime, momentum=momentum, regularizator=regularizator, regularization_l=regularization_lambda, dropout=dropout)
+                                            net.add(FullyConnectedLayer(input_size, M, sigmoid, sigmoid_prime, initialization_func = init_f))
+                                            for i in range(N):  # N -hidden- layers, plus input and output layers
+                                                net.add(FullyConnectedLayer(M, M, sigmoid, sigmoid_prime, initialization_func = init_f))
+                                            net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
+                                            if (verbose): net.summary()
 
-                                        if not(X_validation is None):
-                                            history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-                                        else:
-                                            history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
+                                            if not(X_validation is None):
+                                                history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
+                                            else:
+                                                history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
 
-                                        results.append({"loss":history[-1],
-                                                        "layers":N,
-                                                        "units":M,
-                                                        "learning_rate":E,
-                                                        "batch_size":B,
-                                                        "init_function":init_f,
-                                                        "momentum":momentum,
-                                                        "regularizator":regularizatorname,
-                                                        "regularization_lambda":regularization_lambda,
-                                                        "epochs":len(history)})
+                                            results.append({"loss":history[-1],
+                                                            "layers":N,
+                                                            "units":M,
+                                                            "learning_rate":E,
+                                                            "batch_size":B,
+                                                            "init_function":init_f,
+                                                            "momentum":momentum,
+                                                            "regularizator":regularizatorname,
+                                                            "regularization_lambda":regularization_lambda,
+                                                            "epochs":len(history)})
 
-                                        tested += 1
-                                        progress = tested/n_combinations
-                                        digits = len(str(n_combinations))
-                                        formattedtested = ("{:0"+str(digits)+"d}").format(tested)
-                                        elapsedtime = time.time() - start
-                                        ETAtime = time.gmtime((elapsedtime * (n_combinations / tested)) - elapsedtime)
-                                        ETA = "ETA " + time.strftime("%Hh %Mm %Ss", ETAtime)
-                                        update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
-                                        if (verbose): print("")
+                                            tested += 1
+                                            progress = tested/n_combinations
+                                            digits = len(str(n_combinations))
+                                            formattedtested = ("{:0"+str(digits)+"d}").format(tested)
+                                            elapsedtime = time.time() - start
+                                            ETAtime = time.gmtime((elapsedtime * (n_combinations / tested)) - elapsedtime)
+                                            ETA = "ETA " + time.strftime("%Hh %Mm %Ss", ETAtime)
+                                            update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
+                                            if (verbose): print("")
     finally:
         results.sort(key = lambda x: x['loss'], reverse=False)
         if (verbose):
