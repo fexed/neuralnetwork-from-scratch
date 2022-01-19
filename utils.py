@@ -1,10 +1,39 @@
 def update_progress(progress, barlength=100, prefix="", fill="\u2588"):
+    """ Prints a progress bar with the current progress
+
+    Parameters
+    ----------
+    progress : float
+        The current progress, 0 <= progress <= 1
+    barlength : int, optional
+        The length of the progress bar
+    prefix : str, optional
+        A string to print before the progress bar
+    fill : char, optional
+        Character used to fill the progress bar
+    """
+
     num = int(round(barlength*progress))
     txt = "\r" + prefix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
     print(txt, end="")
 
 
 def training_progress(current_epoch, epochs, barlength=50, suffix="", fill="\u2588"):
+    """ Prints a progress bar with the current training progress
+
+    Parameters
+    ----------
+    current_epoch : int
+        The current epoch of training
+    epochs : int
+        The max number of epochs of training
+    barlength : int, optional
+        The length of the progress bar
+    prefix : str, optional
+        A string to print before the progress bar
+    fill : char, optional
+        Character used to fill the progress bar
+    """
     progress = current_epoch/epochs
     digits = len(str(epochs))
     formattedepochs = ("{:0"+str(digits)+"d}").format(current_epoch)
@@ -14,6 +43,18 @@ def training_progress(current_epoch, epochs, barlength=50, suffix="", fill="\u25
 
 
 def tr_vl_split(X, Y, ratio=0.25):
+    """ Splits a dataset into two parts with random elements
+
+    Parameters
+    ----------
+    X
+        The features to be splitted
+    Y
+        The targets to be splitted
+    ratio : float, optional
+        The ratio of the split
+    """
+
     import numpy as np
     import math
     ix = np.random.randint(low = 0, high = len(X), size = math.floor(ratio * len(X)))
@@ -23,6 +64,24 @@ def tr_vl_split(X, Y, ratio=0.25):
 
 
 def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel="Epochs", savefile=None):
+    """ Plots some data and saves the image
+
+    Parameters
+    ----------
+    title : str
+        Title to be printed on top of the plot
+    history : list
+        The values to be printed
+    validation_history : list, optional
+        The values of the validation loss to be printed alongside the history
+    ylabel : str, optional
+        The label of the y axis
+    xlabel : str, optional
+        The label of the x axis
+    savefile : str, optional
+        The name of the file where to save the plot, in the plot folder
+    """
+
     import matplotlib.pyplot as plot
     fig, ax = plot.subplots()
     ax.plot(history, label=ylabel)
@@ -38,15 +97,58 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
 
 
 def log(filename, data):
+    """ Saves some data in a pickle file in the logs folder
+
+    Parameters
+    ----------
+    filename : str
+        The name of the file where to save
+    data
+        The data to be saved
+    """
+
     import pickle
     with open("logs/"+ filename + ".pkl", "wb") as logfile:
         pickle.dump(data, logfile)
 
 
 def compare(a, b, tollerance=1e-03):
+    """ Compares two numbers with some tollerance
+
+    Parameters
+    ----------
+    a : float
+        The first number to be compared
+    b : float
+        The second number to be compared
+    tollerance : float, optional
+        The tollerance of the comparison
+
+    Returns
+    -------
+    bool
+        True if a and b are equal up to the tollerance
+    """
+
     return abs(a - b) <= tollerance * max(abs(a), abs(b))
 
+
 def shuffle(a,b):
+    """ Shuffles two lists in parallel
+
+    Parameters
+    ----------
+    a : list
+        The first list to be shuffled
+    b : list
+        The second list to be shuffled
+
+    Returns
+    -------
+    list, list
+        The two lists, shuffled
+    """
+
     import numpy as np
     assert len(a) == len(b)
     randomize = np.arange(len(a))
