@@ -45,3 +45,11 @@ def log(filename, data):
 
 def compare(a, b, tollerance=1e-03):
     return abs(a - b) <= tollerance * max(abs(a), abs(b))
+
+def shuffle(a,b):
+    import numpy as np
+    assert len(a) == len(b)
+    randomize = np.arange(len(a))
+    np.random.shuffle(randomize)
+    print(randomize)
+    return a[randomize],  b[randomize]
