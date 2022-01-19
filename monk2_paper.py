@@ -1,4 +1,4 @@
-from activationfunctions import sigmoid, sigmoid_prime
+from activationfunctions import Sigmoid
 from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
@@ -16,9 +16,9 @@ X_TR, Y_TR,input_size = load_monk(monk, use_one_hot=True)
 
 # training
 net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
-net.add(FullyConnectedLayer(input_size, 2, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(2, 2, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(2, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(input_size, 2, Sigmoid(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(2, 2, Sigmoid(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(2, 1, Sigmoid(), initialization_func="normalized_xavier"))
 net.summary()
 history = net.training_loop(X_TR, Y_TR, epochs=1000, learning_rate=0.05, verbose=True, early_stopping=50)
 

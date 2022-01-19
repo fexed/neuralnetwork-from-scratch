@@ -1,4 +1,4 @@
-from activationfunctions import tanh, tanh_prime
+from activationfunctions import Tanh
 from losses import MEE, MEE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
@@ -23,8 +23,8 @@ def test_CUP(output=True):
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.5)
     suffix = "CUP_" + ts
     net = Network("CUP test", MEE, MEE_prime)
-    net.add(FullyConnectedLayer(10, 20, tanh, tanh_prime, initialization_func="he"))
-    net.add(FullyConnectedLayer(20, 20, tanh, tanh_prime, initialization_func="he"))
+    net.add(FullyConnectedLayer(10, 20, Tanh(), initialization_func="he"))
+    net.add(FullyConnectedLayer(20, 20, Tanh(), initialization_func="he"))
     net.add(FullyConnectedLayer(20, 2, initialization_func="he"))
     if (output): net.summary()
     history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, weight_decay="linear", metric = acc_metric)

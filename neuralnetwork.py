@@ -29,7 +29,7 @@ class Network:
             except AttributeError:
                 pass
             try:
-                print(" with " + layer.activation.__name__ + " activation function", end = "")
+                print(" with " + layer.activation.name + " activation function", end = "")
             except AttributeError:
                 pass
             print("")

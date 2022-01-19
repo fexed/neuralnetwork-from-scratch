@@ -1,5 +1,5 @@
 import numpy as np
-from activationfunctions import tanh, tanh_prime
+from activationfunctions import Tanh
 from losses import MEE, MEE_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
@@ -48,9 +48,9 @@ def grid_search(input_size, output_size, X, y,
                                     for init_f in init_functions:
                                         for B in batch_sizes:
                                             net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MEE, MEE_prime, momentum=momentum, regularizator=regularizator, regularization_l=regularization_lambda, dropout=dropout)
-                                            net.add(FullyConnectedLayer(input_size, M, tanh, tanh_prime, initialization_func = init_f))
+                                            net.add(FullyConnectedLayer(input_size, M, Tanh(), initialization_func = init_f))
                                             for i in range(N):  # N -hidden- layers, plus input and output layers
-                                                net.add(FullyConnectedLayer(M, M, tanh, tanh_prime, initialization_func = init_f))
+                                                net.add(FullyConnectedLayer(M, M, Tanh(), initialization_func = init_f))
                                             net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
                                             if (verbose): net.summary()
 

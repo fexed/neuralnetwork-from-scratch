@@ -1,4 +1,4 @@
-from activationfunctions import sigmoid, sigmoid_prime
+from activationfunctions import Sigmoid
 from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
@@ -39,25 +39,25 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
     if (monk == 1):
         net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime, momentum=0.8)
-        net.add(FullyConnectedLayer(input_size, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(20, 20, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(input_size, 20, Sigmoid(), initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 20, Sigmoid(), initialization_func="xavier"))
+        net.add(FullyConnectedLayer(20, 1, Sigmoid(), initialization_func="xavier"))
         suffix += "_1L_20U_0.8M_0.1LR_xavier"
         if (output): net.summary()
         history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50, metric = acc_metric)
     elif (monk == 2):
         net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
-        net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-        net.add(FullyConnectedLayer(10, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-        net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(input_size, 10, Sigmoid(), initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(10, 10, Sigmoid(), initialization_func="normalized_xavier"))
+        net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="normalized_xavier"))
         suffix += "_1L_10U_0.05LR_normxavier"
         if (output): net.summary()
         history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50, metric = acc_metric)
     elif (monk == 3):
         net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
-        net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(10, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
-        net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
+        net.add(FullyConnectedLayer(input_size, 10, Sigmoid(), initialization_func="xavier"))
+        net.add(FullyConnectedLayer(10, 10, Sigmoid(), initialization_func="xavier"))
+        net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="xavier"))
         suffix += "_1L_10U_0.01LR_xavier"
         if (output): net.summary()
         history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50, metric = acc_metric)

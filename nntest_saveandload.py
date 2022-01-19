@@ -1,5 +1,5 @@
 import numpy as np
-from activationfunctions import sigmoid, sigmoid_prime
+from activationfunctions import Sigmoid
 from losses import binary_crossentropy, binary_crossentropy_prime
 from layers import FullyConnectedLayer
 from utils import tr_vl_split
@@ -24,8 +24,8 @@ Y = np.array(ytr)
 xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.2)
 print("Training set of " + str(X.size) + " elements")
 net = Network("MONK" + str(monk) + " test", binary_crossentropy, binary_crossentropy_prime)
-net.add(FullyConnectedLayer(6, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(6, 10, Sigmoid(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="normalized_xavier"))
 # train
 net.summary()
 history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=True, early_stopping=25)
