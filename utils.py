@@ -153,5 +153,4 @@ def shuffle(a,b):
     assert len(a) == len(b)
     randomize = np.arange(len(a))
     np.random.shuffle(randomize)
-    print(randomize)
     return a[randomize],  b[randomize]

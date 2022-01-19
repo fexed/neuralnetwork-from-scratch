@@ -54,11 +54,11 @@ class ReLU(ActivationFunction):
 
     def forward(self, x):
         # returns the positive part of x or allows a small gradient if x <= 0
-        return ((x > 0) * x) + ((x <= 0) * leak * x)
+        return ((x > 0) * x) + ((x <= 0) * self.leak * x)
 
 
     def derivative(self, x):  # derivative of the leaky ReLU function
-        return (x > 0) + ((x <= 0) * leak)
+        return (x > 0) + ((x <= 0) * self.leak)
 
 
 class Softmax(ActivationFunction):  # TODO: check this
