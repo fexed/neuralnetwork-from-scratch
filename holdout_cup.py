@@ -25,7 +25,7 @@ X, means, std = continuous_standardizer(X)
 X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
 # training
-net = Network("CUP", MSE()))
+net = Network("CUP", MSE())
 net.add(FullyConnectedLayer(10, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
