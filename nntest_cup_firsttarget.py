@@ -1,5 +1,5 @@
 from activationfunctions import Sigmoid
-from losses import MEE, MEE_prime
+from losses import MEE
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from kfold import KFold
@@ -22,7 +22,7 @@ def test_CUP(output=True):
     Y = Y[0:,0:,1]  # second target
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.5)
     suffix = "CUP_" + ts
-    net = Network("CUP test second target", MEE, MEE_prime)
+    net = Network("CUP test second target", MEE())
     net.add(FullyConnectedLayer(10, 25, Sigmoid(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(25, 25, Sigmoid(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(25, 25, Sigmoid(), initialization_func="normalized_xavier"))

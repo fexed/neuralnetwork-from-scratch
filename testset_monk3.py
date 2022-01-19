@@ -1,5 +1,5 @@
-from losses import binary_crossentropy, binary_crossentropy_prime
 from activationfunctions import Sigmoid
+from losses import BinaryCrossentropy
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from utils import plot_and_save
@@ -16,7 +16,7 @@ print("\n\n****TESTING NETWORK ON MONK" + str(monk))
 X_TR, Y_TR,input_size = load_monk(monk, use_one_hot=True)
 
 # training
-net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
+net = Network("MONK" + str(monk), BinaryCrossentropy())
 net.add(FullyConnectedLayer(input_size, 10, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(10, 10, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="xavier"))

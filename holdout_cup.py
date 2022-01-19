@@ -1,6 +1,6 @@
 from random import random
-from losses import MSE, MSE_prime
 from activationfunctions import Tanh
+from losses import MSE
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from utils import plot_and_save, tr_vl_split, compare
@@ -25,7 +25,7 @@ X, means, std = continuous_standardizer(X)
 X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
 # training
-net = Network("CUP", MSE, MSE_prime)
+net = Network("CUP", MSE()))
 net.add(FullyConnectedLayer(10, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))

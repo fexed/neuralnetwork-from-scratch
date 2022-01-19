@@ -1,6 +1,6 @@
 import numpy as np
 from activationfunctions import Sigmoid
-from losses import binary_crossentropy, binary_crossentropy_prime
+from losses import BinaryCrossentropy
 from layers import FullyConnectedLayer, ActivationLayer
 from neuralnetwork import Network
 from regularizators import L2
@@ -24,7 +24,7 @@ def test_MONK(monk=1, output=True, initialization="normalized_xavier"):
     Y = np.array(ytr)
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.2)
     if (output): print("Training set of " + str(X.size) + " elements")
-    net = Network("MONK" + str(monk) + " test", binary_crossentropy, binary_crossentropy_prime, regularizator=L2, regularization_l=0.005, momentum=0.5)
+    net = Network("MONK" + str(monk) + " test", BinaryCrossentropy(), regularizator=L2, regularization_l=0.005, momentum=0.5)
     net.add(FullyConnectedLayer(6, 10, Sigmoid(), initialization_func=initialization))
     net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func=initialization))
     # train

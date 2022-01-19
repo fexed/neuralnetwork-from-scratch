@@ -1,6 +1,6 @@
 import numpy as np
 from activationfunctions import Sigmoid
-from losses import binary_crossentropy, binary_crossentropy_prime
+from losses import BinaryCrossentropy
 from layers import FullyConnectedLayer
 from utils import tr_vl_split
 from neuralnetwork import Network
@@ -23,7 +23,7 @@ X = np.array(xtr)
 Y = np.array(ytr)
 xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.2)
 print("Training set of " + str(X.size) + " elements")
-net = Network("MONK" + str(monk) + " test", binary_crossentropy, binary_crossentropy_prime)
+net = Network("MONK" + str(monk) + " test", BinaryCrossentropy())
 net.add(FullyConnectedLayer(6, 10, Sigmoid(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="normalized_xavier"))
 # train

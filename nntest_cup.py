@@ -1,5 +1,5 @@
 from activationfunctions import Tanh
-from losses import MEE, MEE_prime
+from losses import MEE
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from kfold import KFold
@@ -22,7 +22,7 @@ def test_CUP(output=True):
     # train
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.5)
     suffix = "CUP_" + ts
-    net = Network("CUP test", MEE, MEE_prime)
+    net = Network("CUP test", MEE())
     net.add(FullyConnectedLayer(10, 20, Tanh(), initialization_func="he"))
     net.add(FullyConnectedLayer(20, 20, Tanh(), initialization_func="he"))
     net.add(FullyConnectedLayer(20, 2, initialization_func="he"))
