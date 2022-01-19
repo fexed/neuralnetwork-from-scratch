@@ -7,11 +7,10 @@ from utils import tr_vl_split
 
 result_file = open("datasets/CUP/grid_search/results.txt", "w")
 X, Y = load_cup(verbose=True, test=False)
-X, n_min, n_max = min_max_normalizer(X)
-X, means, std = continuous_standardizer(X)
 xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.25)
 
-res = grid_search(10, 2, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=list(range(3, 4)), units=list(range(28, 32)), learning_rates=[0.001], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0], regularizators=[None, L2], regularization_lambdas=[0.005, 0.15], epochs=1000, verbose=False, early_stopping=150)
+res = grid_search(10, 2, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=list(range(1, 4)), units=list(range(5, 20, 5)), learning_rates=[0.001, 0.0001], batch_sizes=[1], init_functions=[None, "normalized_xavier"], momentums=[0.5, 0.8], regularizators=[None, L2], regularization_lambdas=[0.005, 0.15], epochs=1000, verbose=False, early_stopping=150)
+result_file = open("datasets/CUP/grid_search/results.txt", "w")
 print("CUP\n")
 result_file.write("CUP:\n")
 for i in range (0, 10):

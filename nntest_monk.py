@@ -9,6 +9,7 @@ from regularizators import L2
 import numpy as np
 import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
+from metrics import accuracy as acc_metric
 import time
 import pickle
 
@@ -43,7 +44,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(20, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
         suffix += "_1L_20U_0.8M_0.1LR_xavier"
         if (output): net.summary()
-        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50)
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50, metric = acc_metric)
     elif (monk == 2):
         net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
         net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
@@ -51,7 +52,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="normalized_xavier"))
         suffix += "_1L_10U_0.05LR_normxavier"
         if (output): net.summary()
-        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50)
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50, metric = acc_metric)
     elif (monk == 3):
         net = Network("MONK" + str(monk), binary_crossentropy, binary_crossentropy_prime)
         net.add(FullyConnectedLayer(input_size, 10, sigmoid, sigmoid_prime, initialization_func="xavier"))
@@ -59,7 +60,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(10, 1, sigmoid, sigmoid_prime, initialization_func="xavier"))
         suffix += "_1L_10U_0.01LR_xavier"
         if (output): net.summary()
-        history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50)
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50, metric = acc_metric)
 
     # accuracy on validation set
     out = net.predict(xvl)
@@ -72,6 +73,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     if (output): print("Accuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
     plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
+    plot_and_save(title=suffix, history=accuracy_history, ylabel="Accuracy", xlabel="Epochs", savefile=suffix + "_accuracy")
     return accuracy
 
 
