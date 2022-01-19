@@ -38,7 +38,7 @@ class Network:
         else:
             print("+====")
         if not(self.regularizator is None):
-            print(" and " + self.regularizator.__name__ + " regularizator", end="")
+            print(" and " + self.regularizator.__name__ + " regularizator with lambda = " + str(self.regularization_l), end="")
         if (self.momentum > 0):
             print(" and momentum = " + str(self.momentum), end="")
         if (self.dropout < 1):
