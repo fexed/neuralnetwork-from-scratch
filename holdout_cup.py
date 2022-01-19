@@ -1,6 +1,6 @@
 from random import random
-from activationfunctions import tanh, tanh_prime
 from losses import MSE, MSE_prime
+from activationfunctions import Tanh
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from utils import plot_and_save, tr_vl_split, compare
@@ -26,10 +26,10 @@ X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
 # training
 net = Network("CUP", MSE, MSE_prime)
-net.add(FullyConnectedLayer(10, 25, tanh, tanh_prime, initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(25, 25, tanh, tanh_prime, initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(25, 25, tanh, tanh_prime, initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(25, 25, tanh, tanh_prime, initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(10, 25, Tanh(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 2,  initialization_func="normalized_xavier"))
 net.summary()
 history, validation_history = net.training_loop(X_TR, Y_TR ,X_validation=X_VAL, Y_validation=Y_VAL, epochs=150, learning_rate=0.001, verbose=True, batch_size=1)
