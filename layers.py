@@ -3,28 +3,68 @@ from math import sqrt
 
 
 class Layer:
-    # simple empty layer structure
+    """ Simple empty layer structure """
+
     def __init__(self):
+        """ Initializes the layer with its parameters """
+
         self.input = None
         self.output = None
 
 
-    # computes the output of the layer for a given input
     def forward_propagation(self, input, dropout=1):
+        """ Computes the output of the layer for a given input
+
+        Parameters
+        ----------
+        input
+            The input of the layer
+        dropout : float
+            Percentage of neurons to keep
+        """
+
         raise NotImplementedError
 
 
-    # computes the delta-error over the input for a given delta-error over the
-    # output and updates any parameter
     def backward_propagation(self, output_error, learning_rate, momentum = 0, regularizator=None):
+        """ Computes the delta-error over the input for a given delta-error over
+        the output and updates any parameter
+
+        Parameters
+        ----------
+        output_error
+            The gradient to use for the SGD
+        learning_rate
+            The learning rate to use
+        momentum
+            The rate of momentum
+        regularizator : function
+            The regularizator to use
+        """
+
         raise NotImplementedError
 
 
 class FullyConnectedLayer(Layer):
-    # a simple layer, linear or with an activation function
-    # in_size = number of input neurons
-    # out_size = number of output neurons
+    """ Simple layer, linear or with an activation function"""
+
     def __init__(self, in_size, out_size, activation = None, initialization_func = None):
+        """ Initializes the layer with its dimensions. Can also specify the
+        activation function and the initialization function of its neurons.
+
+        Parameters
+        ----------
+        in_size : int
+            Number of input neurons
+        out_size : int
+            Number of output neurons
+        activation : ActivationFunction, optional
+            The activation function of this layer
+        initialization_func : str, optional
+            The type of initialization of the neurons of this layer.
+            Supported: [None, "xavier", "normalized_xavier", "he", "basic"]
+        """
+
         if not(initialization_func is None):
             if (initialization_func == "xavier"):  # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/#:~:text=each%20in%20turn.-,Xavier%20Weight%20Initialization,-The%20xavier%20initialization
                 l, u = -(1.0 / sqrt(in_size)), (1.0 / sqrt(in_size))
@@ -50,9 +90,27 @@ class FullyConnectedLayer(Layer):
         self.prev_bias_update = 0  # for momentum purposes
 
     def get_weights(self):
+        """ Simple getter for the weights of this layer
+
+        Returns
+        -------
+        weights
+            The weights of this layer
+        """
+
         return self.weights
 
     def forward_propagation(self, input, dropout=1):
+        """ Computes the output of the layer for a given input
+
+        Parameters
+        ----------
+        input
+            The input of the layer
+        dropout : float
+            Percentage of neurons to keep
+        """
+
         self.input = input
         # TODO: check overflow situations
 
@@ -71,6 +129,21 @@ class FullyConnectedLayer(Layer):
 
 
     def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None, regularizator_l=0):
+        """ Computes the delta-error over the input for a given delta-error over
+        the output and updates any parameter
+
+        Parameters
+        ----------
+        output_error
+            The gradient to use for the SGD
+        learning_rate
+            The learning rate to use
+        momentum
+            The rate of momentum
+        regularizator : function
+            The regularizator to use
+        """
+
         if not(self.activation is None):
             # if there's activation function specified, then we compute its
             # derivative
@@ -99,20 +172,3 @@ class FullyConnectedLayer(Layer):
 
         input_error = np.dot(gradient, self.weights.T)
         return input_error
-
-
-class ActivationLayer(Layer):
-    # a layer with just an activation function
-    def __init__(self, activation):
-        self.activation = activation
-
-
-    def forward_propagation(self, input, dropout=1):
-        self.input = input
-        self.output = self.activation.forward(self.input)  # simple value of the activation
-        return self.output
-
-
-    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
-        # simple derivative of the activation function
-        return np.multiply(self.activation.derivative(self.input), gradient)
