@@ -8,7 +8,6 @@ class Network:
         self.name = name  # for logging and output purposes
         self.layers = []  # all the layers will be stored here
         self.loss = loss
-        self.loss_prime = loss_prime
         self.regularizator = regularizator
         self.regularization_l = regularization_l
         self.momentum = momentum
@@ -34,7 +33,7 @@ class Network:
                 pass
             print("")
         if not(self.loss is None):
-            print("+==== Loss: " + self.loss.__name__, end="")
+            print("+==== Loss: " + self.loss.name, end="")
         else:
             print("+====")
         if not(self.regularizator is None):
@@ -47,11 +46,10 @@ class Network:
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
 
 
-    def set_loss(self, loss, loss_prime):
+    def set_loss(self, loss):
         # TODO delete this?
         # changes the losses of the net
         self.loss = loss
-        self.loss_prime = loss_prime
 
 
     def add(self, layer):
@@ -105,7 +103,7 @@ class Network:
                 output = X[j]
                 for layer in self.layers:
                     output = layer.forward_propagation(output, dropout=self.dropout)
-                error += self.loss(Y[j], output)
+                error += self.loss.forward(Y[j], output)
                 # compute the gradient through each layer, while applying
                 # the backward propagation algorithm
                 outputs.append(output)
@@ -113,7 +111,7 @@ class Network:
                 if ((j+1) % batch_size == 0) or (j == N-1):
                     gradient = 0
                     for k in range(len(outputs)):
-                        gradient += self.loss_prime(targets[k], outputs[k])
+                        gradient += self.loss.derivative(targets[k], outputs[k])
                     gradient /= len(outputs)
                     for layer in reversed(self.layers):
                         gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, self.regularization_l)
@@ -134,7 +132,7 @@ class Network:
                     output = X_validation[j]
                     for layer in self.layers:
                         output = layer.forward_propagation(output)
-                    val_error += self.loss(Y_validation[j], output)
+                    val_error += self.loss.forward(Y_validation[j], output)
                 val_error /= M
                 val_history.append(val_error)
                 if not(metric is None):
