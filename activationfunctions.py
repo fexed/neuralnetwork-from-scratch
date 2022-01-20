@@ -51,18 +51,19 @@ class Sigmoid(ActivationFunction):
 class ReLU(ActivationFunction):
     """ ReLU activation function """
 
-    def __init__(self):
+    def __init__(self, epsilon = 1e-5):
         self.name = "ReLU"
+        self.epsilon = epsilon
 
 
-    def forward(self, x,  almost_zero = 1e-5):  # returns the positive part of x
+    def forward(self, x):
         """ Returns the positive part of x """
-        return np.maximum(x, almost_zero)
+        return np.maximum(x, self.epsilon)
 
 
-    def derivative(self, x, almost_zero = 1e-5 ):  # derivative of the ReLU function
+    def derivative(self, x ):
         """ Derivative of the ReLU function """
-        return np.array(1 if x > 0 else almost_zero )
+        return np.array(1 if x > 0 else self.epsilon )
 
 
 class LeakyReLU(ActivationFunction):
@@ -103,7 +104,7 @@ class Softmax(ActivationFunction):  # TODO: check this
 
     def derivative(self, x):
         """ Derivative of the softmax function """
-        
+
         jacobian_m = np.diag(x)
         s = []
 
