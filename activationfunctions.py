@@ -38,12 +38,12 @@ class ReLU(ActivationFunction):
         self.name = "ReLU"
 
 
-    def forward(self, x):  # returns the positive part of x
-        return np.maximum(x, 0)
+    def forward(self, x,  almost_zero = 1e-5):  # returns the positive part of x
+        return max(x, almost_zero)
 
 
-    def derivative(self, x):  # derivative of the ReLU function
-        return np.array(x > 0).astype('int')
+    def derivative(self, x, almost_zero = 1e-5 ):  # derivative of the ReLU function
+        return 1 if x > 0 else almost_zero 
 
 
 class ReLU(ActivationFunction):
