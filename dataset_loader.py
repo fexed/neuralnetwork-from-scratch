@@ -1,9 +1,15 @@
 from preprocessing import one_hot_encoding
 import numpy as np
 
+
+""" MONK input size to be updated if one_hot_encoding is used """
 MONK_INPUT_SIZE=6
 
-def load_monk(monk=1, test=False, use_one_hot=False, verbose=True ):
+
+""" Loads the MONK dataset, optionally using one_hot_encoding and/or the test
+set, from the datasets/MONK folder
+"""
+def load_monk(monk=1, test=False, use_one_hot=False, verbose=True):
     if (verbose):
         print("\n\n****MONK" + str(monk))
 
@@ -25,6 +31,10 @@ def load_monk(monk=1, test=False, use_one_hot=False, verbose=True ):
 
     return X,Y, input_size
 
+
+""" Loads the CUP dataset, optionally the test set and/or the 10 features with
+the second label with the first label as target, from the datasets/CUP folder
+"""
 def load_cup(verbose=True, test=False, forfirst=False):
     if (verbose): ("\n\n****CUP")
     cupfile = open("datasets/CUP/ML-CUP21-" + ("TS" if test else "TR") + ".csv", "r")
