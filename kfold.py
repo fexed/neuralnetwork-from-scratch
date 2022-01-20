@@ -1,10 +1,11 @@
 class KFold:
-    # KFold data structure to easily get the folds of a given dataset
+    """ KFold data structure to easily get the folds of a given dataset """
+
     def __init__(self, K, X, Y):
         self.K = K
-        
+
         # builds the folds, dividing the dataset in K parts
-        self.current_fold = -1 #call next_fold to build the first fold
+        self.current_fold = -1  # call next_fold to build the first fold
         self.x_folds = []
         self.y_folds = []
         self.elements_per_fold = len(X)//self.K
@@ -12,13 +13,14 @@ class KFold:
             self.x_folds.append(X[i : i + self.elements_per_fold])
             self.y_folds.append(Y[i : i + self.elements_per_fold])
 
-   # def current_folds(self):
-   #     return self.x_trset, self.x_vlset, self.y_trset, self.y_vlset
 
     def hasNext(self):
         return self.current_fold+1<self.K
-    
+
+
     def next_fold(self):
+        """ Returns the next fold, or ValueError if there are no folds left """
+        
         self.current_fold += 1
         if (self.current_fold < self.K):
             # the validation set will be the current_fold-th fold, and the
