@@ -62,8 +62,8 @@ def grid_search(input_size, output_size, X, y,
                                                             "batch_size":B,
                                                             "init_function":init_f,
                                                             "momentum":momentum,
-                                                            "regularizator":regularizatorname,
-                                                            "regularization_lambda":regularization_lambda,
+                                                            "regularizator":(regularizator.name if regularizator else "None"),
+                                                            "regularization_lambda":(regularizator.l if regularizator else 0),
                                                             "dropout":dropout,
                                                             "epochs":len(history)})
 
