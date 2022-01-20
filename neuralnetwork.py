@@ -72,7 +72,7 @@ class Network:
         return results
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, verbose=True, weight_decay=None, weight_decay_finalstep=500, final_learning_rate=0.00001, metric=None):
+    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, weight_decay=None, weight_decay_finalstep=500, final_learning_rate=0.00001, metric=None, verbose=True):
         N = len(X)
         history = []  # for logging purposes
         M = 0
@@ -85,8 +85,22 @@ class Network:
         if not(metric is None):
             metric_history = []
 
-        if not (weight_decay is None):
+        if not(weight_decay is None):
             initial_learning_rate = learning_rate
+
+        if (verbose):
+            print("Beginning training loop with " + str(epochs) + " targeted epochs over " + str(N) + " training elements", end="")
+            if (batch_size > 1):
+                print("(batch size = " + str(batch_size) + ")")
+            if not(early_stopping is None):
+                print(", with early stopping = " + str(early_stopping), end="")
+            if not(val_history is None):
+                print(" and validation set given", end="")
+            if not(weight_decay is None):
+                print(", with " + str(weight_decay) + " weight decay until epoch " + str(weight_decay_finalstep), end="")
+            if not(metric is None):
+                print(". The evaluation metric is " + metric.name, end="")
+            print("")
 
         es_epochs = 0  # counting early stopping epochs if needed
         min_error = float('inf')
