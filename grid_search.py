@@ -16,15 +16,14 @@ def grid_search(input_size, output_size, X, y,
                 batch_sizes=None,
                 init_functions=["xavier", "normalized_xavier", "he", "basic"],
                 momentums=[0, 0.8, 0.9, 0.99, 0.999],
-                regularizators=[None, "L2"],
-                regularization_lambdas=[0.005, 0.01, 0.15],
+                regularizators=[None, L2(l = 0.005), L2(l = 0.015)],
                 dropouts=[0, 0.5],
                 epochs=500, verbose=True, early_stopping=25):
 
     if (batch_sizes==None):
         batch_sizes=[1, input_size]
 
-    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(regularization_lambdas)*len(batch_sizes)*len(dropouts)
+    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(batch_sizes)*len(dropouts)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
     results = []  # to store the results and return the best 10
 
@@ -41,13 +40,10 @@ def grid_search(input_size, output_size, X, y,
                 for E in learning_rates:
                     for dropout in dropouts:
                         for momentum in momentums:
-                            for regularization_lambda in regularization_lambdas:
-                                for regularizatorname in regularizators:
-                                    if regularizatorname == "L2": regularizator = L2
-                                    else: regularizator = None
+                            for regularizator in regularizators:
                                     for init_f in init_functions:
                                         for B in batch_sizes:
-                                            net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MEE(), momentum=momentum, regularizator=regularizator, regularization_l=regularization_lambda, dropout=dropout)
+                                            net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MEE(), momentum=momentum, regularizator=regularizator, dropout=dropout)
                                             net.add(FullyConnectedLayer(input_size, M, Tanh(), initialization_func = init_f))
                                             for i in range(N):  # N -hidden- layers, plus input and output layers
                                                 net.add(FullyConnectedLayer(M, M, Tanh(), initialization_func = init_f))

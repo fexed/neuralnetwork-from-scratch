@@ -57,7 +57,7 @@ class Network:
         else:
             print("+====")
         if not(self.regularizator is None):
-            print(" and " + self.regularizator.name + " regularizator with lambda = " + str(self.regularizator.lambda), end="")
+            print(" and " + self.regularizator.name + " regularizator with lambda = " + str(self.regularizator.l), end="")
         if (self.momentum > 0):
             print(" and momentum = " + str(self.momentum), end="")
         if (self.dropout < 1):
@@ -257,7 +257,7 @@ class Network:
 
     def loadnet(self, filename):
         """ Loads the neural network from a pickle """
-        
+
         with open(filename, "rb") as savefile:
             newnet = pickle.load(savefile)
 
