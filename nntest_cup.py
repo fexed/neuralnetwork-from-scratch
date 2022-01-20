@@ -8,7 +8,7 @@ from regularizators import L2
 from dataset_loader import load_cup
 from preprocessing import continuous_standardizer, min_max_normalizer
 from utils import plot_and_save, tr_vl_split, compare
-from metrics import accuracy as acc_metric
+from metrics import Accuracy
 import numpy as np
 import matplotlib.pyplot as plot
 import time
@@ -27,16 +27,10 @@ def test_CUP(output=True):
     net.add(FullyConnectedLayer(20, 20, Tanh(), initialization_func="he"))
     net.add(FullyConnectedLayer(20, 2, initialization_func="he"))
     if (output): net.summary()
-    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, weight_decay="linear", metric = acc_metric)
+    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, weight_decay="linear", metric = Accuracy())
 
     # accuracy on validation set
-    out = net.predict(xvl)
-    acc = 0
-    for i in range(len(out)):
-        # if (yvl[i][0][0] == out[i][0][0] and yvl[i][0][1] == out[i][0][1]): accuracy += 1
-        if (compare(yvl[i][0][0], out[i][0][0]) and compare(yvl[i][0][1], out[i][0][1])): accuracy += 1
-    acc /= len(out)
-    acc *= 100
+    acc = Accuracy().compute(net, xvl, yvl)
 
     if (output): print("Accuracy: {:.4f}%".format(acc))
 

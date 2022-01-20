@@ -9,7 +9,7 @@ from regularizators import L2
 import numpy as np
 import matplotlib.pyplot as plot
 from sklearn.model_selection import train_test_split
-from metrics import accuracy as acc_metric
+from metrics import Accuracy
 import time
 import pickle
 
@@ -44,7 +44,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(20, 1, Sigmoid(), initialization_func="xavier"))
         suffix += "_1L_20U_0.8M_0.1LR_xavier"
         if (output): net.summary()
-        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50, metric = acc_metric)
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50, metric = Accuracy())
     elif (monk == 2):
         net = Network("MONK" + str(monk), BinaryCrossentropy())
         net.add(FullyConnectedLayer(input_size, 10, Sigmoid(), initialization_func="normalized_xavier"))
@@ -63,13 +63,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50, metric = acc_metric)
 
     # accuracy on validation set
-    out = net.predict(xvl)
-    accuracy = 0
-    for i in range(len(out)):
-        val = 0 if out[i].item() < 0.5 else 1  # "normalizing" output
-        if (yvl[i].item() == val): accuracy += 1
-    accuracy /= len(out)
-    accuracy *= 100
+    accuracy = Accuracy().compute(net, xvl, yvl)
     if (output): print("Accuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
 
     plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
