@@ -136,7 +136,7 @@ class Network:
                 val_error /= M
                 val_history.append(val_error)
                 if not(metric is None):
-                    metric_history.append(metric(self, X_validation, Y_validation))
+                    metric_history.append(metric.compute(self, X_validation, Y_validation))
                 if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
             else:
                 # if no validation set, we simply output the current status
