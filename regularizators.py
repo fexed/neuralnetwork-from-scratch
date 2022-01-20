@@ -4,17 +4,46 @@ import numpy as np
 class Regularizator():
         """ Base class for the regularation functions """
 
-        def __init__(self, lambda):
+        def __init__(self, l):
             self.name = None
-            self.lambda = 0
+            self.l = 0
 
 
-class L2(Regularizator):
-        """ L2 regularizator """
+class L1(Regularizator):
+        """ L1 or Lasso regularizator """
 
         def __init__(self, l = 0.005):
             self.name = L2
-            self.lambda = l
+            self.l = l
 
-        def apply(self, weights):
-            return 2 * self.lambda * weights
+
+        def forward(self, weights):
+            return self.l * np.sum(np.abs(weights))
+
+
+        def derivative(self, weights):
+            out = []
+            for l1 in weights:
+                outt = []
+                for l2 in l1:
+                    if l2 < 0:  outt.append(-self.l)
+                    elif l2 > 0: outt.append(self.l)
+                    else: outt.append(0)
+                out.append(outt)
+            return out
+
+
+class L2(Regularizator):
+        """ L2 or Tikhonov regularizator """
+
+        def __init__(self, l = 0.005):
+            self.name = L2
+            self.l = l
+
+
+        def forward(self, weights):
+            return self.l * np.sum(np.square(weights))
+
+
+        def derivative(self, weights):
+            return 2 * self.l * weights
