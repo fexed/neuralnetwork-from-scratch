@@ -1,4 +1,4 @@
-from activationfunctions import Sigmoid
+from activationfunctions import Tanh
 from losses import MEE
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
@@ -15,6 +15,7 @@ import time
 import pickle
 
 
+# best {'loss': 0.4360415384225904, 'layers': 2, 'units': 30, 'learning_rate': 0.001, 'batch_size': 1, 'init_function': 'normalized_xavier', 'momentum': 0, 'regularizator': None, 'regularization_lambda': 0, 'dropout': 0, 'epochs': 291}
 def test_CUP(output=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****CUP")
@@ -23,12 +24,12 @@ def test_CUP(output=True):
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.5)
     suffix = "CUP_" + ts
     net = Network("CUP test second target", MEE())
-    net.add(FullyConnectedLayer(10, 25, Sigmoid(), initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(25, 25, Sigmoid(), initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(25, 25, Sigmoid(), initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(25, 1, initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(10, 30, Tanh(), initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(30, 30, Tanh(), initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(30, 30, Tanh(), initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(30, 1, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, weight_decay="linear", metric = Accuracy())
+    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, metric = Accuracy())
 
     # accuracy on validation set
     accuracy = Accuracy().compute(net, xvl, yvl)

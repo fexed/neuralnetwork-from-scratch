@@ -34,11 +34,11 @@ class Layer:
         ----------
         output_error
             The gradient to use for the SGD
-        learning_rate
+        learning_rate : float
             The learning rate to use
-        momentum
+        momentum : float, optional
             The rate of momentum
-        regularizator : function
+        regularizator : Regularizator
             The regularizator to use
         """
 
@@ -128,19 +128,19 @@ class FullyConnectedLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None, regularizator_l=0):
+    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
         """ Computes the delta-error over the input for a given delta-error over
         the output and updates any parameter
 
         Parameters
         ----------
-        output_error
+        gradient
             The gradient to use for the SGD
-        learning_rate
+        eta : float
             The learning rate to use
-        momentum
+        momentum : float, optional
             The rate of momentum
-        regularizator : function
+        regularizator : Regularizator, optional
             The regularizator to use
         """
 
@@ -163,7 +163,7 @@ class FullyConnectedLayer(Layer):
 
         if not(regularizator is None):
             # regularization
-            weights_update -= regularizator(self.weights, regularizator_l)
+            weights_update -= regularizator.derivative(self.weights)
 
         # the basic parameter update
         # TODO check overflow situations

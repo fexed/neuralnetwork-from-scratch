@@ -3,19 +3,39 @@ import pickle
 import random
 from utils import training_progress
 
+
 class Network:
-    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, regularization_l=0.005, momentum=0, dropout=0):
+    """ Base class for the neural networks used in this project """
+
+    def __init__(self, name="-unnamed-", loss=None, regularizator=None, momentum=0, dropout=0):
+        """ Initializes the neural network with some parameters
+
+        Parameters
+        ----------
+
+        name : str, optional
+            The name of the neural network, used for logging and output purposes
+        loss : Loss, optional
+            The loss function to be used during training
+        regularizator : Regularizator, optional
+            The regularizator to be applied during training
+        momentum = float, optional
+            The momentum of the training
+        dropout = float, optional
+            The dropout percentage
+        """
+
         self.name = name  # for logging and output purposes
         self.layers = []  # all the layers will be stored here
         self.loss = loss
         self.regularizator = regularizator
-        self.regularization_l = regularization_l
         self.momentum = momentum
         self.dropout = 1 - dropout  # prob of keeping the neuron
 
 
     def summary(self):
-        # a summary of the network, for logging and output purposes
+        """ A summary of the network, for logging and output purposes """
+
         trainable_parameters = 0  # output purposes
         print("Neural Network \"" + self.name + "\"")
         print("+==== Structure")
@@ -37,7 +57,7 @@ class Network:
         else:
             print("+====")
         if not(self.regularizator is None):
-            print(" and " + self.regularizator.__name__ + " regularizator with lambda = " + str(self.regularization_l), end="")
+            print(" and " + self.regularizator.name + " regularizator with lambda = " + str(self.regularizator.l), end="")
         if (self.momentum > 0):
             print(" and momentum = " + str(self.momentum), end="")
         if (self.dropout < 1):
@@ -47,19 +67,22 @@ class Network:
 
 
     def set_loss(self, loss):
+        """ Changes the losses of the net """
+
         # TODO delete this?
-        # changes the losses of the net
         self.loss = loss
 
 
     def add(self, layer):
+        """ Adds another layer at the bottom of the network """
+
         # TODO check input-output dimensions?
-        # adds another layer at the bottom of the network
         self.layers.append(layer)
 
 
     def predict(self, data):
-        # applies the network to the data and returns the computed values
+        """ Applies the network to the data and returns the computed values """
+
         N = len(data)
         results = []
 
@@ -72,7 +95,39 @@ class Network:
         return results
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, weight_decay=None, weight_decay_finalstep=500, final_learning_rate=0.00001, metric=None, verbose=True):
+    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, lr_decay_finalstep=500, lr_final=0.00001, metric=None, verbose=True):
+        """ The main training loop for the network
+
+        Parameters
+        ----------
+        X
+            The features of the training set
+        Y
+            The labels of the training set
+        X_validation : optional
+            The features of the validation set
+        Y_validation : optional
+            The labels of the validation set
+        epochs : int, optional
+            The targeted epochs of the training
+        learning_rate : float, optional
+            The learning rate
+        early_stopping: int, optional
+            The number epochs of no improvement after which the training stops
+        batch_size : int, optional
+            The batch size of the training
+        lr_decay : str, optional
+            The learning rate decay strategy
+        lr_decay_finalstep : int, optional
+            The epoch from which the learning rate will be constant
+        lr_final : float, optional
+            The final learning rate
+        metric : Metric, optional
+            Evaluation metric to be plotted
+        verbose : bool, optional
+            Wether to be verbose or not
+        """
+
         N = len(X)
         history = []  # for logging purposes
         M = 0
@@ -85,7 +140,7 @@ class Network:
         if not(metric is None):
             metric_history = []
 
-        if not(weight_decay is None):
+        if not(lr_decay is None):
             initial_learning_rate = learning_rate
 
         if (verbose):
@@ -96,8 +151,8 @@ class Network:
                 print(", with early stopping = " + str(early_stopping), end="")
             if not(val_history is None):
                 print(" and validation set given", end="")
-            if not(weight_decay is None):
-                print(", with " + str(weight_decay) + " weight decay until epoch " + str(weight_decay_finalstep), end="")
+            if not(lr_decay is None):
+                print(", with " + str(lr_decay) + " weight decay until epoch " + str(lr_decay_finalstep), end="")
             if not(metric is None):
                 print(". The evaluation metric is " + metric.name, end="")
             print("")
@@ -128,14 +183,14 @@ class Network:
                         gradient += self.loss.derivative(targets[k], outputs[k])
                     gradient /= len(outputs)
                     for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, self.regularization_l)
+                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
                     outputs = []
                     targets = []
-                    if not (weight_decay is None):
-                        if (weight_decay == "linear"):
-                            if learning_rate > final_learning_rate:
-                                weight_decay_alpha = i/weight_decay_finalstep
-                                learning_rate = (1 - weight_decay_alpha) * initial_learning_rate + weight_decay_alpha * final_learning_rate
+                    if not (lr_decay is None):
+                        if (lr_decay == "linear"):
+                            if learning_rate > lr_final:
+                                lr_decay_alpha = i/lr_decay_finalstep
+                                learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_final
 
             error /= N  # mean error over the set
             history.append(error)
@@ -194,11 +249,15 @@ class Network:
 
 
     def savenet(self, filename):
+        """ Saves the neural network in a pickle """
+
         with open(filename, "wb") as savefile:
             pickle.dump(self.__dict__, savefile)
 
 
     def loadnet(self, filename):
+        """ Loads the neural network from a pickle """
+
         with open(filename, "rb") as savefile:
             newnet = pickle.load(savefile)
 

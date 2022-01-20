@@ -2,11 +2,15 @@ import numpy as np
 
 
 class Loss():
+    """ Base class for the loss functions """
+
     def __init__(self):
         self.name = None
 
 
 class MEE(Loss):
+    """ Mean Euclidean Error loss """
+
     def __init__(self):
         self.name = "Mean Euclidean Error"
 
@@ -20,6 +24,8 @@ class MEE(Loss):
 
 
 class MSE(Loss):
+    """ Mean Squared Error loss """
+
     def __init__(self):
         self.name = "Mean Squared Error"
 
@@ -33,6 +39,8 @@ class MSE(Loss):
 
 
 class BinaryCrossentropy(Loss):
+    """ Binary Crossentropy loss """
+
     def __init__(self):
         self.name = "Binary Crossentropy"
 
@@ -47,7 +55,10 @@ class BinaryCrossentropy(Loss):
         return np.mean(((1-labels)/(1-outputs_clipped) - labels/outputs_clipped))
 
 
-class MulticlassCrossentropy(Loss):  # TODO implement
+class MulticlassCrossentropy(Loss):
+    """ Multiclass Crossentropy loss """
+
+    # TODO implement
     def __init__(self):
         self.name = "Multiclass Crossentropy"
 
