@@ -4,12 +4,11 @@ import random
 from utils import training_progress
 
 class Network:
-    def __init__(self, name="-unnamed-", loss=None, loss_prime=None, regularizator=None, regularization_l=0.005, momentum=0, dropout=0):
+    def __init__(self, name="-unnamed-", loss=None, regularizator=None, momentum=0, dropout=0):
         self.name = name  # for logging and output purposes
         self.layers = []  # all the layers will be stored here
         self.loss = loss
         self.regularizator = regularizator
-        self.regularization_l = regularization_l
         self.momentum = momentum
         self.dropout = 1 - dropout  # prob of keeping the neuron
 
@@ -37,7 +36,7 @@ class Network:
         else:
             print("+====")
         if not(self.regularizator is None):
-            print(" and " + self.regularizator.__name__ + " regularizator with lambda = " + str(self.regularization_l), end="")
+            print(" and " + self.regularizator.name + " regularizator with lambda = " + str(self.regularizator.lambda), end="")
         if (self.momentum > 0):
             print(" and momentum = " + str(self.momentum), end="")
         if (self.dropout < 1):
@@ -128,7 +127,7 @@ class Network:
                         gradient += self.loss.derivative(targets[k], outputs[k])
                     gradient /= len(outputs)
                     for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, self.regularization_l)
+                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
                     outputs = []
                     targets = []
                     if not (weight_decay is None):
