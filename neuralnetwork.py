@@ -173,6 +173,11 @@ class Network:
                 for layer in self.layers:
                     output = layer.forward_propagation(output, dropout=self.dropout)
                 error += self.loss.forward(Y[j], output)
+                if not(self.regularizator is None):
+                    regloss = 0
+                    for layer in self.layers:
+                        regloss += self.regularizator.forward(layer.weights)
+                    error += regloss
                 # compute the gradient through each layer, while applying
                 # the backward propagation algorithm
                 outputs.append(output)
