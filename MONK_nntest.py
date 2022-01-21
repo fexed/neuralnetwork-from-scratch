@@ -2,13 +2,12 @@ from activationfunctions import Sigmoid
 from losses import BinaryCrossentropy
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from utils import plot_and_save
+from utils import plot_and_save, tr_vl_split
 from kfold import KFold
 from preprocessing import one_hot_encoding
 from regularizators import L2
 import numpy as np
 import matplotlib.pyplot as plot
-from sklearn.model_selection import train_test_split
 from metrics import Accuracy
 import time
 import pickle
@@ -36,7 +35,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     folds = 1
     suffix = "MONK" + str(monk) + "_" + ts
     fig, ax = plot.subplots()
-    xtr, xvl, ytr, yvl = train_test_split(X, Y, test_size=0.2, random_state=42)
+    xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.2)
     if (monk == 1):
         net = Network("MONK" + str(monk), BinaryCrossentropy(), momentum=0.8)
         net.add(FullyConnectedLayer(input_size, 20, Sigmoid(), initialization_func="xavier"))
@@ -74,9 +73,9 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
 print("Beginning tests")
 for i in range(1, 4):
     acc = []
-    for j in range(0, 10):
-        acc.append(test_MONK(i, output=False))
-        print(str(j+1), end=" ", flush=True)
+    for j in range(0, 1):
+        acc.append(test_MONK(i, output=True))
+        #print(str(j+1), end=" ", flush=True)
     print("")
     print("MONK" + str(i), end=" ")
     mean = np.mean(acc)
