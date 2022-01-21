@@ -55,7 +55,7 @@ def grid_search(input_size, output_size, X, y,
                                             else:
                                                 history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
 
-                                            results.append({"loss":history[-1],
+                                            results.append({"loss":val_history[-1],  # better judge
                                                             "layers":N,
                                                             "units":M,
                                                             "learning_rate":E,
