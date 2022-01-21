@@ -163,7 +163,7 @@ class FullyConnectedLayer(Layer):
 
         if not(regularizator is None):
             # regularization
-            weights_update -= regularizator.derivative(self.weights)
+            weights_update += regularizator.derivative(self.weights)
 
         # the basic parameter update
         # TODO check overflow situations
