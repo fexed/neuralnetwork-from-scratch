@@ -2,13 +2,13 @@ from activationfunctions import Sigmoid
 from losses import BinaryCrossentropy
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from utils import plot_and_save, tr_vl_split
+from utils import plot_and_save, tr_vl_split, roc_curve
 from kfold import KFold
 from preprocessing import one_hot_encoding
 from regularizators import L2
 import numpy as np
 import matplotlib.pyplot as plot
-from metrics import Accuracy
+from metrics import Accuracy, ConfusionMatrix
 import time
 import pickle
 
@@ -43,7 +43,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(20, 1, Sigmoid(), initialization_func="xavier"))
         suffix += "_1L_20U_0.8M_0.1LR_xavier"
         if (output): net.summary()
-        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50, metric = Accuracy())
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.1, verbose=output, early_stopping=50, metric = ConfusionMatrix())
     elif (monk == 2):
         net = Network("MONK" + str(monk), BinaryCrossentropy())
         net.add(FullyConnectedLayer(input_size, 10, Sigmoid(), initialization_func="normalized_xavier"))
@@ -51,7 +51,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="normalized_xavier"))
         suffix += "_1L_10U_0.05LR_normxavier"
         if (output): net.summary()
-        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50, metric = Accuracy())
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50, metric = ConfusionMatrix())
     elif (monk == 3):
         net = Network("MONK" + str(monk), BinaryCrossentropy())
         net.add(FullyConnectedLayer(input_size, 10, Sigmoid(), initialization_func="xavier"))
@@ -59,14 +59,19 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="xavier"))
         suffix += "_1L_10U_0.01LR_xavier"
         if (output): net.summary()
-        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50, metric = Accuracy())
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50, metric = ConfusionMatrix())
 
     # accuracy on validation set
     accuracy = Accuracy().compute(net, xvl, yvl)
     if (output): print("Accuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy))
 
     plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
-    plot_and_save(title=suffix, history=accuracy_history, ylabel="Accuracy", xlabel="Epochs", savefile=suffix + "_accuracy")
+    plot_and_save(title=suffix, history=[row[0] for row in accuracy_history], ylabel="Accuracy", xlabel="Epochs", savefile=suffix + "_accuracy")
+    plot_and_save(title=suffix, history=[row[1] for row in accuracy_history], ylabel="Specificity", xlabel="Epochs", savefile=suffix + "_specificity")
+    plot_and_save(title=suffix, history=[row[2] for row in accuracy_history], ylabel="Sensitivity", xlabel="Epochs", savefile=suffix + "_sensitivity")
+    plot_and_save(title=suffix, history=[row[3] for row in accuracy_history], ylabel="Precision", xlabel="Epochs", savefile=suffix + "_precision")
+    roc_curve(title=suffix, FPR=[1-row[1] for row in accuracy_history], TPR=[row[2] for row in accuracy_history], savefile=suffix + "_ROC")
+    exit()
     return accuracy
 
 
