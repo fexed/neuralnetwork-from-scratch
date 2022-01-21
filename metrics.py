@@ -34,3 +34,32 @@ class Accuracy(Metric):
         accuracy /= len(out)
         accuracy *= 100
         return accuracy
+
+
+class ConfusionMatrix(Metric):
+    def __init__(self):
+        self.name = "Confusion Matrix"
+
+
+    def compute(self, model, dataset, targets):
+        predictions = model.predict(dataset)
+
+        # 1 is positive, 0 is negative
+        TP, TN, FP, FN = 0, 0, 0, 0
+
+        for predicted, target in zip(predictions, targets):
+            predicted = 0 if predicted.item() < 0.5 else 1
+            target = target.item()
+            if (target == 1):
+                if (predicted == 1): TP += 1
+                else: FN += 1
+            else:
+                if (predicted == 1): FP += 1
+                else: TN += 1
+
+        specificity = TN/(FP + TN + 1e-5)
+        sensitivity = TP/(TP + FN + 1e-5)
+        precision = TP/(TP + FP + 1e-5)
+        accuracy = (TP + TN)/len(targets)
+
+        return accuracy, specificity, sensitivity, precision
