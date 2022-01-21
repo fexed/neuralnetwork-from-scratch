@@ -3,6 +3,7 @@ from losses import BinaryCrossentropy
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from utils import plot_and_save
+from metrics import Accuracy, ConfusionMatrix
 import numpy as np
 import matplotlib.pyplot as plot
 from dataset_loader import load_monk
@@ -29,13 +30,7 @@ history = net.training_loop(X_TR, Y_TR, epochs=1000, learning_rate=0.1, verbose=
 X_TS,Y_TS, input_size = load_monk(monk, use_one_hot=True, test=True)
 
 # evaluating
-out = net.predict(X_TS)
-accuracy = 0
-for i in range(len(out)):
-    val = 0 if out[i].item() < 0.5 else 1
-    if (Y_TS[i].item() == val): accuracy += 1
-accuracy /= len(out)
-accuracy *= 100
+accuracy = Accuracy().compute(net, X_TS, Y_TS)
 print("Accuracy on the test set: {:.4f}%".format(accuracy))
 
 # plotting data
