@@ -96,6 +96,37 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     plot.clf()
 
 
+def roc_curve(title, FPR, TPR, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
+    """ Plots the ROC curve
+
+    Parameters
+    ----------
+    title : str
+        Title to be printed on top of the plot
+    FPR : list
+        The false positive rate, x-axis
+    TPR : list
+        The true positive rate, y-axis
+    xlabel : str, optional
+        The label of the x axis
+    ylabel : str, optional
+        The label of the y axis
+    savefile : str, optional
+        The name of the file where to save the plot, in the plot folder
+    """
+
+    import matplotlib.pyplot as plot
+    fig, ax = plot.subplots()
+    ax.scatter(FPR, TPR)
+    ax.plot([0, 1], [0, 1],'r--')
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    plot.gca().margins(x=0)
+    fig.set_size_inches(18.5, 10.5)
+    if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
+    plot.clf()
+
 def log(filename, data):
     """ Saves some data in a pickle file in the logs folder
 
