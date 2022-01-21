@@ -52,7 +52,7 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="normalized_xavier"))
         suffix += "_1L_10U_0.05LR_normxavier"
         if (output): net.summary()
-        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50, metric = acc_metric)
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.05, verbose=output, early_stopping=50, metric = Accuracy())
     elif (monk == 3):
         net = Network("MONK" + str(monk), BinaryCrossentropy())
         net.add(FullyConnectedLayer(input_size, 10, Sigmoid(), initialization_func="xavier"))
@@ -60,11 +60,11 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
         net.add(FullyConnectedLayer(10, 1, Sigmoid(), initialization_func="xavier"))
         suffix += "_1L_10U_0.01LR_xavier"
         if (output): net.summary()
-        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50, metric = acc_metric)
+        history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=50, metric = Accuracy())
 
     # accuracy on validation set
     accuracy = Accuracy().compute(net, xvl, yvl)
-    if (output): print("Accuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy) + " over " + str(len(out)) + " elements")
+    if (output): print("Accuracy on MONK" + str(monk) + " validation set of {:.4f}%".format(accuracy))
 
     plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
     plot_and_save(title=suffix, history=accuracy_history, ylabel="Accuracy", xlabel="Epochs", savefile=suffix + "_accuracy")
