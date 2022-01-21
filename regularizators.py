@@ -13,7 +13,7 @@ class L1(Regularizator):
         """ L1 or Lasso regularizator """
 
         def __init__(self, l = 0.005):
-            self.name = L2
+            self.name = "L1"
             self.l = l
 
 
@@ -37,7 +37,7 @@ class L2(Regularizator):
         """ L2 or Tikhonov regularizator """
 
         def __init__(self, l = 0.005):
-            self.name = L2
+            self.name = "L2"
             self.l = l
 
 
