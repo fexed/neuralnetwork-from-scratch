@@ -73,7 +73,6 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
 
     FPR, TPR, AUC = ROCCurve().compute(net, xvl, yvl)
     roc_curve(title=suffix, FPR=FPR, TPR=TPR, AUC=AUC, savefile=suffix + "_ROC2")
-    exit()
     return accuracy
 
 
