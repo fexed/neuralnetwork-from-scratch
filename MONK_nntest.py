@@ -8,7 +8,7 @@ from preprocessing import one_hot_encoding
 from regularizators import L2
 import numpy as np
 import matplotlib.pyplot as plot
-from metrics import Accuracy, ConfusionMatrix
+from metrics import Accuracy, ROCCurve, ConfusionMatrix
 import time
 import pickle
 
@@ -70,7 +70,9 @@ def test_MONK(monk=1, output=True, use_one_hot_encoding=True):
     plot_and_save(title=suffix, history=[row[1] for row in accuracy_history], ylabel="Specificity", xlabel="Epochs", savefile=suffix + "_specificity")
     plot_and_save(title=suffix, history=[row[2] for row in accuracy_history], ylabel="Sensitivity", xlabel="Epochs", savefile=suffix + "_sensitivity")
     plot_and_save(title=suffix, history=[row[3] for row in accuracy_history], ylabel="Precision", xlabel="Epochs", savefile=suffix + "_precision")
-    roc_curve(title=suffix, FPR=[1-row[1] for row in accuracy_history], TPR=[row[2] for row in accuracy_history], savefile=suffix + "_ROC")
+
+    FPR, TPR, AUC = ROCCurve().compute(net, xvl, yvl)
+    roc_curve(title=suffix, FPR=FPR, TPR=TPR, AUC=AUC, savefile=suffix + "_ROC2")
     exit()
     return accuracy
 
