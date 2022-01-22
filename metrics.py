@@ -65,3 +65,40 @@ class ConfusionMatrix(Metric):
         accuracy = (TP + TN)/len(targets)
 
         return accuracy, specificity, sensitivity, precision
+
+
+class ROCCurve(Metric):
+    def __init__(self, thresholds=None):
+        self.name = "ROC Curve"
+        if not(thresholds is None): self.thresholds = thresholds
+        else:
+            self.thresholds = []
+            for i in range(1000): self.thresholds.append(i/1000)
+
+
+    def compute(self, model, dataset, targets):
+        predictions = model.predict(dataset)
+
+        FPR, TPR = [], []
+        for threshold in self.thresholds:
+            TP, TN, FP, FN = 0, 0, 0, 0
+
+            for predicted, target in zip(predictions, targets):
+                predicted = 0 if predicted.item() < threshold else 1
+                target = target.item()
+                if (target == 1):
+                    if (predicted == 1): TP += 1
+                    else: FN += 1
+                else:
+                    if (predicted == 1): FP += 1
+                    else: TN += 1
+
+            n = FP/(FP + TN)
+            m = TP/(TP + FN)
+
+            FPR.append(n)
+            TPR.append(m)
+        AUC = 0
+        for i in range(len(self.thresholds)-1):
+            AUC += (FPR[i] - FPR[i+1]) * TPR[i]
+        return FPR, TPR, AUC

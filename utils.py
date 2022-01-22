@@ -96,7 +96,7 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     plot.clf()
 
 
-def roc_curve(title, FPR, TPR, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
+def roc_curve(title, FPR, TPR, AUC, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
     """ Plots the ROC curve
 
     Parameters
@@ -107,6 +107,8 @@ def roc_curve(title, FPR, TPR, xlabel="Specificity", ylabel="Sensitivity", savef
         The false positive rate, x-axis
     TPR : list
         The true positive rate, y-axis
+    AUC : float
+        The area under the ROC curve
     xlabel : str, optional
         The label of the x axis
     ylabel : str, optional
@@ -117,17 +119,47 @@ def roc_curve(title, FPR, TPR, xlabel="Specificity", ylabel="Sensitivity", savef
 
     import matplotlib.pyplot as plot
     fig, ax = plot.subplots()
-    ax.scatter(FPR, TPR)
+    ax.plot(FPR, TPR)
     ax.plot([0, 1], [0, 1],'r--')
+    ax.plot([], [], ' ', label="AUC = " + str(AUC))
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(title)
     plot.gca().margins(x=0)
-    plot.xlim([0,1])
-    plot.ylim([0,1])
+    plot.xlim([-0.01,1.01])
+    plot.ylim([-0.01,1.01])
+    plot.legend()
     fig.set_size_inches(18.5, 10.5)
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
+
+
+def confusion_matrix(title, TP, FN, FP, TN, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
+    """ Plots the confusion matrix
+
+    Parameters
+    ----------
+    title : str
+        Title to be printed on top of the plot
+    TP : int
+        The true positives
+    FN : int
+        The false negatives
+    FP : int
+        The false positives
+    TN : int
+        The true negatives
+    xlabel : str, optional
+        The label of the x axis
+    ylabel : str, optional
+        The label of the y axis
+    savefile : str, optional
+        The name of the file where to save the plot, in the plot folder
+    """
+
+    import matplotlib.pyplot as plot
+    # TODO
+
 
 def log(filename, data):
     """ Saves some data in a pickle file in the logs folder
