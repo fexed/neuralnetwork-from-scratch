@@ -39,8 +39,9 @@ class Accuracy(Metric):
 
 
 class ConfusionMatrix(Metric):
-    def __init__(self):
+    def __init__(self, threshold=0.5):
         self.name = "Confusion Matrix"
+        self.threshold = threshold
 
 
     def compute(self, model, dataset, targets):
@@ -50,7 +51,7 @@ class ConfusionMatrix(Metric):
         TP, TN, FP, FN = 0, 0, 0, 0
 
         for predicted, target in zip(predictions, targets):
-            predicted = 0 if predicted.item() < 0.5 else 1
+            predicted = 0 if predicted.item() < self.threshold else 1
             target = target.item()
             if (target == 1):
                 if (predicted == 1): TP += 1
