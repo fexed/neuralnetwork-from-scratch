@@ -123,6 +123,8 @@ def roc_curve(title, FPR, TPR, xlabel="Specificity", ylabel="Sensitivity", savef
     ax.set_ylabel(ylabel)
     ax.set_title(title)
     plot.gca().margins(x=0)
+    plot.xlim([0,1])
+    plot.ylim([0,1])
     fig.set_size_inches(18.5, 10.5)
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
