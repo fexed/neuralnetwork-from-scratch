@@ -22,12 +22,11 @@ def test_CUP(output=True):
     # train
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.5)
     suffix = "CUP_" + ts
-    net = Network("CUP test", MEE())
-    net.add(FullyConnectedLayer(10, 20, Tanh(), initialization_func="he"))
-    net.add(FullyConnectedLayer(20, 20, Tanh(), initialization_func="he"))
-    net.add(FullyConnectedLayer(20, 2, initialization_func="he"))
+    net = Network("CUP test", MEE(), momentum=0.85)
+    net.add(FullyConnectedLayer(10, 30, Tanh(), initialization_func="he"))
+    net.add(FullyConnectedLayer(30, 2, initialization_func="he"))
     if (output): net.summary()
-    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, weight_decay="linear", metric = Accuracy())
+    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=25, batch_size=1, lr_decay=None, metric = Accuracy())
 
     # accuracy on validation set
     acc = Accuracy().compute(net, xvl, yvl)
