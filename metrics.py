@@ -38,6 +38,17 @@ class Accuracy(Metric):
         return accuracy
 
 
+class MeanEuclideanError(Metric):
+    def __init__(self):
+        self.name = "Mean Euclidean Error"
+
+    def compute(self, model, dataset, targets):
+        import numpy as np
+        predictions = model.predict(dataset)
+        MEE = (np.linalg.norm(predictions - targets)/len(targets))
+        return MEE
+
+
 class ConfusionMatrix(Metric):
     def __init__(self, threshold=0.5):
         self.name = "Confusion Matrix"
