@@ -31,7 +31,7 @@ net.add(FullyConnectedLayer(10, 25, Tanh(), initialization_func="normalized_xavi
 net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 2,  initialization_func="normalized_xavier"))
 net.summary()
-history, validation_history = net.training_loop(X_TR, Y_TR, X_validation=X_VAL, Y_validation=Y_VAL, epochs=1500, learning_rate=0.00001, verbose=True, batch_size=1, early_stopping=50)
+history, validation_history = net.training_loop(X_TR, Y_TR, X_validation=X_VAL, Y_validation=Y_VAL, epochs=2500, learning_rate=0.0025, verbose=True, batch_size=1, early_stopping=50)
 
 # Model evaluation
 
