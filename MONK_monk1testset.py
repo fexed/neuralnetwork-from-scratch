@@ -22,7 +22,7 @@ net.add(FullyConnectedLayer(input_size, 20, Sigmoid(), initialization_func="xavi
 net.add(FullyConnectedLayer(20, 20, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(20, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
-history = net.training_loop(X_TR, Y_TR, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
+history, epochs_done = net.training_loop(X_TR, Y_TR, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
 
 # Model evaluation
 
