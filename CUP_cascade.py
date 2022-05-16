@@ -23,13 +23,13 @@ def test_CUP(output=True):
     Y = Y[0:,0:,1]  # second target
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.5)
     suffix = "CUP_" + ts
-    net = Network("CUP test second target", MEE(), momentum=0.85)
+    net = Network("CUP test second target", MEE(), momentum=0)
     net.add(FullyConnectedLayer(10, 30, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(30, 30, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(30, 30, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(30, 1, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, metric = Accuracy())
+    history, val_history, accuracy_history, epochs_done = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=300, learning_rate=0.001, verbose=output, batch_size=1, metric = Accuracy())
 
     # accuracy on validation set
     accuracy = Accuracy().compute(net, xvl, yvl)

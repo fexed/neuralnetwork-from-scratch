@@ -29,7 +29,7 @@ def test_CUP(output=True):
     net.add(FullyConnectedLayer(30, 30, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(30, 1, initialization_func="normalized_xavier"))
     if (output): net.summary()
-    history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.01, verbose=output, early_stopping=25, batch_size=1, metric = Accuracy())
+    history, val_history, accuracy_history, epochs_done = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=300, learning_rate=0.001, verbose=output, early_stopping=25, batch_size=1, metric = Accuracy())
 
     # accuracy on validation set
     accuracy = Accuracy().compute(net, xvl, yvl)
