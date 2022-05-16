@@ -1,6 +1,6 @@
 from random import random
 from activationfunctions import LeakyReLU, ReLU, Sigmoid, Tanh
-from losses import MSE
+from losses import MEE
 from layers import FullyConnectedLayer
 from metrics import MeanEuclideanError
 from neuralnetwork import Network
@@ -26,12 +26,12 @@ X, means, std = continuous_standardizer(X)
 X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
 # training
-net = Network("CUP", MSE())
+net = Network("CUP", MEE())
 net.add(FullyConnectedLayer(10, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
 net.add(FullyConnectedLayer(25, 2,  initialization_func="normalized_xavier"))
 net.summary()
-history, validation_history = net.training_loop(X_TR, Y_TR ,X_validation=X_VAL, Y_validation=Y_VAL, epochs=150, learning_rate=0.001, verbose=True, batch_size=1)
+history, validation_history = net.training_loop(X_TR, Y_TR, X_validation=X_VAL, Y_validation=Y_VAL, epochs=1500, learning_rate=0.00001, verbose=True, batch_size=1, early_stopping=50)
 
 # Model evaluation
 
