@@ -8,9 +8,9 @@ from utils import tr_vl_split
 
 X, Y = load_cup(verbose=True, test=False)
 Y = Y[0:,0:,1]  # second target
-xtr, xvl, ytr, yvl =  tr_vl_split(X, Y, ratio=0.2)
+#xtr, xvl, ytr, yvl =  tr_vl_split(X, Y, ratio=0.2)
 
-res = grid_search(10, 1, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=[1, 2, 3], units=list(range(20, 35)), learning_rates=[0.001], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0], regularizators=[None], epochs=1000, verbose=False, early_stopping=25)
+res = grid_search(10, 1, X, Y, layers=[1, 2, 3], units=list(range(20, 35)), learning_rates=[0.001], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0], regularizators=[None], epochs=1000, verbose=False, early_stopping=25)
 
 result_file = open("datasets/CUP/grid_search/results_featurestosecondtarget.txt", "w")
 result_file.write("CUP:\n")
