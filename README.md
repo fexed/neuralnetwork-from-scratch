@@ -23,6 +23,6 @@
 ### CUP
 |Date|Accuracy|MEE|Loss|Hidden layers and units|Learning rate|Momentum|Init. function|Activ. function|Notes|
 |---|---|---|---|---|---|---|---|---|---|
-|17/05/2022|0% 2.37%|0.07951|1.1123 (MEE)|[23]|0.0025| |Norm. Xavier|Tanh| |
+|17/05/2022|0% 2.37%|0.07951|1.1123 (MEE)|[23]|0.0025| |Norm. Xavier|Tanh|L2(l = 1e-05)|
 |13/05/2022|0.67% 2.37%|0.09735|0.6836 (MSE)|[25,25]|0.001| |Norm. Xavier|Tanh| |
 |10/05/2022|0%| |0.9846|[30]|0.001 (MSE)|0.85|He|Tanh|Quick baseline test|
