@@ -76,7 +76,7 @@ class ConfusionMatrix(Metric):
         precision = TP/(TP + FP + 1e-5)
         accuracy = (TP + TN)/len(targets)
 
-        return accuracy, specificity, sensitivity, precision
+        return accuracy, specificity, sensitivity, precision, (TP, TN, FP, FN)
 
 
 class ROCCurve(Metric):

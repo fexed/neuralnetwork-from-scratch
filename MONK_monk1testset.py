@@ -2,7 +2,7 @@ from activationfunctions import Sigmoid
 from losses import BinaryCrossentropy
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
-from utils import plot_and_save
+from utils import plot_and_save, confusion_matrix
 from metrics import Accuracy, ConfusionMatrix
 import numpy as np
 import matplotlib.pyplot as plot
@@ -22,7 +22,7 @@ net.add(FullyConnectedLayer(input_size, 20, Sigmoid(), initialization_func="xavi
 net.add(FullyConnectedLayer(20, 20, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(20, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
-history, epochs_done = net.training_loop(X_TR, Y_TR, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
+history = net.training_loop(X_TR, Y_TR, epochs=1000, learning_rate=0.1, verbose=True, early_stopping=50)
 
 # Model evaluation
 
@@ -38,3 +38,6 @@ plot_and_save(title="MONK1 model evaluation", history=history, ylabel="Loss", xl
 
 # saving the net
 net.savenet("models/MONK1TESTED_1L_20U_0.8M_0.1LR_xavier.pkl")
+
+cfm = ConfusionMatrix().compute(net, X_TS, Y_TS)
+confusion_matrix(values=cfm[4], savefile='CMF')
