@@ -245,14 +245,14 @@ class Network:
         # return the data that we have gathered
         if not(val_history is None):
             if not(metric is None):
-                return history, val_history, metric_history, epochs_done
+                return history, val_history, metric_history
             else:
-                return history, val_history, epochs_done
+                return history, val_history
         else:
             if not(metric is None):
-                return history, metric_history, epochs_done
+                return history, metric_history
             else:
-                return history, epochs_done
+                return history
 
 
     def savenet(self, filename):

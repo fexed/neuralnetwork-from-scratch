@@ -51,9 +51,9 @@ def grid_search(input_size, output_size, X, y,
                                             if (verbose): net.summary()
 
                                             if not(X_validation is None):
-                                                history, val_history, epochs_done = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
+                                                history, val_history = net.training_loop(X, y, X_validation=X_validation, Y_validation=Y_validation, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
                                             else:
-                                                history, epochs_done = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
+                                                history = net.training_loop(X, y, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
 
                                             results.append({"loss":val_history[-1],  # better judge
                                                             "layers":N,
