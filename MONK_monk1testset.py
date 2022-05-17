@@ -40,4 +40,4 @@ plot_and_save(title="MONK1 model evaluation", history=history, ylabel="Loss", xl
 net.savenet("models/MONK1TESTED_1L_20U_0.8M_0.1LR_xavier.pkl")
 
 cfm = ConfusionMatrix().compute(net, X_TS, Y_TS)
-confusion_matrix(values=cfm[4], savefile='CMF')
+confusion_matrix(values=cfm[4], title="MONK 1", savefile='CMF')
