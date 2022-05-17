@@ -7,7 +7,7 @@ from utils import training_progress
 class Network:
     """ Base class for the neural networks used in this project """
 
-    def __init__(self, name="-unnamed-", loss=None, regularizator=None, momentum=0, dropout=0):
+    def __init__(self, name="-unnamed-", loss=None, regularizator=None, momentum=0, dropout=0, nesterov=False):
         """ Initializes the neural network with some parameters
 
         Parameters
@@ -21,6 +21,8 @@ class Network:
             The regularizator to be applied during training
         momentum = float, optional
             The momentum of the training
+        nesterov = boolean, option
+            The way to apply momentum heuristic: Nesterov or "Classical"
         dropout = float, optional
             The dropout percentage
         """
@@ -31,6 +33,7 @@ class Network:
         self.regularizator = regularizator
         self.momentum = momentum
         self.dropout = 1 - dropout  # prob of keeping the neuron
+        self.nesterov = nesterov
 
 
     def summary(self):
@@ -62,6 +65,8 @@ class Network:
             print(" and momentum = " + str(self.momentum), end="")
         if (self.dropout < 1):
             print(" and dropout = " + str(self.dropout), end="")
+        if (self.nesterov < 1):
+            print(" and nesterov = " + str(self.nesterov), end="")
         print("")
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
 
@@ -190,7 +195,7 @@ class Network:
                         gradient += self.loss.derivative(targets[k], outputs[k])
                     gradient /= len(outputs)
                     for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator)
+                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, self.nesterov)
                     outputs = []
                     targets = []
                     if not (lr_decay is None):

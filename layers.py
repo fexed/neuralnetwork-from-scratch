@@ -26,7 +26,7 @@ class Layer:
         raise NotImplementedError
 
 
-    def backward_propagation(self, output_error, learning_rate, momentum = 0, regularizator=None):
+    def backward_propagation(self, output_error, learning_rate, momentum = 0, regularizator=None, nesterov=False):
         """ Computes the delta-error over the input for a given delta-error over
         the output and updates any parameter
 
@@ -40,6 +40,8 @@ class Layer:
             The rate of momentum
         regularizator : Regularizator
             The regularizator to use
+        nesterov: bool, 
+            The way to apply momentum heuristic: Nesterov or "Classical"
         """
 
         raise NotImplementedError
@@ -128,7 +130,7 @@ class FullyConnectedLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, gradient, eta, momentum = 0, regularizator=None):
+    def backward_propagation(self, gradient, eta, momentum = 0,  regularizator=None, nesterov=False):
         """ Computes the delta-error over the input for a given delta-error over
         the output and updates any parameter
 
@@ -144,6 +146,14 @@ class FullyConnectedLayer(Layer):
             The regularizator to use
         """
 
+        if (nesterov and momentum > 0):
+            #Nesterov momentum is applied before the actual gradient computation
+            nesterov_weights_update =  np.multiply(self.prev_weight_update, momentum)
+            nesterov_bias_update = np.multiply(self.prev_bias_update, momentum)
+
+            self.weights += nesterov_weights_update
+            self.bias += nesterov_bias_update
+
         if not(self.activation is None):
             # if there's activation function specified, then we compute its
             # derivative
@@ -152,17 +162,19 @@ class FullyConnectedLayer(Layer):
         weights_update = -eta * np.dot(self.input.T, gradient)
         bias_update = -eta * gradient
 
-        if (momentum > 0):
+        if (momentum > 0 and not nesterov):
             # with momentum we consider the previous update too
             weights_update += np.multiply(self.prev_weight_update, momentum)
             bias_update += np.multiply(self.prev_bias_update, momentum)
 
+        if (momentum): 
             # store this update for the next backprop in this layer
             self.prev_weight_update = weights_update
             self.prev_bias_update = bias_update
 
         if not(regularizator is None):
             # regularization
+            print(regularizator)
             weights_update -= regularizator.derivative(self.weights)
 
         # the basic parameter update
