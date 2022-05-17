@@ -134,7 +134,7 @@ def roc_curve(title, FPR, TPR, AUC, xlabel="Specificity", ylabel="Sensitivity", 
     plot.clf()
 
 
-def confusion_matrix(title, TP, FN, FP, TN, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
+def confusion_matrix(title="sample", TP=0, FN=0, FP=0, TN=0, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
     """ Plots the confusion matrix
 
     Parameters
@@ -157,9 +157,27 @@ def confusion_matrix(title, TP, FN, FP, TN, xlabel="Specificity", ylabel="Sensit
         The name of the file where to save the plot, in the plot folder
     """
 
+    '''
+    import seaborn as sn
+    import pandas as pd
     import matplotlib.pyplot as plot
-    # TODO
 
+    array = [[13,1,1,0,2,0],
+            [3,9,6,0,1,0],
+            [0,0,16,2,0,0],
+            [0,0,0,13,0,0],
+            [0,0,0,0,15,0],
+            [0,0,1,0,0,15]]
+
+    df_cm = pd.DataFrame(array, range(6), range(6))
+    # plt.figure(figsize=(10,7))
+    sn.set(font_scale=1.4) # for label size
+    sn.heatmap(df_cm, annot=True, annot_kws={"size": 16}) # font size
+
+    plot.gca().margins(x=0)
+    if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
+    plot.clf()
+    '''
 
 def log(filename, data):
     """ Saves some data in a pickle file in the logs folder
