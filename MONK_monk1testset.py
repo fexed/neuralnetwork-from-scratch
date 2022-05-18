@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plot
 from dataset_loader import load_monk
 
+
 monk = 1
 print("\n\n****TESTING NETWORK ON MONK" + str(monk))
 
@@ -34,10 +35,10 @@ accuracy = Accuracy().compute(net, X_TS, Y_TS)
 print("Accuracy on the test set: {:.4f}%".format(accuracy))
 
 # plotting data
-plot_and_save(title="MONK1 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK1TEST")
+plot_and_save(title="MONK1 model evaluation", history=history, ylabel="Loss", xlabel="Epochs", savefile="MONK1_TEST")
 
 # saving the net
 net.savenet("models/MONK1TESTED_1L_20U_0.8M_0.1LR_xavier.pkl")
 
 cfm = ConfusionMatrix().compute(net, X_TS, Y_TS)
-confusion_matrix(values=cfm[4], title="MONK 1", savefile='CMF')
+confusion_matrix(values=cfm[4], title="MONK 1", savefile='MONK1_CMF')
