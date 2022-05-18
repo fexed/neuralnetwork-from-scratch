@@ -7,7 +7,7 @@ from utils import tr_vl_split
 
 
 X, Y = load_cup(verbose=True, test=False)
-xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.25)
+#xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.25)
 
 res = grid_search(10, 2, xtr, ytr, X_validation=xvl, Y_validation=yvl, layers=list(range(0, 1)), units=list(range(20, 26, 1)), learning_rates=[0.0025, 0.0001, 0.00001], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0, 0.8], regularizators=[L2(l = 0.001), L2(l = 0.0001), L2(l = 0.00001)], epochs=1500, verbose=False, early_stopping=150)
 result_file = open("datasets/CUP/grid_search/results.txt", "w")

@@ -164,9 +164,7 @@ class Network:
 
         es_epochs = 0  # counting early stopping epochs if needed
         min_error = float('inf')
-        epochs_done = 0;
         for i in range(epochs):
-            epochs_done = i + 1
             error = 0
             outputs = []
             targets = []
