@@ -73,3 +73,5 @@ print("MEE", MEE)
 plot_and_save(title="CUP model evaluation", history=history, validation_history=validation_history, ylabel="Loss", xlabel="Epochs", savefile="CUP_HOLDOUT")
 #plot_and_save(title="CUP target1 evaluation", history=history, validation_history=validation_history, ylabel="Loss", xlabel="Epochs", savefile="CUP_HOLDOUT")
 #plot_and_save(title="CUP target2 evaluation", history=history, validation_history=validation_history, ylabel="Loss", xlabel="Epochs", savefile="CUP_HOLDOUT")
+
+#net.savenet("models/CUP_currentbest.pkl")
