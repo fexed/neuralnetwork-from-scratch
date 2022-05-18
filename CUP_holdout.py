@@ -27,10 +27,9 @@ X, means, std = continuous_standardizer(X)
 X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
 # training
-net = Network("CUP", MEE())
-net.add(FullyConnectedLayer(10, 25, Tanh(), initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(25, 25, Tanh(), initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(25, 2,  initialization_func="normalized_xavier"))
+net = Network("CUP", MEE(), regularizator=L2(l = 1e-05))
+net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(23, 2,  initialization_func="normalized_xavier"))
 net.summary()
 history, validation_history = net.training_loop(X_TR, Y_TR, X_validation=X_VAL, Y_validation=Y_VAL, epochs=1000, learning_rate=0.0025, verbose=True, batch_size=1, early_stopping=50)
 
