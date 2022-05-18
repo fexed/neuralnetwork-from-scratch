@@ -159,9 +159,7 @@ class Network:
 
         es_epochs = 0  # counting early stopping epochs if needed
         min_error = float('inf')
-        epochs_done = 0;
         for i in range(epochs):
-            epochs_done = i + 1
             error = 0
             outputs = []
             targets = []
@@ -245,14 +243,14 @@ class Network:
         # return the data that we have gathered
         if not(val_history is None):
             if not(metric is None):
-                return history, val_history, metric_history, epochs_done
+                return history, val_history, metric_history
             else:
-                return history, val_history, epochs_done
+                return history, val_history
         else:
             if not(metric is None):
-                return history, metric_history, epochs_done
+                return history, metric_history
             else:
-                return history, epochs_done
+                return history
 
 
     def savenet(self, filename):
