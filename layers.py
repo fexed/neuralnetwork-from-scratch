@@ -40,7 +40,7 @@ class Layer:
             The rate of momentum
         regularizator : Regularizator
             The regularizator to use
-        nesterov: bool, 
+        nesterov: bool,
             The way to apply momentum heuristic: Nesterov or "Classical"
         """
 
@@ -167,14 +167,13 @@ class FullyConnectedLayer(Layer):
             weights_update += np.multiply(self.prev_weight_update, momentum)
             bias_update += np.multiply(self.prev_bias_update, momentum)
 
-        if (momentum): 
+        if (momentum):
             # store this update for the next backprop in this layer
             self.prev_weight_update = weights_update
             self.prev_bias_update = bias_update
 
         if not(regularizator is None):
             # regularization
-            print(regularizator)
             weights_update -= regularizator.derivative(self.weights)
 
         # the basic parameter update
