@@ -27,6 +27,7 @@ def one_hot_encoding(input):
 
     return np.array(encoded_input), bits
 
+
 # Returns standardized input, menas and standard deviations of each feature (pre standardization)
 def continuous_standardizer(input): 
     standardized_input = []
@@ -46,6 +47,7 @@ def continuous_standardizer(input):
         standardized_input.append((pattern - mean)/std)
     
     return np.array(standardized_input), mean, std
+
 
 # Returns normalized input, min and max of each fdeature (pre normalization)
 def min_max_normalizer(input): 

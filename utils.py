@@ -133,6 +133,7 @@ def roc_curve(title, FPR, TPR, AUC, xlabel="Specificity", ylabel="Sensitivity", 
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
+
 # Only for MONK
 def confusion_matrix(title="sample", values = (0,0,0,0), savefile=None):
     """ Plots the confusion matrix
@@ -163,20 +164,20 @@ def confusion_matrix(title="sample", values = (0,0,0,0), savefile=None):
 
     TP, TN, FP, FN = values
 
-    cfm = [ [TP,FP,],
-            [FN,TN]]
+    cfm = [[TP,FP],
+           [FN,TN]]
 
-    x_labels= ["Predicted 1", "Predicted 2"]
+    x_labels = ["Predicted 1", "Predicted 2"]
     y_labels = ["Actually 1", "Actually 2" ]
     
     df_cm = pd.DataFrame(cfm, range(2), range(2))
-    # plt.figure(figsize=(10,7))
     sn.set(font_scale=1.4) # for label size
     sn.heatmap(df_cm, annot=True,  fmt="g", cmap="Blues" ,annot_kws={"size": 16}, xticklabels=x_labels, yticklabels=y_labels).set(title=title)
 
     plot.gca().margins(x=0)
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
+
 
 def log(filename, data):
     """ Saves some data in a pickle file in the logs folder
