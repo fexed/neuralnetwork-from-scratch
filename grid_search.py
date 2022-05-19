@@ -23,7 +23,6 @@ def grid_search(input_size, output_size, X, y,
 
     if (batch_sizes==None):
         batch_sizes=[1, input_size]
-    kfold = KFold(folds, X, y)
     n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(batch_sizes)*len(dropouts)*folds*len(nesterovs)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
     results = []  # to store the results and return the best 10
@@ -45,6 +44,7 @@ def grid_search(input_size, output_size, X, y,
                                 for regularizator in regularizators:
                                         for init_f in init_functions:
                                             for B in batch_sizes:
+                                                kfold = KFold(folds, X, y)
                                                 final_losses_mean = 0
                                                 epochs_done_mean = 0
                                                 while (kfold.hasNext()):
@@ -90,3 +90,4 @@ def grid_search(input_size, output_size, X, y,
             for i in range (0, 10):
                 print("\t" + str(results[i]))
         return results[0:10]
+        
