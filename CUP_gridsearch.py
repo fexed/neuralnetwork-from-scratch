@@ -8,7 +8,7 @@ from utils import tr_vl_split
 
 X, Y = load_cup(verbose=True, test=False)
 
-res = grid_search(10, 2, X, Y, layers=list(range(0, 1)), units=list(range(20, 26, 1)), learning_rates=[0.0025, 0.0001, 0.00001], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0, 0.8], regularizators=[L2(l = 0.001), L2(l = 0.0001)], dropouts=[0], epochs=1500, verbose=False, early_stopping=150)
+res = grid_search(10, 2, X, Y, layers=[0], units=list(range(20, 26, 1)), learning_rates=[0.0025, 0.00125, 0.001, 0.000625], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0], regularizators=[L2(l = 1e-4), L2(l = 1e-5), L2(l = 1e-6)], dropouts=[0, 0.5], nesterovs=[False], epochs=2000, verbose=False, early_stopping=150)
 result_file = open("datasets/CUP/grid_search/results.txt", "w")
 print("CUP\n")
 result_file.write("CUP:\n")
