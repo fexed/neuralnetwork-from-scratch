@@ -20,7 +20,6 @@ def CUP_evaluation():
     X, n_min, n_max = min_max_normalizer(X)
     X, means, std = continuous_standardizer(X)
 
-
     X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
     # Training
@@ -34,7 +33,7 @@ def CUP_evaluation():
     return err, net
 
 
-print("\n\n****EVALUATING NETWORK ON CUP" )
+print("Assessing given network on CUP" )  # NEED INTERNAL TEST SET
 vals = []
 for i in range(10):
     err, net = CUP_evaluation()
