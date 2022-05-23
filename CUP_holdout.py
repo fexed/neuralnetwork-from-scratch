@@ -14,7 +14,7 @@ from dataset_loader import load_cup
 
 def CUP_evaluation():
     # Training set loading
-    X, Y = load_cup()
+    X, Y = load_cup(file="training")
 
     # Preprocessing
     X, n_min, n_max = min_max_normalizer(X)

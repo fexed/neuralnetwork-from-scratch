@@ -15,7 +15,7 @@ from itertools import zip_longest
 
 def test_CUP(output=True, initialization="normalized_xavier"):
     if (output): print("\n\n****CUP")
-    X, Y = load_cup()
+    X, Y = load_cup(file="training")
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio=0.2)
     if (output): print("Training set of " + str(X.size) + " elements")
     net = Network("CUP test", MEE(), regularizator=L2(l = 1e-05))
