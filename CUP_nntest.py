@@ -18,7 +18,7 @@ import pickle
 def test_CUP(output=True):
     ts = str(time.time()).split(".")[0]  # current timestamp for log purposes
     if (output): print("\n\n****CUP")
-    X, Y = load_cup(verbose=output, test=False)
+    X, Y = load_cup(verbose=output, file="training")
     # train
     xtr, xvl, ytr, yvl = tr_vl_split(X, Y, ratio = 0.5)
     suffix = "CUP_" + ts

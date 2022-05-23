@@ -6,7 +6,7 @@ from preprocessing import continuous_standardizer, min_max_normalizer
 from utils import tr_vl_split
 
 
-X, Y = load_cup(verbose=True, test=False)
+X, Y = load_cup(verbose=True, file="training")
 Y = Y[0:,0:,1]  # second target
 #xtr, xvl, ytr, yvl =  tr_vl_split(X, Y, ratio=0.2)
 
