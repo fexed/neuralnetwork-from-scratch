@@ -35,9 +35,15 @@ def load_monk(monk=1, test=False, use_one_hot=False, verbose=True):
 """ Loads the CUP dataset, optionally the test set and/or the 10 features with
 the second label with the first label as target, from the datasets/CUP folder
 """
-def load_cup(verbose=True, test=False, forfirst=False):
+def load_cup(verbose=True, file="training", forfirst=False):
     if (verbose): ("\n\n****CUP")
-    cupfile = open("datasets/CUP/ML-CUP21-" + ("TS" if test else "TR") + ".csv", "r")
+    if file == "training":
+        filepath = "training_set_CUP.csv"
+    elif file == "test":
+        filepath = "internal_test_set_CUP.csv"
+    elif file == "blind":
+        filepath = "ML-CUP21-TS.csv" 
+    cupfile = open("datasets/CUP/"+filepath, "r")
     xtr = []
     ytr = []
     for line in cupfile.readlines():
@@ -48,7 +54,7 @@ def load_cup(verbose=True, test=False, forfirst=False):
             xtr.append([[float(vals[1]), float(vals[2]), float(vals[3]), float(vals[4]), float(vals[5]), float(vals[6]), float(vals[7]), float(vals[8]), float(vals[9]), float(vals[10]), float(vals[11])]])
         else:
             xtr.append([[float(vals[1]), float(vals[2]), float(vals[3]), float(vals[4]), float(vals[5]), float(vals[6]), float(vals[7]), float(vals[8]), float(vals[9]), float(vals[10])]])
-        if not test:
+        if file != "blind":
             if (forfirst):
                 ytr.append([[float(vals[12])]])
             else:
@@ -56,4 +62,4 @@ def load_cup(verbose=True, test=False, forfirst=False):
 
     X = np.array(xtr)
 
-    return X if test else X, np.array(ytr)
+    return X if file != "blind" else X, np.array(ytr)
