@@ -28,8 +28,9 @@ def test_CUP(output=True):
     if (output): net.summary()
     history, val_history, accuracy_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=1000, learning_rate=0.001, verbose=output, early_stopping=25, batch_size=1, lr_decay=None, metric = Accuracy())
 
-    # accuracy on validation set
-    acc = Accuracy().compute(net, xvl, yvl)
+    xtest, ytest = load_cup(verbose=output, file="test")
+    # accuracy on internal test set
+    acc = Accuracy().compute(net, xtest, ytest)
 
     if (output): print("Accuracy: {:.4f}%".format(acc))
 
