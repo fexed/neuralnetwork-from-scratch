@@ -23,7 +23,7 @@ def CUP_evaluation():
     X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
 
     # Training
-    net = Network("CUP", MEE(), regularizator=L2(l = 1e-06))
+    net = Network("CUP", MEE(), regularizator=L2(l = 1e-6))
     net.add(FullyConnectedLayer(10, 24, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(24, 2,  initialization_func="normalized_xavier"))
     history = net.training_loop(X_TR, Y_TR, epochs=1300, learning_rate=0.000625, verbose=False, batch_size=1)
