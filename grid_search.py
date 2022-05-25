@@ -17,8 +17,8 @@ def grid_search(input_size, output_size, X, y,
                 init_functions=["xavier", "normalized_xavier", "he", "basic"],
                 momentums=[0, 0.8, 0.9, 0.99, 0.999],
                 regularizators=[None, L2(l = 0.005), L2(l = 0.015)],
-                dropouts=[0, 0.5],
-                nesterovs=[False, True],
+                dropouts=[0, 0.5, 0.8],
+                nesterovs=[True, False],
                 epochs=500, verbose=True, early_stopping=25, folds=3):
 
     if (batch_sizes==None):
