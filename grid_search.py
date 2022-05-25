@@ -25,6 +25,19 @@ def grid_search(input_size, output_size, X, y,
         batch_sizes=[1, input_size]
     n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(batch_sizes)*len(dropouts)*folds*len(nesterovs)
     if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
+    if (verbose):
+        print("\tinput_size:", input_size)
+        print("\toutput_size:", output_size)
+        print("\tlayers:", layers)
+        print("\tunits:", units)
+        print("\tlearning_rates:", learning_rates)
+        print("\tbatch_sizes:", batch_sizes)
+        print("\tinit_functions:", init_functions)
+        print("\tmomentums:", momentums)
+        print("\tregularizators:", regularizators)
+        print("\tdropouts:", dropouts)
+        print("\tnesterovs:", nesterovs)
+        print("\tfolds:", folds)
     results = []  # to store the results and return the best 10
 
     try:
