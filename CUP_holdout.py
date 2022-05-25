@@ -14,28 +14,29 @@ from dataset_loader import load_cup
 
 def CUP_evaluation():
     # Training set loading
-    X, Y = load_cup(file="training")
+    Xtr, Ytr = load_cup(file="training")
+    Xts, Yts = load_cup(file="test")
 
     # Preprocessing
-    X, n_min, n_max = min_max_normalizer(X)
-    X, means, std = continuous_standardizer(X)
-
-    X_TR,  X_VAL, Y_TR, Y_VAL = tr_vl_split(X, Y, ratio=0.2)
+    Xtr, n_min, n_max = min_max_normalizer(Xtr)
+    Xtr, means, std = continuous_standardizer(Xtr)
 
     # Training
-    net = Network("CUP", MEE(), regularizator=L2(l = 1e-6))
+    net = Network("CUP", MEE(), regularizator=L2(l = 1e-06), nesterov=True, momentum=0.8)
     net.add(FullyConnectedLayer(10, 24, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(24, 2,  initialization_func="normalized_xavier"))
-    history = net.training_loop(X_TR, Y_TR, epochs=1300, learning_rate=0.000625, verbose=False, batch_size=1)
+    history = net.training_loop(Xtr, Ytr, epochs=1300, learning_rate=0.000625, verbose=True, batch_size=16)
 
     # Model evaluation
-    err = MeanEuclideanError().compute(net, X_VAL, Y_VAL)
+    Xts, n_min, n_max = min_max_normalizer(Xts)
+    Xts, means, std = continuous_standardizer(Xts)
+    err = MeanEuclideanError().compute(net, Xts, Yts)
     return err, net
 
 
-print("Assessing given network on CUP" )  # NEED INTERNAL TEST SET
+print("Assessing given network on CUP" )
 vals = []
-for i in range(10):
+for i in range(1):
     err, net = CUP_evaluation()
     vals.append(err)
 
