@@ -1,0 +1,13 @@
+Grid search on 432 combinations
+        input_size: 10
+        output_size: 2
+        layers: [0]
+        units: [20, 21, 22, 23, 24, 25]
+        learning_rates: [0.0025, 0.00125, 0.001, 0.000625]
+        batch_sizes: [1]
+        init_functions: ['normalized_xavier']
+        momentums: [0]
+        regularizators: [L2(l = 1e-4), L2(l = 1e-5), L2(l = 1e-6)]
+        dropouts: [0, 0.5]
+        nesterovs: [False]
+        folds: 3

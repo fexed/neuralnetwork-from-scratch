@@ -1,0 +1,14 @@
+CUP:
+Grid search on 648 combinations
+        input_size: 10
+        output_size: 2
+        layers: [1, 2, 3]
+        units: [5, 10, 15]
+        learning_rates: [0.001, 0.0001]
+        batch_sizes: [1]
+        init_functions: [None, 'normalized_xavier']
+        momentums: [0.5, 0.8]
+        regularizators: [None, L2(l = 0.005), L2(l = 0.15)]
+        dropouts: [0]
+        nesterovs: [False]
+        folds: -
