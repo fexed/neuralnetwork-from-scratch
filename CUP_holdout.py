@@ -34,6 +34,13 @@ def CUP_evaluation():
     return err, net
 
 
+newnet = Network("Current Best")
+newnet.loadnet("models/CUP_currentbest.pkl")
+newnet.summary()
+# Model evaluation
+Xts, Yts = load_cup(file="test")
+err = MeanEuclideanError().compute(newnet, Xts, Yts)
+print("Current best: ", err)
 print("Assessing given network on CUP" )
 vals = []
 for i in range(1):
