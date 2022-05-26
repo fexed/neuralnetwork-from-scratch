@@ -1,5 +1,6 @@
 *.pyc
 *.pkl
 plots/*.png
+plots/CUP_nesterov/*.png
 *.Identifier
 CM-ML-project.code-workspace
