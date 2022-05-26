@@ -65,8 +65,8 @@ class Network:
             print(" and momentum = " + str(self.momentum), end="")
         if (self.dropout < 1):
             print(" and dropout = " + str(self.dropout), end="")
-        if (self.nesterov < 1):
-            print(" and nesterov = " + str(self.nesterov), end="")
+        if (self.nesterov):
+            print(" and Nesterov momentum", end="")
         print("")
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
 
