@@ -23,10 +23,10 @@ def CUP_evaluation():
 
     # Training
     Xtr, Xvl, Ytr, Yvl = tr_vl_split(Xtr, Ytr, ratio=0.1)
-    net = Network("CUP", MEE(), nesterov=True, momentum=0.8)
+    net = Network("CUP", MEE(), nesterov=True, momentum=0.25)
     net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
-    history, val_history = net.training_loop(Xtr, Ytr, X_validation=Xvl, Y_validation=Yvl, epochs=2500, learning_rate=0.0025, verbose=True, batch_size=32, early_stopping=50)
+    history, val_history = net.training_loop(Xtr, Ytr, X_validation=Xvl, Y_validation=Yvl, epochs=4000, learning_rate=0.0025, verbose=True, batch_size=16, early_stopping=50)
 
     # Model evaluation
     err = MeanEuclideanError().compute(net, Xts, Yts)
@@ -59,9 +59,9 @@ print("MEE", np.mean(vals), "+-", np.std(vals))
 +==== Structure
 |       1. FullyConnectedLayer of 10 -> 23 units with Tanh activation function
 |       2. FullyConnectedLayer of 23 -> 2 units
-+==== Loss: Mean Euclidean Error and momentum = 0.8 and Nesterov momentum
++==== Loss: Mean Euclidean Error and momentum = 0.25 and Nesterov momentum
 For a total of 301 trainable parameters
+MEE 0.19748257977351702 +- 0.015059235424371582
 Learning rate = 0.0025
-Batch size = 32
-MEE 0.21586858872871323 +- 0.017397045001257484
+Batch size = 16
 """
