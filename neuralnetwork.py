@@ -151,11 +151,11 @@ class Network:
         if (verbose):
             print("Beginning training loop with " + str(epochs) + " targeted epochs over " + str(N) + " training elements", end="")
             if (batch_size > 1):
-                print("(batch size = " + str(batch_size) + ")")
+                print("(batch size = " + str(batch_size) + ")", end="")
             if not(early_stopping is None):
                 print(", with early stopping = " + str(early_stopping), end="")
             if not(val_history is None):
-                print(" and validation set given", end="")
+                print(" and validation set present", end="")
             if not(lr_decay is None):
                 print(", with " + str(lr_decay) + " weight decay until epoch " + str(lr_decay_finalstep), end="")
             if not(metric is None):
