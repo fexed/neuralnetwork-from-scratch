@@ -28,8 +28,8 @@ def CUP_evaluation():
     history = net.training_loop(Xtr, Ytr, epochs=1300, learning_rate=0.000625, verbose=True, batch_size=16)
 
     # Model evaluation
-    Xts, n_min, n_max = min_max_normalizer(Xts)
-    Xts, means, std = continuous_standardizer(Xts)
+    #Xts = min_max_normalizer(Xts, n_min, n_max)
+    #Xts = continuous_standardizer(Xts, means, std)
     err = MeanEuclideanError().compute(net, Xts, Yts)
     return err, net
 
