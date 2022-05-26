@@ -22,16 +22,15 @@ def CUP_evaluation():
     Xtr, means, std = continuous_standardizer(Xtr)
 
     # Training
-    net = Network("CUP", MEE(), regularizator=L2(l = 1e-06), nesterov=True, momentum=0.8)
-    net.add(FullyConnectedLayer(10, 24, Tanh(), initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(24, 2,  initialization_func="normalized_xavier"))
-    history = net.training_loop(Xtr, Ytr, epochs=1300, learning_rate=0.000625, verbose=True, batch_size=16)
+    Xtr, Xvl, Ytr, Yvl = tr_vl_split(Xtr, Ytr, ratio=0.1)
+    net = Network("CUP", MEE(), nesterov=True, momentum=0.8)
+    net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
+    history, val_history = net.training_loop(Xtr, Ytr, X_validation=Xvl, Y_validation=Yvl, epochs=2500, learning_rate=0.0025, verbose=True, batch_size=32, early_stopping=50)
 
     # Model evaluation
-    #Xts = min_max_normalizer(Xts, n_min, n_max)
-    #Xts = continuous_standardizer(Xts, means, std)
     err = MeanEuclideanError().compute(net, Xts, Yts)
-    return err, net
+    return err, net, history, val_history
 
 
 newnet = Network("Current Best")
@@ -43,9 +42,26 @@ err = MeanEuclideanError().compute(newnet, Xts, Yts)
 print("Current best: ", err)
 print("Assessing given network on CUP" )
 vals = []
-for i in range(1):
-    err, net = CUP_evaluation()
+hists, val_hists = [], []
+for i in range(5):
+    suffix = "CUP_nesterov/CUP_nesterov.5_1L_23U_eval_" + str(i)
+    err, net, hist, val_hist = CUP_evaluation()
+    print(err)
     vals.append(err)
+    hists.append(hist)
+    val_hists.append(val_hist)
 
 net.summary()
+#plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
 print("MEE", np.mean(vals), "+-", np.std(vals))
+
+"""
++==== Structure
+|       1. FullyConnectedLayer of 10 -> 23 units with Tanh activation function
+|       2. FullyConnectedLayer of 23 -> 2 units
++==== Loss: Mean Euclidean Error and momentum = 0.8 and Nesterov momentum
+For a total of 301 trainable parameters
+Learning rate = 0.0025
+Batch size = 32
+MEE 0.21586858872871323 +- 0.017397045001257484
+"""
