@@ -42,19 +42,32 @@ class Network:
         trainable_parameters = 0  # output purposes
         print("Neural Network \"" + self.name + "\"")
         print("+==== Structure")
-        for index, layer in enumerate(self.layers):
-            print("|\t" + str(index+1) + ". " + type(layer).__name__, end = "")
+        nlayers = len(self.layers)
+        try:
+            print("|IN\t" + type(self.layers[0]).__name__ + ": " + str(len(self.layers[0].weights)) + " units" , end = "")
+            trainable_parameters += self.layers[0].weights.size
+            trainable_parameters += self.layers[0].bias.size
+            print(" with " + self.layers[0].activation.name + " activation function", end = "")
+        except AttributeError:
+            pass
+        print("")
+        for i in range(nlayers-1):
             try:
-                print(" of " +  str(len(layer.weights)) + " -> " + str(layer.weights[0].size) + " units", end = "")
-                trainable_parameters += layer.weights.size
-                trainable_parameters += layer.bias.size
-            except AttributeError:
-                pass
-            try:
-                print(" with " + layer.activation.name + " activation function", end = "")
+                print("|HID\t" + type(self.layers[i]).__name__ + ": " + str(self.layers[i].weights[0].size) + " units" , end = "")
+                trainable_parameters += self.layers[i].weights.size
+                trainable_parameters += self.layers[i].bias.size
+                print(" with " + self.layers[i].activation.name + " activation function", end = "")
             except AttributeError:
                 pass
             print("")
+        try:
+            print("|OUT\t" + type(self.layers[-1]).__name__ + ": " + str(self.layers[-1].weights[0].size) + " units" , end = "")
+            trainable_parameters += self.layers[-1].weights.size
+            trainable_parameters += self.layers[-1].bias.size
+            print(" with " + self.layers[-1].activation.name + " activation function", end = "")
+        except AttributeError:
+            pass
+        print("")
         if not(self.loss is None):
             print("+==== Loss: " + self.loss.name, end="")
         else:
