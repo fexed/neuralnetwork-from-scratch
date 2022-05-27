@@ -50,10 +50,12 @@ for i in range(5):
     vals.append(err)
     hists.append(hist)
     val_hists.append(val_hist)
+    epochs.append(len(hist) - 50)
 
 net.summary()
 #plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
 print("MEE", np.mean(vals), "+-", np.std(vals))
+print("Epochs", np.mean(epochs), "+-", np.std(epochs))
 
 """
 +==== Structure
