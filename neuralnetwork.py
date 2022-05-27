@@ -96,6 +96,7 @@ class Network:
 
         # TODO check input-output dimensions?
         self.layers.append(layer)
+        self.layers[-1].init_weights()
 
 
     def predict(self, data):
