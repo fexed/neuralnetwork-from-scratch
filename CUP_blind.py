@@ -13,7 +13,7 @@ net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
 net.summary()
 net.training_loop(X, Y, epochs=1549, learning_rate=0.00125, verbose=True, batch_size=16)
 #test
-xtest = load_cup(verbose=False, file="test")
+xtest, _ = load_cup(verbose=False, file="test")
 ytest = net.predict(xtest);
 
 output_file = open("datasets/CUP/team-name_ML-CUP21-TS.csv", "w")

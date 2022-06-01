@@ -64,4 +64,4 @@ def load_cup(verbose=True, file="training", forfirst=False):
 
     X = np.array(xtr)
 
-    return X if file != "blind" else X, np.array(ytr)
+    return X if file == "blind" else X, np.array(ytr)
