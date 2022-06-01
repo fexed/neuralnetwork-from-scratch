@@ -41,6 +41,8 @@ def load_cup(verbose=True, file="training", forfirst=False):
         filepath = "training_set_CUP.csv"
     elif file == "test":
         filepath = "internal_test_set_CUP.csv"
+    elif file == "training_full":
+        filepath = "ML-CUP21-TR.csv"
     elif file == "blind":
         filepath = "ML-CUP21-TS.csv" 
     cupfile = open("datasets/CUP/"+filepath, "r")
