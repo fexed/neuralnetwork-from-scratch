@@ -13,17 +13,15 @@ net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
 net.summary()
 net.training_loop(X, Y, epochs=1549, learning_rate=0.00125, verbose=True, batch_size=16)
 #test
-xtest, _ = load_cup(verbose=False, file="test")
+xtest = load_cup(verbose=False, file="blind")
 ytest = net.predict(xtest);
-
 output_file = open("datasets/CUP/team-name_ML-CUP21-TS.csv", "w")
-count = 1
 output_file.write("#Federico Matteoni, Riccardo Parente, Sergio Latrofa\n"+
                   "#team-name\n"+
-                  "#ML CUP21 v1\n"+
-                  "# June 2022\n")
+                  "#ML CUP21\n"+
+                  "#/06/2022\n")
+count = 1
 for data in ytest:
-    output_file.write(count+","+data[0]+","+data[1]+"\n")
+    output_file.write(str(count)+","+str(data[0][0])+","+str(data[0][1])+"\n")
     count += 1
 output_file.close()
-
