@@ -95,6 +95,28 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
+def multiline_plot(title, histories, legend_names,  x_label="Epochs", y_label="Loss", style="Spectral", savefile=None): 
+    import matplotlib.pyplot as plot
+    import seaborn as sns
+
+    l = len(histories)
+
+    with sns.color_palette(style, n_colors=l):
+        fig, ax = plot.subplots()
+        for history,legend_name,  in zip(histories,legend_names):
+            ax.plot(history, label=legend_name)
+            
+        ax.set_ylabel(y_label)
+        ax.set_xlabel(x_label)
+        ax.set_title(title)
+
+        ax.legend()
+        
+        plot.gca().margins(x=0)
+        fig.set_size_inches(18.5, 10.5)
+        if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
+        plot.clf()
+    return
 
 def roc_curve(title, FPR, TPR, AUC, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
     """ Plots the ROC curve
