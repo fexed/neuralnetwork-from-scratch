@@ -95,7 +95,7 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
-def multiline_plot(title, histories, legend_names, x_label="Epochs", y_label="Loss", style="Spectral", savefile=None): 
+def multiline_plot(title, histories, legend_names, x_label="Epochs", y_label="Loss", style="Spectral", savefile=None, showlegend=True): 
     import matplotlib.pyplot as plot
     import seaborn as sns
 
@@ -110,7 +110,7 @@ def multiline_plot(title, histories, legend_names, x_label="Epochs", y_label="Lo
         ax.set_xlabel(x_label)
         ax.set_title(title)
 
-        ax.legend()
+        if (showlegend): ax.legend()
         
         plot.gca().margins(x=0)
         fig.set_size_inches(18.5, 10.5)
