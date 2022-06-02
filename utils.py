@@ -95,7 +95,7 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
-def multiline_plot(title, histories, legend_names,  x_label="Epochs", y_label="Loss", style="Spectral", savefile=None): 
+def multiline_plot(title, histories, legend_names, x_label="Epochs", y_label="Loss", style="Spectral", savefile=None): 
     import matplotlib.pyplot as plot
     import seaborn as sns
 
