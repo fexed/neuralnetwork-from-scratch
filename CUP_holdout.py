@@ -4,7 +4,7 @@ from losses import MEE
 from layers import FullyConnectedLayer
 from metrics import MeanEuclideanError
 from neuralnetwork import Network
-from utils import plot_and_save, tr_vl_split, compare
+from utils import plot_and_save, tr_vl_split, compare, multiline_plot
 from regularizators import L2
 import numpy as np
 import matplotlib.pyplot as plot
@@ -42,18 +42,20 @@ err = MeanEuclideanError().compute(newnet, Xts, Yts)
 print("Current best: ", err)
 print("Assessing given network on CUP" )
 vals = []
-hists, val_hists, epochs = [], [], []
+hists, tags, epochs = [], [], []
 for i in range(25):
     suffix = "CUP_nesterov/CUP_nesterovbest_eval" + str(i)
     err, net, hist = CUP_evaluation()
     print("MEE:", err)
     vals.append(err)
     hists.append(hist)
+    tags.append(str(i))
     epochs.append(len(hist) - 50)
 
 net.summary()
 net.savenet("models/CUP_nesterovbest.pkl")
-#plot_and_save(title=suffix, history=history, validation_history=val_history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
+multiline_plot("CUP Evaluation (internal TS)", hists, tags, x_label="Epochs", y_label="Loss", style="Spectral", savefile="CUP_nesterov/CUP_eval_history")
+multiline_plot("CUP Evaluation (internal TS)", vals, tags, x_label="Epochs", y_label="Loss", style="Spectral", savefile="CUP_nesterov/CUP_eval_MEE")
 print("MEE", np.mean(vals), "+-", np.std(vals))
 print("Epochs", np.mean(epochs), "+-", np.std(epochs))
 
