@@ -29,7 +29,6 @@ def CUP_evaluation():
 
     # Model evaluation
     err = MeanEuclideanError().compute(net, Xts, Yts)
-    plot_and_save(title=suffix, history=history, ylabel="Loss", xlabel="Epochs", savefile=suffix + "_history")
     return err, net, history
 
 
@@ -43,7 +42,7 @@ print("Current best: ", err)
 print("Assessing given network on CUP" )
 vals = []
 hists, tags, epochs = [], [], []
-for i in range(25):
+for i in range(50):
     suffix = "CUP_nesterov/CUP_nesterovbest_eval" + str(i)
     err, net, hist = CUP_evaluation()
     print("MEE:", err)
@@ -54,8 +53,7 @@ for i in range(25):
 
 net.summary()
 net.savenet("models/CUP_nesterovbest.pkl")
-multiline_plot("CUP Evaluation (internal TS)", hists, tags, x_label="Epochs", y_label="Loss", style="Spectral", savefile="CUP_nesterov/CUP_eval_history")
-multiline_plot("CUP Evaluation (internal TS)", vals, tags, x_label="Epochs", y_label="Loss", style="Spectral", savefile="CUP_nesterov/CUP_eval_MEE")
+multiline_plot("CUP Evaluation (internal TS)", hists, tags, x_label="Epochs", y_label="Loss", style="Spectral", savefile="CUP_nesterov/CUP_eval_history", showlegend=False)
 print("MEE", np.mean(vals), "+-", np.std(vals))
 print("Epochs", np.mean(epochs), "+-", np.std(epochs))
 
