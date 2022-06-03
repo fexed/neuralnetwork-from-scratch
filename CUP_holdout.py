@@ -53,7 +53,7 @@ for i in range(50):
 
 net.summary()
 net.savenet("models/CUP_nesterovbest.pkl")
-multiline_plot("CUP Evaluation (internal TS)", hists, tags, x_label="Epochs", y_label="Loss", style="Spectral", savefile="CUP_nesterov/CUP_eval_history", showlegend=False)
+multiline_plot("CUP Evaluation (internal TS)", hists, tags, xlabel="Epochs", ylabel="Loss", style="Spectral", savefile="CUP_nesterov/CUP_eval_history", showlegend=False)
 print("MEE", np.mean(vals), "+-", np.std(vals))
 print("Epochs", np.mean(epochs), "+-", np.std(epochs))
 
