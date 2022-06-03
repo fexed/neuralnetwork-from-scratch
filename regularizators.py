@@ -47,3 +47,17 @@ class L2(Regularizator):
 
         def derivative(self, weights):
             return 2 * self.l * weights
+
+
+class Thrun(Regularizator):
+        """ Regularizator from Monk paper """
+
+        def __init__(self, l = 0.005):
+            self.name = "Thrun"
+            self.l = l
+
+        def forward(self, weights):
+            return self.l * np.sum(np.power(weights, 4))/4 +  self.l * np.sum(np.square(weights))
+
+        def derivative(self, weights):
+            return  self.l * np.power(weights, 3) + 2 * self.l * weights

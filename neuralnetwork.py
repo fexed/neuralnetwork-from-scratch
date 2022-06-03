@@ -158,6 +158,7 @@ class Network:
 
         if not(metric is None):
             metric_history = []
+            metric_val_history = []
 
         if not(lr_decay is None):
             initial_learning_rate = learning_rate
@@ -186,6 +187,7 @@ class Network:
             temp = list(zip(X, Y))
             random.shuffle(temp)
             X, Y = zip(*temp)
+            penalty = 0
             for j in range(N):
                 # compute the output iteratively through each layer
                 output = X[j]
@@ -196,7 +198,8 @@ class Network:
                     regloss = 0
                     for layer in self.layers:
                         regloss += self.regularizator.forward(layer.weights)
-                    error += regloss
+                        regloss += self.regularizator.forward(layer.bias)
+                    penalty += regloss
                 # compute the gradient through each layer, while applying
                 # the backward propagation algorithm
                 outputs.append(output)
@@ -216,7 +219,7 @@ class Network:
                                 lr_decay_alpha = i/lr_decay_finalstep
                                 learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_final
 
-            error /= N  # mean error over the set
+            error /= N  # mean error over the set. 
             history.append(error)
             if not(val_history is None):
                 # if a validation set is given, we now compute the error over it
@@ -229,7 +232,8 @@ class Network:
                 val_error /= M
                 val_history.append(val_error)
                 if not(metric is None):
-                    metric_history.append(metric.compute(self, X_validation, Y_validation))
+                    metric_history.append(metric.compute(self, X, Y)) 
+                    metric_val_history.append( metric.compute(self, X_validation, Y_validation))
                 if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
             else:
                 # if no validation set, we simply output the current status
@@ -262,7 +266,7 @@ class Network:
         # return the data that we have gathered
         if not(val_history is None):
             if not(metric is None):
-                return history, val_history, metric_history
+                return history, val_history, metric_history, metric_val_history
             else:
                 return history, val_history
         else:

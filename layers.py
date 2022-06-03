@@ -182,10 +182,11 @@ class FullyConnectedLayer(Layer):
         if not(regularizator is None):
             # regularization
             weights_update -= regularizator.derivative(self.weights)
-
+            bias_update -= regularizator.derivative(self.bias)
+            
         # the basic parameter update
         # TODO check overflow situations
-        self.weights += weights_update
+        self.weights += weights_update 
         self.bias += bias_update
 
         input_error = np.dot(gradient, self.weights.T)
