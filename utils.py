@@ -95,7 +95,31 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
-def multiline_plot(title, histories, legend_names, x_label="Epochs", y_label="Loss", style="Spectral", savefile=None, showlegend=True): 
+def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="Spectral", showlegend=True, showgrid=False, savefile=None): 
+    """ Plots multiple data curves on the same cartesian plane
+
+    Parameters
+    ----------
+    title : str
+        Title to be printed on top of the plot
+    histories : list
+        The list of cuves to be printed
+    legend_names : list
+        The list of legend names to be printed.  One for each history.
+    ylabel : str, optional
+        The label of the y axis
+    xlabel : str, optional
+        The label of the x axis
+    style: string, optional
+        Name of the seaborn style to be applied
+    showlegend: boolean
+        Show or hide legendnames
+    showgrid: boolean
+        Show or hide gridlines on the plot background. ]
+    savefile : str, optional
+        The name of the file where to save the plot, in the plot folder
+    """
+
     import matplotlib.pyplot as plot
     import seaborn as sns
 
@@ -106,11 +130,12 @@ def multiline_plot(title, histories, legend_names, x_label="Epochs", y_label="Lo
         for history,legend_name,  in zip(histories,legend_names):
             ax.plot(history, label=legend_name)
             
-        ax.set_ylabel(y_label)
-        ax.set_xlabel(x_label)
+        ax.set_ylabel(ylabel)
+        ax.set_xlabel(xlabel)
         ax.set_title(title)
 
         if (showlegend): ax.legend()
+        if (showgrid): ax.grid(linestyle='--')
         
         plot.gca().margins(x=0)
         fig.set_size_inches(18.5, 10.5)
