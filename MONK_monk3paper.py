@@ -17,11 +17,12 @@ X_TR, Y_TR,input_size = load_monk(monk, use_one_hot=True)
 X_TS,Y_TS, input_size = load_monk(monk, use_one_hot=True, test=True)
 
 # training
-net = Network("MONK" + str(monk), MSE(), regularizator=Thrun(0.0005))
+net = Network("MONK" + str(monk), MSE(), momentum=0.5)
 net.add(FullyConnectedLayer(input_size, 4, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(4, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
-history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, epochs=300, learning_rate=0.25, verbose=True, metric=Accuracy())
+history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, epochs=150, learning_rate=0.25, verbose=True, metric=Accuracy())
+# batch size or regularizator = problems
 
 # Model evaluation
 

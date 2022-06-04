@@ -6,6 +6,7 @@ from neuralnetwork import Network
 from metrics import Accuracy
 from utils import multiline_plot
 from dataset_loader import load_monk
+from regularizators import L2, Thrun
 import numpy as np
 
 monk = 1
@@ -18,7 +19,7 @@ X_TR, Y_TR,input_size = load_monk(monk, use_one_hot=True)
 X_TS,Y_TS, input_size = load_monk(monk, use_one_hot=True, test=True)
 
 # training
-net = Network("MONK" + str(monk), MSE())
+net = Network("MONK" + str(monk), MSE(), regularizator=L2(l=0.005))
 net.add(FullyConnectedLayer(input_size, 3, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(3, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()

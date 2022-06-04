@@ -60,4 +60,4 @@ class Thrun(Regularizator):
             return self.l * np.sum(np.power(weights, 4))/4 +  self.l * np.sum(np.square(weights))
 
         def derivative(self, weights):
-            return  self.l * np.power(weights, 3) + 2 * self.l * weights
+            return self.l * np.power(weights, 3) + 2 * self.l * weights
