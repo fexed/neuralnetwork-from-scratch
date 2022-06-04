@@ -125,7 +125,7 @@ class FullyConnectedLayer(Layer):
         if nesterov != 0: 
             #Save momentum alpha_dv, gradient will be add next
             self.prev_weight_update = np.multiply(self.prev_weight_update, nesterov) 
-            self.prev_bias_update =np.multiply(self.prev_bias_update, nesterov) 
+            self.prev_bias_update = np.multiply(self.prev_bias_update, nesterov) 
 
             #Update the weighs before gradient computtion (Nesterov)
             self.weights += self.prev_weight_update
@@ -180,10 +180,13 @@ class FullyConnectedLayer(Layer):
             weights_update += np.multiply(self.prev_weight_update, momentum)
             bias_update += np.multiply(self.prev_bias_update, momentum)
 
-        if (momentum or nesterov):
-            # store this update for the next backprop in this layer
+        # store this update for the next backprop in this layer
+        if (nesterov):
             self.prev_weight_update += weights_update
             self.prev_bias_update += bias_update
+        if (momentum):
+            self.prev_weight_update = weights_update
+            self.prev_bias_update = bias_update
 
         if not(regularizator is None):
             # regularization
