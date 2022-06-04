@@ -30,7 +30,7 @@ class L1(Regularizator):
                     elif l2 > 0: outt.append(self.l)
                     else: outt.append(0)
                 out.append(outt)
-            return out
+            return np.array(out)
 
 
 class L2(Regularizator):
@@ -46,7 +46,13 @@ class L2(Regularizator):
 
 
         def derivative(self, weights):
-            return 2 * self.l * weights
+            out = []
+            for l1 in weights:
+                outt = []
+                for l2 in l1:
+                    outt.append(2 * self.l * l2)
+                out.append(outt)
+            return np.array(out)
 
 
 class Thrun(Regularizator):

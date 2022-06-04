@@ -177,8 +177,8 @@ class FullyConnectedLayer(Layer):
 
         if (momentum > 0):
             # with momentum we consider the previous update too
-            weights_update += np.multiply(self.prev_weight_update, momentum)
-            bias_update += np.multiply(self.prev_bias_update, momentum)
+            weights_update -= np.multiply(self.prev_weight_update, momentum)
+            bias_update -= np.multiply(self.prev_bias_update, momentum)
 
         # store this update for the next backprop in this layer
         if (nesterov):
@@ -188,10 +188,9 @@ class FullyConnectedLayer(Layer):
             self.prev_weight_update = weights_update
             self.prev_bias_update = bias_update
 
-        if not(regularizator is None):
-            # regularization
-            weights_update -= regularizator.derivative(self.weights)
-            bias_update -= regularizator.derivative(self.bias)
+        if not(regularizator is None): # regularization
+            weights_update -= regularizator.derivative(self.weights) * eta
+            bias_update -= regularizator.derivative(self.bias) * eta
             
         # the basic parameter update
         # TODO check overflow situations
