@@ -22,23 +22,23 @@ def CUP_evaluation():
     Xtr, means, std = continuous_standardizer(Xtr)
 
     # Training
-    net = Network("CUP", MEE(), nesterov=True, momentum=0.25)
+    net = Network("CUP", MEE(), nesterov=0.25)
     net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
-    history = net.training_loop(Xtr, Ytr, epochs=1549, learning_rate=0.00125, verbose=True, batch_size=16)
+    history = net.training_loop(Xtr, Ytr, epochs=1549, learning_rate=0.025, verbose=True, batch_size=len(Xtr))
 
     # Model evaluation
     err = MeanEuclideanError().compute(net, Xts, Yts)
     return err, net, history
 
 
-newnet = Network("Current Best")
-newnet.loadnet("models/CUP_currentbest.pkl")
-newnet.summary()
-# Model evaluation
-Xts, Yts = load_cup(file="test")
-err = MeanEuclideanError().compute(newnet, Xts, Yts)
-print("Current best: ", err)
+# newnet = Network("Current Best")
+# newnet.loadnet("models/CUP_currentbest.pkl")
+# newnet.summary()
+# # Model evaluation
+# Xts, Yts = load_cup(file="test")
+# err = MeanEuclideanError().compute(newnet, Xts, Yts)
+# print("Current best: ", err)
 print("Assessing given network on CUP" )
 vals = []
 hists, tags, epochs = [], [], []

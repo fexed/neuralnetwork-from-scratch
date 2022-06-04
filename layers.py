@@ -109,7 +109,7 @@ class FullyConnectedLayer(Layer):
         return self.weights
 
 
-    def forward_propagation(self, input, dropout=1):
+    def forward_propagation(self, input, dropout=1, nesterov=0):
         """ Computes the output of the layer for a given input
 
         Parameters
@@ -121,6 +121,16 @@ class FullyConnectedLayer(Layer):
         """
 
         self.input = input
+
+        if nesterov != 0: 
+            #Save momentum alpha_dv, gradient will be add next
+            self.prev_weight_update = np.multiply(self.prev_weight_update, nesterov) 
+            self.prev_bias_update =np.multiply(self.prev_bias_update, nesterov) 
+
+            #Update the weighs before gradient computtion (Nesterov)
+            self.weights += self.prev_weight_update
+            self.bias += self.prev_bias_update
+            
         # TODO: check overflow situations
 
         # check how many neurons to keep
@@ -151,33 +161,29 @@ class FullyConnectedLayer(Layer):
             The rate of momentum
         regularizator : Regularizator, optional
             The regularizator to use
+        nesterov: boolean
+            Flag used to save pervious weight update when using Nesterov momentum
+            In such a case the 'momnetum' parameter MUST be 0 (or unset). 
         """
-
-        if (nesterov and momentum > 0):
-            #Nesterov momentum is applied before the actual gradient computation
-            nesterov_weights_update =  np.multiply(self.prev_weight_update, momentum)
-            nesterov_bias_update = np.multiply(self.prev_bias_update, momentum)
-
-            self.weights += nesterov_weights_update
-            self.bias += nesterov_bias_update
 
         if not(self.activation is None):
             # if there's activation function specified, then we compute its
             # derivative
             gradient = np.multiply(self.activation.derivative(self.activation_input), gradient)
+
         # the weights are updated according to their contribution to the error
         weights_update = -eta * np.dot(self.input.T, gradient)
         bias_update = -eta * gradient
 
-        if (momentum > 0 and not nesterov):
+        if (momentum > 0):
             # with momentum we consider the previous update too
             weights_update += np.multiply(self.prev_weight_update, momentum)
             bias_update += np.multiply(self.prev_bias_update, momentum)
 
-        if (momentum):
+        if (momentum or nesterov):
             # store this update for the next backprop in this layer
-            self.prev_weight_update = weights_update
-            self.prev_bias_update = bias_update
+            self.prev_weight_update += weights_update
+            self.prev_bias_update += bias_update
 
         if not(regularizator is None):
             # regularization
