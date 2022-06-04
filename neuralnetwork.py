@@ -151,7 +151,7 @@ class Network:
         N = len(X)
         history = []  # for logging purposes
         M = 0
-        if not(X_validation is None): #If validation set is provided
+        if not(X_validation is None):  # If validation set is provided
             val_history = []
             M = len(X_validation)
         else:
@@ -184,7 +184,7 @@ class Network:
             error = 0
             outputs = []
             targets = []
-            #shuffle order of inputs each epoch
+            # shuffle order of inputs each epoch
             temp = list(zip(X, Y))
             random.shuffle(temp)
             X, Y = zip(*temp)

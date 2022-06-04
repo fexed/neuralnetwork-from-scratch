@@ -2,6 +2,7 @@ import csv
 import random
 import math
 
+
 cupfile = open("datasets/CUP/ML-CUP21-TR.csv")
 testfile = open("datasets/CUP/internal_test_set_CUP.csv", "w", newline='')
 trainingfile = open("datasets/CUP/training_set_CUP.csv", "w", newline='')

@@ -10,7 +10,7 @@ from kfold import KFold
 
 
 def grid_search(input_size, output_size, X, y,
-                layers=list(range(5)),  # number of -hidden- layers
+                layers=list(range(5)),  # number of hidden layers - 1
                 units=list(range(5, 100, 5)),
                 learning_rates=list(np.arange(0.01, 0.1, 0.01)),
                 batch_sizes=None,
@@ -64,7 +64,7 @@ def grid_search(input_size, output_size, X, y,
                                                     xtr, xvl, ytr, yvl = kfold.next_fold()
                                                     net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MEE(), momentum=momentum, regularizator=regularizator, dropout=dropout, nesterov=nesterov)
                                                     net.add(FullyConnectedLayer(input_size, M, Tanh(), initialization_func = init_f))
-                                                    for i in range(N):  # N -hidden- layers, plus input and output layers
+                                                    for i in range(N):  # N+1 hidden layers, plus input and output layers
                                                         net.add(FullyConnectedLayer(M, M, Tanh(), initialization_func = init_f))
                                                     net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
                                                     if (verbose): net.summary()
@@ -82,7 +82,7 @@ def grid_search(input_size, output_size, X, y,
 
                                                 final_losses_mean /= folds
                                                 epochs_done_mean /= folds
-                                                results.append({"loss":final_losses_mean,  # better judge
+                                                results.append({"loss":final_losses_mean,  # better indicator
                                                                 "layers":N,
                                                                 "units":M,
                                                                 "learning_rate":E,

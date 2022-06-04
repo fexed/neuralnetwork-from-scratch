@@ -12,7 +12,8 @@ net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavi
 net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
 net.summary()
 net.training_loop(X, Y, epochs=1549, learning_rate=0.00125, verbose=True, batch_size=16)
-#test
+
+# test
 xtest = load_cup(verbose=False, file="blind")
 ytest = net.predict(xtest);
 output_file = open("datasets/CUP/arbitraryvalues_ML-CUP21-TS.csv", "w")
