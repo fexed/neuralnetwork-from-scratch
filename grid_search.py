@@ -58,7 +58,8 @@ def grid_search(input_size, output_size, X, y,
                                         for init_f in init_functions:
                                             for B in batch_sizes:
                                                 kfold = KFold(folds, X, y)
-                                                final_losses_mean = 0
+                                                final_TR_losses_mean = 0
+                                                final_VL_losses_mean = 0
                                                 epochs_done_mean = 0
                                                 while (kfold.hasNext()):
                                                     xtr, xvl, ytr, yvl = kfold.next_fold()
@@ -69,7 +70,8 @@ def grid_search(input_size, output_size, X, y,
                                                     net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
                                                     if (verbose): net.summary()
                                                     history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-                                                    final_losses_mean += val_history[-1]
+                                                    final_TR_losses_mean += history[-1]
+                                                    final_VL_losses_mean += val_history[-1]
                                                     epochs_done_mean += len(history)
                                                     tested += 1
                                                     progress = tested/n_combinations
@@ -80,9 +82,11 @@ def grid_search(input_size, output_size, X, y,
                                                     ETA = "ETA " + time.strftime("%Hh %Mm %Ss", ETAtime)
                                                     update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
 
-                                                final_losses_mean /= folds
+                                                final_TR_losses_mean /= folds
+                                                final_VL_losses_mean /= folds
                                                 epochs_done_mean /= folds
-                                                results.append({"loss":final_losses_mean,  # better indicator
+                                                results.append({"TR_loss":final_TR_losses_mean,
+                                                                "VL_loss":final_VL_losses_mean,  # better indicator
                                                                 "layers":N,
                                                                 "units":M,
                                                                 "learning_rate":E,
@@ -96,7 +100,7 @@ def grid_search(input_size, output_size, X, y,
 
                                                 if (verbose): print("")
     finally:
-        results.sort(key = lambda x: x['loss'], reverse=False)
+        results.sort(key = lambda x: x['VL_loss'], reverse=False)
         if (verbose):
             print("Best: " + str(results[0]))
             print("Top 10:")
