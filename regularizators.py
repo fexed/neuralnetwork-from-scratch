@@ -22,15 +22,7 @@ class L1(Regularizator):
 
 
         def derivative(self, weights):
-            out = []
-            for l1 in weights:
-                outt = []
-                for l2 in l1:
-                    if l2 < 0:  outt.append(-self.l)
-                    elif l2 > 0: outt.append(self.l)
-                    else: outt.append(0)
-                out.append(outt)
-            return np.array(out)
+            return 2 * self.l * weights
 
 
 class L2(Regularizator):
