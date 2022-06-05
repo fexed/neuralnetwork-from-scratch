@@ -177,8 +177,8 @@ class FullyConnectedLayer(Layer):
 
         if (momentum > 0):
             # with momentum we consider the previous update too
-            weights_update -= np.multiply(self.prev_weight_update, momentum)
-            bias_update -= np.multiply(self.prev_bias_update, momentum)
+            weights_update += np.multiply(self.prev_weight_update, momentum)
+            bias_update += np.multiply(self.prev_bias_update, momentum)
 
         # store this update for the next backprop in this layer
         if (nesterov):
