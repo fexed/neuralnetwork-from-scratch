@@ -25,7 +25,7 @@ def CUP_evaluation():
     net = Network("CUP", MEE(), nesterov=0.25)
     net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavier"))
     net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
-    history = net.training_loop(Xtr, Ytr, epochs=1549, learning_rate=0.025, verbose=True, batch_size=len(Xtr))
+    history = net.training_loop(Xtr, Ytr, epochs=410, learning_rate=0.01, verbose=True, batch_size=16)
 
     # Model evaluation
     err = MeanEuclideanError().compute(net, Xts, Yts)
