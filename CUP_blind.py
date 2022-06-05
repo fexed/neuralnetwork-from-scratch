@@ -14,7 +14,7 @@ net.summary()
 net.training_loop(X, Y, epochs=1549, learning_rate=0.00125, verbose=True, batch_size=16)
 
 # test
-xtest = load_cup(verbose=False, file="blind")
+xtest = load_cup(verbose=False, file="blind")[0]
 ytest = net.predict(xtest);
 output_file = open("datasets/CUP/arbitraryvalues_ML-CUP21-TS.csv", "w")
 output_file.write("#Federico Matteoni, Riccardo Parente, Sergio Latrofa\n"+
