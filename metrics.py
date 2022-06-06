@@ -21,7 +21,9 @@ class Accuracy(Metric):
                 elif (targets[0].shape[1] == 2):  # if normal CUP
                     if (compare(targets[i][0][0], out[i][0][0], tollerance = self.tollerance) and compare(targets[i][0][1], out[i][0][1], tollerance = self.tollerance)): accuracy += 1
                 else:  # else MONK
-                    accuracy += (1-abs(out[i].item() - targets[i].item()))
+                    #accuracy += (1-abs(out[i].item() - targets[i].item()))
+                    newout = 1 if out[i].item() > 0.5 else 0
+                    accuracy += (1-abs(newout-targets[i].item()))
             else:
                 if (self.dataset == "CUP"):
                     if (compare(targets[i][0][0], out[i][0][0], tollerance = self.tollerance) and compare(targets[i][0][1], out[i][0][1], tollerance = self.tollerance)): accuracy += 1

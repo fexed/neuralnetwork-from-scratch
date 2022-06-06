@@ -38,7 +38,7 @@ class Sigmoid(ActivationFunction):
         """ Returns the sigmoid value of x """
 
         # 1/(1+e^{-x})
-        return 1 / (1 + np.exp(np.dot(-1, x)))
+        return 1 / (1 + np.exp(-x))
 
 
     def derivative(self, x):

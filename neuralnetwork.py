@@ -207,9 +207,9 @@ class Network:
                 targets.append(Y[j])
                 if ((j+1) % batch_size == 0) or (j == N-1):
                     gradient = 0
-                    for k in range(len(outputs)):
+                    for k in range(batch_size):
                         gradient += self.loss.derivative(targets[k], outputs[k])
-                    gradient /= len(outputs)
+                    gradient /= batch_size
                     for layer in reversed(self.layers):
                         gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, nesterov=self.nesterov)
                     outputs = []

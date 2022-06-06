@@ -172,8 +172,8 @@ class FullyConnectedLayer(Layer):
             gradient = np.multiply(self.activation.derivative(self.activation_input), gradient)
 
         # the weights are updated according to their contribution to the error
-        weights_update = -eta * np.dot(self.input.T, gradient)
-        bias_update = -eta * gradient
+        weights_update = eta * np.dot(self.input.T, gradient)
+        bias_update = eta * gradient
 
         if (momentum > 0):
             # with momentum we consider the previous update too
@@ -189,8 +189,8 @@ class FullyConnectedLayer(Layer):
             self.prev_bias_update = bias_update
 
         if not(regularizator is None): # regularization
-            weights_update -= regularizator.derivative(self.weights) * eta
-            bias_update -= regularizator.derivative(self.bias) * eta
+            weights_update -= regularizator.derivative(self.weights)
+            bias_update -= regularizator.derivative(self.bias)
         
         input_error = np.dot(gradient, self.weights.T)
 

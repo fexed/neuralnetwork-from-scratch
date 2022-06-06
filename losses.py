@@ -35,7 +35,7 @@ class MSE(Loss):
 
 
     def derivative(self, labels, outputs):  # derivative of MSE
-        return 2 * (outputs - labels)/np.size(labels)
+        return 2 * (labels - outputs)/np.size(labels)
 
 
 class BinaryCrossentropy(Loss):
