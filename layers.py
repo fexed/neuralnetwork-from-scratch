@@ -174,8 +174,8 @@ class FullyConnectedLayer(Layer):
         input_error = np.dot(gradient, self.weights.T)
 
         # the weights are updated according to their contribution to the error
-        weights_update = -eta * np.dot(self.input.T, gradient)
-        bias_update = -eta * gradient
+        weights_update = eta * np.dot(self.input.T, gradient)
+        bias_update = eta * gradient
 
         if (momentum > 0):
             # with momentum we consider the previous update too
