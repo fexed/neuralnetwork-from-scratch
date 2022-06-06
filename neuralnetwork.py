@@ -117,6 +117,7 @@ class Network:
 
     def forward_propagation(self, batch_X, batch_Y):
         """ Performs the forward propagation of the network """
+
         error = 0
         outputs = []
         for i in range(len(batch_X)):
