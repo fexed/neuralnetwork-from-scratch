@@ -63,7 +63,9 @@ class ReLU(ActivationFunction):
 
     def derivative(self, x ):
         """ Derivative of the ReLU function """
-        return np.array(1 if x > 0 else self.epsilon )
+        x[x<=0] = self.epsilon
+        x[x>0] = 1
+        return x
 
 
 class LeakyReLU(ActivationFunction):
