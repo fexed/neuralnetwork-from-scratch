@@ -115,6 +115,25 @@ class Network:
         return results
 
 
+    def forward_propagation(self, batch_X, batch_Y):
+        """ Performs the forward propagation of the network """
+        error = 0
+        outputs = []
+        for i in range(len(batch_X)):
+            output = batch_X[i]
+            for layer in self.layers:
+                output = layer.forward_propagation(output)
+            outputs.append(output)
+            error += self.loss.forward(output, batch_Y[i])
+        
+        # TODO regularization
+        return outputs, error
+
+
+    def backward_propagation(self):
+        """ Performs the backward propagation of the network """
+
+
     def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, lr_decay_finalstep=500, lr_final=0.00001, metric=None, verbose=True):
         """ The main training loop for the network
 
@@ -190,22 +209,12 @@ class Network:
             X, Y = zip(*temp)
             penalty = 0
             for j in range(N):
-                # compute the output iteratively through each layer
-                output = X[j]
-                for layer in self.layers:
-                    output = layer.forward_propagation(output, dropout=self.dropout, nesterov=self.nesterov)
-                error += self.loss.forward(Y[j], output)
-                if not(self.regularizator is None):
-                    regloss = 0
-                    for layer in self.layers:
-                        regloss += self.regularizator.forward(layer.weights)
-                        regloss += self.regularizator.forward(layer.bias)
-                    penalty += regloss
-                # compute the gradient through each layer, while applying
-                # the backward propagation algorithm
-                outputs.append(output)
+                batch_X = []
+                batch_X.append(X[j])
                 targets.append(Y[j])
                 if ((j+1) % batch_size == 0) or (j == N-1):
+                    outputs, err = self.forward_propagation(batch_X, targets)
+                    error += err
                     gradient = 0
                     for k in range(len(outputs)):
                         gradient += self.loss.derivative(targets[k], outputs[k])
