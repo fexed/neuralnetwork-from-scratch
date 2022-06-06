@@ -170,6 +170,8 @@ class FullyConnectedLayer(Layer):
             # if there's activation function specified, then we compute its
             # derivative
             gradient = np.multiply(self.activation.derivative(self.activation_input), gradient)
+        
+        input_error = np.dot(gradient, self.weights.T)
 
         # the weights are updated according to their contribution to the error
         weights_update = -eta * np.dot(self.input.T, gradient)
@@ -191,8 +193,6 @@ class FullyConnectedLayer(Layer):
         if not(regularizator is None): # regularization
             weights_update -= regularizator.derivative(self.weights) * eta
             bias_update -= regularizator.derivative(self.bias) * eta
-        
-        input_error = np.dot(gradient, self.weights.T)
 
         # the basic parameter update
         # TODO check overflow situations
