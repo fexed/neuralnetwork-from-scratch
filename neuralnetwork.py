@@ -130,8 +130,20 @@ class Network:
         return outputs, error
 
 
-    def backward_propagation(self):
+    def backward_propagation(self, targets, outputs, learning_rate):
         """ Performs the backward propagation of the network """
+
+        batch_size = len(targets)
+        gradient = 0
+        for i in range(batch_size):
+            gradient += self.loss.derivative(targets[i], outputs[i])
+        gradient /= batch_size
+
+        for layer in reversed(self.layers):
+            gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, nesterov=self.nesterov)
+        
+        return gradient
+
 
 
     def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, lr_decay_finalstep=500, lr_final=0.00001, metric=None, verbose=True):
@@ -215,12 +227,7 @@ class Network:
                 if ((j+1) % batch_size == 0) or (j == N-1):
                     outputs, err = self.forward_propagation(batch_X, targets)
                     error += err
-                    gradient = 0
-                    for k in range(len(outputs)):
-                        gradient += self.loss.derivative(targets[k], outputs[k])
-                    gradient /= len(outputs)
-                    for layer in reversed(self.layers):
-                        gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, nesterov=self.nesterov)
+                    gradient = self.backward_propagation(targets, outputs, learning_rate)
                     outputs = []
                     targets = []
                     if not (lr_decay is None):
