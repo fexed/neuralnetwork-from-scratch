@@ -221,21 +221,19 @@ class Network:
             random.shuffle(temp)
             X, Y = zip(*temp)
             penalty = 0
-            for j in range(N):
-                batch_X = []
-                batch_X.append(X[j])
-                targets.append(Y[j])
-                if ((j+1) % batch_size == 0) or (j == N-1):
-                    outputs, err = self.forward_propagation(batch_X, targets)
-                    error += err
-                    gradient = self.backward_propagation(targets, outputs, learning_rate)
-                    outputs = []
-                    targets = []
-                    if not (lr_decay is None):
-                        if (lr_decay == "linear"):
-                            if learning_rate > lr_final:
-                                lr_decay_alpha = i/lr_decay_finalstep
-                                learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_final
+            batches_X = [X[i:i+batch_size] for i in range(0, len(X), batch_size)]
+            batches_Y = [Y[i:i+batch_size] for i in range(0, len(Y), batch_size)]
+            for batch_X, targets in zip(batches_X, batches_Y):
+                outputs, err = self.forward_propagation(batch_X, targets)
+                error += err
+                gradient = self.backward_propagation(targets, outputs, learning_rate)
+                outputs = []
+                targets = []
+                if not (lr_decay is None):
+                    if (lr_decay == "linear"):
+                        if learning_rate > lr_final:
+                            lr_decay_alpha = i/lr_decay_finalstep
+                            learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_final
 
             error /= N  # mean error over the set. 
             history.append(error)
