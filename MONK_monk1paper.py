@@ -23,7 +23,7 @@ net = Network("MONK" + str(monk), MSE())
 net.add(FullyConnectedLayer(input_size, 3, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(3, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
-history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, epochs=400, learning_rate=0.15, verbose=True, metric=Accuracy())
+history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, epochs=1000, learning_rate=0.15, verbose=True, metric=Accuracy())
 
 # evaluating
 accuracy = Accuracy().compute(net, X_TS, Y_TS)
