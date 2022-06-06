@@ -227,8 +227,6 @@ class Network:
                 outputs, err = self.forward_propagation(batch_X, targets)
                 error += err
                 gradient = self.backward_propagation(targets, outputs, learning_rate)
-                outputs = []
-                targets = []
                 if not (lr_decay is None):
                     if (lr_decay == "linear"):
                         if learning_rate > lr_final:
