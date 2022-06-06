@@ -22,10 +22,10 @@ def CUP_evaluation():
     Xtr, means, std = continuous_standardizer(Xtr)
 
     # Training
-    net = Network("CUP", MEE(), nesterov=0.25)
-    net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavier"))
-    net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
-    history = net.training_loop(Xtr, Ytr, epochs=410, learning_rate=0.01, verbose=True, batch_size=16)
+    net = Network("CUP", MEE(), regularizator=L2(l=0.0001))
+    net.add(FullyConnectedLayer(10, 21, Tanh(), initialization_func="normalized_xavier"))
+    net.add(FullyConnectedLayer(21, 2, initialization_func="normalized_xavier"))
+    history = net.training_loop(Xtr, Ytr, epochs=200, learning_rate=0.00125, verbose=True, batch_size=1)
 
     # Model evaluation
     err = MeanEuclideanError().compute(net, Xts, Yts)
@@ -42,7 +42,7 @@ for i in range(50):
     vals.append(err)
     hists.append(hist)
     tags.append(str(i))
-    epochs.append(len(hist) - 50)
+    epochs.append(len(hist))
 
 net.summary()
 net.savenet("models/CUP_nesterovbest.pkl")
@@ -53,12 +53,12 @@ print("Epochs", np.mean(epochs), "+-", np.std(epochs))
 """
 +==== Structure
 |IN     FullyConnectedLayer: 10 units with Tanh activation function
-|HID    FullyConnectedLayer: 23 units with Tanh activation function
+|HID    FullyConnectedLayer: 21 units with Tanh activation function
 |OUT    FullyConnectedLayer: 2 units
-+==== Loss: Mean Euclidean Error and momentum = 0.25 and Nesterov momentum
-For a total of 301 trainable parameters
-MEE 0.18739041656939193 +- 0.008833923071037302
-Epochs 1549
++==== Loss: Mean Euclidean Error and L2 regularizator with lambda = 0.0001
+For a total of 506 trainable parameters
+MEE 0.1499942430775244 +- 0.004481060356927671
+Epochs 200
 Learning rate = 0.00125
-Batch size = 16
+Batch size = 1
 """

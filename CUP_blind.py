@@ -3,15 +3,17 @@ from losses import MEE
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from dataset_loader import load_cup
+from regularizators import L2
+
 
 print("\n\n****CUP")
 X, Y = load_cup(verbose=False, file="training_full")
 # train
-net = Network("CUP", MEE(), nesterov=0.25)
-net.add(FullyConnectedLayer(10, 23, Tanh(), initialization_func="normalized_xavier"))
-net.add(FullyConnectedLayer(23, 2, initialization_func="normalized_xavier"))
+net = Network("CUP", MEE(), regularizator=L2(l=0.0001))
+net.add(FullyConnectedLayer(10, 21, Tanh(), initialization_func="normalized_xavier"))
+net.add(FullyConnectedLayer(21, 2, initialization_func="normalized_xavier"))
 net.summary()
-net.training_loop(X, Y, epochs=410, learning_rate=0.01, verbose=True, batch_size=16)
+net.training_loop(X, Y, epochs=200, learning_rate=0.00125, verbose=True, batch_size=1)
 
 # test
 xtest = load_cup(verbose=False, file="blind")[0]
