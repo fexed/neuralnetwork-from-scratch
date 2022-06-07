@@ -147,23 +147,19 @@ class FullyConnectedLayer(Layer):
         return self.output
 
 
-    def backward_propagation(self, gradient, eta, momentum = 0,  regularizator=None, nesterov=False):
+    def zero_gradient(self):
+        self.bias_gradient = 0
+        self.weights_gradient = np.zeros(self.weights.shape)
+
+
+    def backward_propagation(self, gradient):
         """ Computes the delta-error over the input for a given delta-error over
-        the output and updates any parameter
+        the output
 
         Parameters
         ----------
         gradient
             The gradient to use for the SGD
-        eta : float
-            The learning rate to use
-        momentum : float, optional
-            The rate of momentum
-        regularizator : Regularizator, optional
-            The regularizator to use
-        nesterov: boolean
-            Flag used to save pervious weight update when using Nesterov momentum
-            In such a case the 'momnetum' parameter MUST be 0 (or unset). 
         """
 
         if not(self.activation is None):
@@ -174,29 +170,31 @@ class FullyConnectedLayer(Layer):
         input_error = np.dot(gradient, self.weights.T)
 
         # the weights are updated according to their contribution to the error
-        weights_update = eta * np.dot(self.input.T, gradient)
-        bias_update = eta * gradient
+        self.weights_gradient += np.dot(self.input.T, gradient)
+        self.bias_gradient += gradient
 
-        if (momentum > 0):
-            # with momentum we consider the previous update too
-            weights_update += np.multiply(self.prev_weight_update, momentum)
-            bias_update += np.multiply(self.prev_bias_update, momentum)
+        return input_error, self.weights_gradient, self.bias_gradient
 
-        # store this update for the next backprop in this layer
-        if (nesterov):
-            self.prev_weight_update += weights_update
-            self.prev_bias_update += bias_update
-        if (momentum):
-            self.prev_weight_update = weights_update
-            self.prev_bias_update = bias_update
 
-        if not(regularizator is None): # regularization
-            weights_update -= regularizator.derivative(self.weights) * eta
-            bias_update -= regularizator.derivative(self.bias) * eta
+    def update_weights(self, eta, momentum = 0, nesterov=False):
+        """ Updates the weights of the layer according to the gradient computed
+        during the backward propagation
 
-        # the basic parameter update
-        # TODO check overflow situations
-        self.weights += weights_update 
-        self.bias += bias_update
+        Parameters
+        ----------
+        eta : float
+            The learning rate to use
+        momentum : float, optional
+            The rate of momentum
+        nesterov: boolean
+            Flag used to save pervious weight update when using Nesterov momentum
+            In such a case the 'momentum' parameter MUST be 0 (or unset).
+        """
 
-        return input_error
+        # TODO: regularizator, nesterov, momentum
+
+        dW = eta*self.weights_gradient
+        dB = eta*self.bias_gradient
+
+        self.weights += dW
+        self.bias += dB

@@ -121,30 +121,36 @@ class Network:
         error = 0
         outputs = []
         for i in range(len(batch_X)):
+            gradient = 0
             output = batch_X[i]
             for layer in self.layers:
-                output = layer.forward_propagation(output)
+                output = layer.forward_propagation(output, self.dropout)
             outputs.append(output)
             error += self.loss.forward(output, batch_Y[i])
-        
+            gradient = self.backward_propagation(batch_Y[i], output, gradient)
         # TODO regularization
         return outputs, error
 
 
-    def backward_propagation(self, targets, outputs, learning_rate):
+    def backward_propagation(self, target, output, gradient):
         """ Performs the backward propagation of the network """
 
-        batch_size = len(targets)
-        gradient = 0
-        for i in range(batch_size):
-            gradient += self.loss.derivative(targets[i], outputs[i])
-        gradient /= batch_size
+        gradient += self.loss.derivative(target, output)
 
         for layer in reversed(self.layers):
-            gradient = layer.backward_propagation(gradient, learning_rate, self.momentum, self.regularizator, nesterov=self.nesterov)
+            gradient, _, _ = layer.backward_propagation(gradient)
         
         return gradient
 
+
+    def zero_gradient(self):
+        for layer in self.layers:
+            layer.zero_gradient()
+
+
+    def update_weights(self, learning_rate):
+        for layer in self.layers:
+            layer.update_weights(learning_rate)
 
 
     def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, lr_decay_finalstep=500, lr_final=0.00001, metric=None, verbose=True):
@@ -199,7 +205,7 @@ class Network:
         if (verbose):
             print("Beginning training loop with " + str(epochs) + " targeted epochs over " + str(N) + " training elements", end="")
             if (batch_size > 1):
-                print("(batch size = " + str(batch_size) + ")", end="")
+                print(" (batch size = " + str(batch_size) + ")", end="")
             if not(early_stopping is None):
                 print(", with early stopping = " + str(early_stopping), end="")
             if not(val_history is None):
@@ -224,14 +230,15 @@ class Network:
             batches_X = [X[i:i+batch_size] for i in range(0, len(X), batch_size)]
             batches_Y = [Y[i:i+batch_size] for i in range(0, len(Y), batch_size)]
             for batch_X, targets in zip(batches_X, batches_Y):
+                self.zero_gradient()
                 outputs, err = self.forward_propagation(batch_X, targets)
                 error += err
-                gradient = self.backward_propagation(targets, outputs, learning_rate)
                 if not (lr_decay is None):
                     if (lr_decay == "linear"):
                         if learning_rate > lr_final:
                             lr_decay_alpha = i/lr_decay_finalstep
                             learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_final
+                self.update_weights(learning_rate)
 
             error /= N  # mean error over the set. 
             history.append(error)
