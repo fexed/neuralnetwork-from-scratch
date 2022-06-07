@@ -173,7 +173,7 @@ class FullyConnectedLayer(Layer):
         self.weights_gradient += np.dot(self.input.T, gradient)
         self.bias_gradient += gradient
 
-        return input_error, self.weights_gradient, self.bias_gradient
+        return input_error
 
 
     def update_weights(self, eta, regularizator=None, momentum = 0, nesterov=False):
@@ -191,16 +191,14 @@ class FullyConnectedLayer(Layer):
             In such a case the 'momentum' parameter MUST be 0 (or unset).
         """
 
-        # TODO: regularizator, nesterov, momentum
+        # TODO: nesterov, momentum
 
         dW = eta*self.weights_gradient
         dB = eta*self.bias_gradient
 
         if  regularizator: 
-            #print(f"Weights:{(self.weights)}, Regs:{(regularizator.derivative(self.weights))}")
-            #print(f"Weights:{(self.bias)}, Regs:{(regularizator.derivative(self.bias))}")
-            dW = dW + regularizator.derivative(self.weights) # Put it here
-            dB = dB + regularizator.derivative(self.bias)# Put it here
+            dW = dW + regularizator.derivative(self.weights)
+            dB = dB + regularizator.derivative(self.bias)
 
         self.weights += dW
         self.bias += dB

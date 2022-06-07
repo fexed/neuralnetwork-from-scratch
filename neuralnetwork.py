@@ -138,7 +138,7 @@ class Network:
         gradient += self.loss.derivative(target, output)
 
         for layer in reversed(self.layers):
-            gradient, _, _ = layer.backward_propagation(gradient)
+            gradient = layer.backward_propagation(gradient)
         
         return gradient
 
