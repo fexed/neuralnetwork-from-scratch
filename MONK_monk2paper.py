@@ -33,4 +33,4 @@ multiline_plot(title="MONK2: Accuracy", legend_names=["Training set", "Test set 
     ylabel="Accuracy", xlabel="Epochs", savefile="MONK2_PAPER_ACCURACY", showlegend=True, showgrid=True, alternateDots=True)
 
 # saving the net
-net.savenet("models/MONK3PAPER.pkl")
+net.savenet("models/MONK2PAPER.pkl")
