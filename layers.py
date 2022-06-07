@@ -191,7 +191,7 @@ class FullyConnectedLayer(Layer):
             In such a case the 'momentum' parameter MUST be 0 (or unset).
         """
 
-        # TODO: nesterov, momentum
+        # TODO: nesterov
 
         dW = eta*self.weights_gradient
         dB = eta*self.bias_gradient
@@ -199,6 +199,12 @@ class FullyConnectedLayer(Layer):
         if  regularizator: 
             dW = dW + regularizator.derivative(self.weights)
             dB = dB + regularizator.derivative(self.bias)
+
+        if momentum > 0:
+            dW += momentum*self.prev_weight_update
+            dB += momentum*self.prev_bias_update
+            self.prev_weight_update = dW
+            self.prev_bias_update = dB
 
         self.weights += dW
         self.bias += dB
