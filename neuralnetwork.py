@@ -203,7 +203,7 @@ class Network:
             initial_learning_rate = learning_rate
 
         if (verbose):
-            print("Beginning training loop with " + str(epochs) + " targeted epochs over " + str(N) + " training elements", end="")
+            print("Beginning training loop with " + str(epochs) + " targeted epochs over " + str(N) + " training elements and learning rate = " + str(learning_rate), end="")
             if (batch_size > 1):
                 print(" (batch size = " + str(batch_size) + ")", end="")
             if not(early_stopping is None):
