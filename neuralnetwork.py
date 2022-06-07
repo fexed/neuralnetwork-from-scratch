@@ -150,7 +150,7 @@ class Network:
 
     def update_weights(self, learning_rate):
         for layer in self.layers:
-            layer.update_weights(learning_rate)
+            layer.update_weights(learning_rate, regularizator=self.regularizator)
 
 
     def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, lr_decay_finalstep=500, lr_final=0.00001, metric=None, verbose=True):

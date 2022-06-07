@@ -95,7 +95,7 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
-def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="Spectral", showlegend=True, showgrid=False, savefile=None, alternateDots=False): 
+def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="dark", showlegend=True, showgrid=False, savefile=None, alternateDots=False): 
     """ Plots multiple data curves on the same cartesian plane
 
     Parameters
@@ -125,6 +125,9 @@ def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epoch
 
     l = len(histories)
     plt.rcParams.update({'font.size': 18})
+
+
+    sns.set()
 
     with sns.color_palette(style, n_colors=l):
         fig, ax = plt.subplots()

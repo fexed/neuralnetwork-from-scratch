@@ -44,7 +44,7 @@ class L2(Regularizator):
                 for l2 in l1:
                     outt.append(2 * self.l * l2)
                 out.append(outt)
-            return np.array(out)
+            return -np.array(out)
 
 
 class Thrun(Regularizator):

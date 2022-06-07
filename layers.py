@@ -176,7 +176,7 @@ class FullyConnectedLayer(Layer):
         return input_error, self.weights_gradient, self.bias_gradient
 
 
-    def update_weights(self, eta, momentum = 0, nesterov=False):
+    def update_weights(self, eta, regularizator=None, momentum = 0, nesterov=False):
         """ Updates the weights of the layer according to the gradient computed
         during the backward propagation
 
@@ -195,6 +195,12 @@ class FullyConnectedLayer(Layer):
 
         dW = eta*self.weights_gradient
         dB = eta*self.bias_gradient
+
+        if  regularizator: 
+            #print(f"Weights:{(self.weights)}, Regs:{(regularizator.derivative(self.weights))}")
+            #print(f"Weights:{(self.bias)}, Regs:{(regularizator.derivative(self.bias))}")
+            dW = dW + regularizator.derivative(self.weights) # Put it here
+            dB = dB + regularizator.derivative(self.bias)# Put it here
 
         self.weights += dW
         self.bias += dB
