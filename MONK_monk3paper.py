@@ -21,7 +21,7 @@ net = Network("MONK" + str(monk), MSE(), regularizator=L2(l=0.005))
 net.add(FullyConnectedLayer(input_size, 4, Sigmoid(), initialization_func="xavier"))
 net.add(FullyConnectedLayer(4, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
-history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, epochs=150, learning_rate=0.1, verbose=True, metric=Accuracy(), batch_size=1)
+history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, epochs=150, learning_rate=0.1, verbose=True, metric=Accuracy(), batch_size=122)
 # batch size or regularizator = problems
 
 # Model evaluation
