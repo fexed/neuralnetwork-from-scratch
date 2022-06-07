@@ -20,7 +20,7 @@ net.add(FullyConnectedLayer(input_size, 3, Sigmoid(), initialization_func="xavie
 net.add(FullyConnectedLayer(3, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
 history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, 
-    epochs=50, learning_rate=0.05, verbose=True, metric=Accuracy(), batch_size=1)
+    epochs=400, learning_rate=0.1, verbose=True, metric=Accuracy(), batch_size=1)
 
 # evaluating
 accuracy = Accuracy().compute(net, X_TS, Y_TS)

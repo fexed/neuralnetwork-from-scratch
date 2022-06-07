@@ -176,7 +176,7 @@ class FullyConnectedLayer(Layer):
         return input_error
 
 
-    def update_weights(self, eta, regularizator=None, momentum = 0, nesterov=False):
+    def update_weights(self, eta, regularizator=None, momentum = 0, nesterov=0):
         """ Updates the weights of the layer according to the gradient computed
         during the backward propagation
 
@@ -203,6 +203,11 @@ class FullyConnectedLayer(Layer):
         if momentum > 0:
             dW += momentum*self.prev_weight_update
             dB += momentum*self.prev_bias_update
+            self.prev_weight_update = dW
+            self.prev_bias_update = dB
+        elif nesterov > 0:
+            dW += nesterov*self.prev_weight_update
+            dB += nesterov*self.prev_bias_update
             self.prev_weight_update = dW
             self.prev_bias_update = dB
 
