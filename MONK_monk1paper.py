@@ -21,6 +21,7 @@ net.add(FullyConnectedLayer(3, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
 history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, 
     epochs=400, learning_rate=0.1, verbose=True, metric=Accuracy(), batch_size=1)
+# same training hyperparametrs work fine both with CE and MSE.
 
 # evaluating
 accuracy = Accuracy().compute(net, X_TS, Y_TS)

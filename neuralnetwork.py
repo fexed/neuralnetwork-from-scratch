@@ -126,7 +126,7 @@ class Network:
             for layer in self.layers:
                 output = layer.forward_propagation(output, self.dropout)
             outputs.append(output)
-            error += self.loss.forward(output, batch_Y[i])
+            error += self.loss.forward(batch_Y[i], output)
             gradient = self.backward_propagation(batch_Y[i], output, gradient)
         # TODO regularization
         return outputs, error
