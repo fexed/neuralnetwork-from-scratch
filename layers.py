@@ -197,8 +197,8 @@ class FullyConnectedLayer(Layer):
         dB = eta*self.bias_gradient
 
         if  regularizator: 
-            dW = dW + regularizator.derivative(self.weights)
-            dB = dB + regularizator.derivative(self.bias)
+            dW = dW - regularizator.derivative(self.weights)
+            dB = dB - regularizator.derivative(self.bias)
 
         if momentum > 0:
             dW += momentum*self.prev_weight_update

@@ -20,7 +20,7 @@ net.add(FullyConnectedLayer(input_size, 4, Sigmoid(), initialization_func="xavie
 net.add(FullyConnectedLayer(4, 1, Sigmoid(), initialization_func="xavier"))
 net.summary()
 history, test_history, metric_history, metric_test_history = net.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, 
-    epochs=150, learning_rate=0.05, verbose=True, metric=Accuracy(), batch_size=len(X_TR))
+    epochs=200, learning_rate=0.03, verbose=True, metric=Accuracy(), batch_size=len(X_TR))
 # same training hyperparametrs work fine both with CE and MSE.
 
 # evaluating
@@ -39,16 +39,16 @@ net.savenet("models/MONK3PAPER.pkl")
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # training with regularization
-netr = Network("MONK" + str(monk) + " - Regularized", MSE(), regularizator=L2())
+netr = Network("MONK" + str(monk) + " - Regularized", MSE(), regularizator=Thrun())
 netr.add(FullyConnectedLayer(input_size, 4, Sigmoid(), initialization_func="xavier"))
 netr.add(FullyConnectedLayer(4, 1, Sigmoid(), initialization_func="xavier"))
 netr.summary()
 history_r, test_history_r, metric_history_r, metric_test_history_r = netr.training_loop(X_TR, Y_TR, X_validation=X_TS, Y_validation=Y_TS, 
-    epochs=150, learning_rate=0.05, verbose=True, metric=Accuracy(), batch_size=len(X_TR))
+    epochs=200, learning_rate=0.04, verbose=True, metric=Accuracy(), batch_size=len(X_TR))
 
 # evaluating
-accuracyr = Accuracy().compute(netr, X_TS, Y_TS)
-print("Accuracy on the test set: {:.4f}%".format(accuracyr))
+accuracy = Accuracy().compute(netr, X_TS, Y_TS)
+print("Accuracy on the test set: {:.4f}%".format(accuracy))
 
 # plotting data
 multiline_plot(title="MONK3 with regularization: MSE", legend_names=["Training set", "Test set"], histories=[history_r, test_history_r], 

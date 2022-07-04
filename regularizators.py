@@ -44,7 +44,7 @@ class L2(Regularizator):
                 for l2 in l1:
                     outt.append(2 * self.l * l2)
                 out.append(outt)
-            return -np.array(out)
+            return np.array(out)
 
 
 class Thrun(Regularizator):
@@ -55,7 +55,7 @@ class Thrun(Regularizator):
             self.l = l
 
         def forward(self, weights):
-            return self.l * np.sum(np.power(weights, 4))/4 +  self.l * np.sum(np.square(weights))
+            return self.l * (np.sum(np.power(weights, 4)/4) +  np.sum(np.square(weights)))
 
         def derivative(self, weights):
-            return self.l * np.power(weights, 3) + 2 * self.l * weights
+            return self.l * (np.power(weights, 3) + 2 * self.l * weights)
