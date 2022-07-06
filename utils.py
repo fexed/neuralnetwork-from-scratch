@@ -95,7 +95,7 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
-def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="dark", showlegend=True, showgrid=False, savefile=None, alternateDots=False): 
+def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="dark", showlegend=True, showgrid=False, savefile=None, alternateDots=False, prefix=""): 
     """ Plots multiple data curves on the same cartesian plane
 
     Parameters
@@ -131,8 +131,8 @@ def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epoch
 
     with sns.color_palette(style, n_colors=l):
         fig, ax = plt.subplots()
-        for  i  in range(l):
-            lStyle = ':' if ( alternateDots and i % 2 == 0) else '-'
+        for  i  in reversed(range(l)):
+            lStyle = '-' if ( alternateDots and i % 2 == 0) else ':'
             ax.plot(histories[i], label=legend_names[i], linestyle=lStyle, linewidth=2)
             
         ax.set_ylabel(ylabel)
@@ -144,7 +144,7 @@ def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epoch
         
         plt.gca().margins(x=0)
         fig.set_size_inches(12, 8)
-        if not(savefile is None): plt.savefig("plots/" + savefile + ".png")
+        if not(savefile is None): plt.savefig(prefix + "plots/" + savefile + ".png")
         plt.clf()
     return
 
@@ -243,7 +243,7 @@ def log(filename, data):
     """
 
     import pickle
-    with open("logs/"+ filename + ".pkl", "wb") as logfile:
+    with open(filename + ".pkl", "wb") as logfile:
         pickle.dump(data, logfile)
 
 

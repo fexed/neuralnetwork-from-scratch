@@ -1,9 +1,13 @@
+from utils import shuffle
+
 class KFold:
     """ KFold data structure to easily get the folds of a given dataset """
 
     def __init__(self, K, X, Y):
         self.K = K
 
+        X, Y = shuffle(X,Y)
+        
         # builds the folds, dividing the dataset in K parts
         self.current_fold = -1  # call next_fold to build the first fold
         self.x_folds = []

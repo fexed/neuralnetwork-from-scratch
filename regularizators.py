@@ -1,21 +1,24 @@
 import numpy as np
+from hyperparameter import HyperParameter
 
 
-class Regularizator():
+class Regularizator(HyperParameter):
         """ Base class for the regularation functions """
 
-        def __init__(self, l):
-            self.name = None
-            self.l = 0
-
-
-class L1(Regularizator):
-        """ L1 or Lasso regularizator """
-
-        def __init__(self, l = 0.005):
-            self.name = "L1"
+        def __init__(self, type, l):
+            super().__init__(name = type + "Regularization", training=False)
+            self.key = 'reg'
+            self.type = type
             self.l = l
 
+        def value(self):
+            return self
+
+class L1(Regularizator):
+        """ L1 or Lasso regularizator """ 
+
+        def __init__(self, l = 0.005):
+            super().__init__("L1", l)
 
         def forward(self, weights):
             return self.l * np.sum(np.abs(weights))
@@ -29,13 +32,10 @@ class L2(Regularizator):
         """ L2 or Tikhonov regularizator """
 
         def __init__(self, l = 0.005):
-            self.name = "L2"
-            self.l = l
-
+            super().__init__("L2", l)
 
         def forward(self, weights):
             return self.l * np.sum(np.square(weights))
-
 
         def derivative(self, weights):
             out = []
@@ -51,8 +51,7 @@ class Thrun(Regularizator):
         """ Regularizator from Monk paper """
 
         def __init__(self, l = 0.005):
-            self.name = "Thrun"
-            self.l = l
+            super().__init__("Thrun", l)
 
         def forward(self, weights):
             return self.l * (np.sum(np.power(weights, 4)/4) +  np.sum(np.square(weights)))

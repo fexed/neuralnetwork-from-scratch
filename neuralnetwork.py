@@ -2,7 +2,7 @@ import numpy as np
 import pickle
 import random
 from utils import training_progress
-
+from hyperparameter import LinearLearningRateDecay
 
 class Network:
     """ Base class for the neural networks used in this project """
@@ -153,7 +153,7 @@ class Network:
             layer.update_weights(learning_rate, regularizator=self.regularizator, momentum=self.momentum, nesterov=self.nesterov)
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, lr_decay_finalstep=500, lr_final=0.00001, metric=None, verbose=True):
+    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, metric=None, verbose=True):
         """ The main training loop for the network
 
         Parameters
@@ -174,12 +174,8 @@ class Network:
             The number epochs of no improvement after which the training stops
         batch_size : int, optional
             The batch size of the training
-        lr_decay : str, optional
-            The learning rate decay strategy
-        lr_decay_finalstep : int, optional
-            The epoch from which the learning rate will be constant
-        lr_final : float, optional
-            The final learning rate
+        lr_decay : object, optional
+            The object describing learning rate decay strategy
         metric : Metric, optional
             Evaluation metric to be plotted
         verbose : bool, optional
@@ -211,7 +207,7 @@ class Network:
             if not(val_history is None):
                 print(" and validation set present", end="")
             if not(lr_decay is None):
-                print(", with " + str(lr_decay) + " weight decay until epoch " + str(lr_decay_finalstep), end="")
+                print(", with " + str(lr_decay))
             if not(metric is None):
                 print(". The evaluation metric is " + metric.name, end="")
             print("")
@@ -234,10 +230,10 @@ class Network:
                 outputs, err = self.forward_propagation(batch_X, targets)
                 error += err
                 if not (lr_decay is None):
-                    if (lr_decay == "linear"):
-                        if learning_rate > lr_final:
-                            lr_decay_alpha = i/lr_decay_finalstep
-                            learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_final
+                    if (lr_decay.type == "linear"):
+                        if learning_rate > lr_decay.final_value:
+                            lr_decay_alpha = i/lr_decay.last_step
+                            learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_decay.final_value
                 self.update_weights(learning_rate)
 
             error /= N  # mean error over the set. 
