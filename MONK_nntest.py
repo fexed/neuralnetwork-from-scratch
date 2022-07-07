@@ -1,22 +1,22 @@
-from platform import architecture
 from activationfunctions import Sigmoid
 from architecture import Architecture
 from hyperparameter import BatchSize, Epochs, LearningRate
 from losses import MSE
 from mlp import MLP
 from metrics import Accuracy
-from dataset_loader import load_monk
 from regularizators import Thrun, L2
+from datasets import Monk
 
 monk = 3
 print("\n\n****TESTING NETWORK ON MONK" + str(monk))
 
-# training set loading + preprocessing
-X_TR, Y_TR,input_size = load_monk(monk, use_one_hot=True)
-X_TS,Y_TS, input_size = load_monk(monk, use_one_hot=True, test=True)
+MONK = Monk(monk)
+
+X_TR, Y_TR, X_TS, Y_TS = MONK.getAll(one_hot=True)
+input_size, output_size = MONK.size()
 
 architecture = Architecture(MLP).define(
-    units= [input_size, 4, 1], 
+    units= [input_size, 4, output_size], 
     activations = [Sigmoid()], 
     loss = MSE(), 
     initializations = ["xavier"]
