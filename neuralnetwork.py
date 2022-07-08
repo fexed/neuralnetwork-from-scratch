@@ -244,15 +244,17 @@ class Network:
             if not(val_history is None):
                 # if a validation set is given, we now compute the error over it
                 val_error = 0
+                validation_outputs = []
                 for j in range(M):
-                    validation_output = X_validation[j]
+                    output = X_validation[j]
                     for layer in self.layers:
-                        validation_output = layer.forward_propagation(validation_output)
-                    val_error += self.loss.forward(validation_output, Y_validation[j])     
+                        output = layer.forward_propagation(output)
+                    val_error += self.loss.forward(output, Y_validation[j])  
+                    validation_outputs.append(output)   
                 val_error /= M
                 val_history.append(val_error)
                 if not(metric is None):
-                    metric_val_history.append( metric.compute(validation_output, Y_validation))
+                    metric_val_history.append( metric.compute(validation_outputs, Y_validation))
                 if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
             else:
                 # if no validation set, we simply output the current status
