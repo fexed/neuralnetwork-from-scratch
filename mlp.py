@@ -108,5 +108,6 @@ class MLP(Model):
         print(f"TR_METRIC_{self.tr_metric}")
         print(f"VAL_METRIC:_{self.val_metric}")
 
-        print(f"TS_LOSS:_{self.ts_loss}")
-        print(f"TS_METRIC:_{self.ts_metric}")
+        if self.evaluated:
+            print(f"TS_LOSS:_{self.ts_loss}")
+            print(f"TS_METRIC:_{self.ts_metric}")

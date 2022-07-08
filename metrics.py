@@ -1,5 +1,6 @@
 from enum import Enum
 from losses import MEE, MSE
+import numpy as np
 
 class Task(Enum): 
     REGRESSION = 0
@@ -52,20 +53,22 @@ class Specificity(Metric):
         return  TN/(FP + TN + 1e-5)
 
 
-class MeanSquaredError(): 
+class MeanSquaredError(Metric): 
     def __init__(self): 
         super().__init__("Mean Squared Error", Task.REGRESSION)
 
     def compute(self, x, target): 
-        return MSE().forward(x, target)
+        # This MUST be fixed when refactoring training loop 
+        return MSE().forward( np.array(list(map(lambda t: t[0], target))), np.array(x))
 
 
 class MeanEuclideanError(Metric):
     def __init__(self):
         super().__init__("Mean Euclidean Error", Task.REGRESSION)
 
-    def compute(self, x, target): 
-        return MEE().forward(x, target)
+    def compute(self, x, target):      
+        # This MUST be fixed when refactoring training loop 
+        return MEE().forward(np.array(list(map(lambda t: t[0], target))), np.array(x))
 
 
 def logistic_to_confusion_matrix(x, target):
