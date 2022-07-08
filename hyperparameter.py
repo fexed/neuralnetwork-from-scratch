@@ -1,11 +1,8 @@
-from abc import abstractmethod
-
 class HyperParameter(): 
     def __init__(self, name, training):
         self.name = name
         self.training = training
 
-    @abstractmethod
     def value(self):
         pass
 
@@ -35,6 +32,7 @@ class LearningRate(HyperParameter):
     def value(self):
         return self.eta
 
+
 class EarlyStopping(HyperParameter):
     def __init__(self, es):
         super().__init__("Early stopping", training = True)
@@ -44,6 +42,7 @@ class EarlyStopping(HyperParameter):
     def value(self):
         return self.es
 
+
 class BatchSize(HyperParameter): 
     def __init__(self, size):
         super().__init__("Batch Size", training = True) 
@@ -52,6 +51,7 @@ class BatchSize(HyperParameter):
 
     def value(self):
         return self.size
+
 
 class LinearLearningRateDecay(HyperParameter): 
     def __init__(self, last_step=500, final_value=0.0001):
@@ -63,6 +63,7 @@ class LinearLearningRateDecay(HyperParameter):
 
     def value(self):
         return self
+
 
 class Momentum(HyperParameter): 
     def __init__(self, type, alpha):
@@ -79,6 +80,7 @@ class ClassicalMomentum(Momentum):
 
     def value(self):
          return { self.final_value, self.last_step }
+
 
 class NesterovMomentum(Momentum): 
     def __init__(self, alpha):

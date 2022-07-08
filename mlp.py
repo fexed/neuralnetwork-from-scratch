@@ -45,8 +45,8 @@ class MLP(Model):
 
 
     def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=''): 
-        self.metric = metric
-        print({**self.training_hps})
+        self.metric = metric #Not so elegant... 
+
         tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist = self.net.training_loop(
             X_TR, Y_TR, X_VAL, Y_VAL, **self.training_hps, metric=metric, verbose=verbose
         )
@@ -93,8 +93,10 @@ class MLP(Model):
         if metric and self.metric:
             self.metric = metric
 
-        self.ts_loss = self.loss.forward(self.predict(X_TS), Y_TS)
-        self.ts_metric = self.metric.compute(self.net, X_TS, Y_TS)
+        output = self.predict(X_TS)
+
+        self.ts_loss = self.loss.forward(output, Y_TS)
+        self.ts_metric = self.metric.compute(output, Y_TS)
 
         self.evaluated = True
         self.save()
