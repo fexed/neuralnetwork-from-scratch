@@ -59,7 +59,7 @@ class MeanSquaredError(Metric):
 
     def compute(self, x, target): 
         # This MUST be fixed when refactoring training loop 
-        return MSE().forward( np.array(list(map(lambda t: t[0], target))), np.array(x))
+        return MSE().compute( np.array(list(map(lambda t: t[0], target))), np.array(x))
 
 
 class MeanEuclideanError(Metric):
@@ -68,7 +68,7 @@ class MeanEuclideanError(Metric):
 
     def compute(self, x, target):      
         # This MUST be fixed when refactoring training loop 
-        return MEE().forward(np.array(list(map(lambda t: t[0], target))), np.array(x))
+        return MEE().compute(np.array(list(map(lambda t: t[0], target))), np.array(x))
 
 
 def logistic_to_confusion_matrix(x, target):

@@ -3,10 +3,10 @@ from architecture import Architecture
 from hyperparameter import BatchSize, Epochs, LearningRate
 from losses import MSE
 from mlp import MLP
-from utils import shuffle
 from metrics import MeanEuclideanError, MeanSquaredError
 from regularizators import Thrun, L2
 from datasets import CUP
+from weight_initialization import Xavier
 
 print("\n\n****TESTING NETWORK ON CUP" )
 
@@ -23,7 +23,7 @@ architecture = Architecture(MLP).define(
     units= [input_size, 30, output_size], 
     activations = [Sigmoid(), Identity()], 
     loss = MSE(), 
-    initializations = ["xavier"]
+    initializations = [Xavier()]
 )
   
 hyperparameters = [
