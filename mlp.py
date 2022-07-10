@@ -95,7 +95,7 @@ class MLP(Model):
 
         output = self.predict(X_TS)
 
-        self.ts_loss = self.loss.forward(output, Y_TS)
+        self.ts_loss = self.loss.compute(output, Y_TS)
         self.ts_metric = self.metric.compute(output, Y_TS)
 
         self.evaluated = True

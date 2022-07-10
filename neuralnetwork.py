@@ -1,8 +1,8 @@
+from turtle import forward
 import numpy as np
 import pickle
 import random
 from utils import training_progress
-from hyperparameter import LinearLearningRateDecay
 
 class Network:
     """ Base class for the neural networks used in this project """
@@ -81,23 +81,13 @@ class Network:
             print(" and dropout = " + str(self.dropout), end="")
         if (self.nesterov):
             print(" and Nesterov momentum", end="")
-        print("")
+        print("") 
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
-
-
-    def set_loss(self, loss):
-        """ Changes the losses of the net """
-
-        # TODO delete this?
-        self.loss = loss
 
 
     def add(self, layer):
         """ Adds another layer at the bottom of the network """
-
-        # TODO check input-output dimensions?
         self.layers.append(layer)
-        self.layers[-1].init_weights()
 
 
     def predict(self, data):
@@ -114,28 +104,34 @@ class Network:
 
         return results
 
+    def training_epoch(self, X, Y, batch_size, eta): 
+        batches_X = [X[i:i+batch_size] for i in range(0, len(X), batch_size)] 
+        batches_Y = [Y[i:i+batch_size] for i in range(0, len(Y), batch_size)] 
 
-    def forward_propagation(self, batch_X, batch_Y):
+        self.reset_gradient() #reset the gradient
+
+        batch_gradient = 0
+        for batch_X, batch_Y in zip(batches_X, batches_Y):
+            for pattern, target in zip(batch_X, batch_Y):
+                pattern_output = self.forward_propagation(pattern)
+                batch_gradient += self.backward_propagation(pattern_output, target)
+
+            self.update_weights(eta) # apply backprop and delta rule to update weights 
+
+
+    def forward_propagation(self, p):
         """ Performs the forward propagation of the network """
+        output = p
+        for layer in self.layers:
+            output = layer.forward_propagation(output, self.dropout)
 
-        error = 0
-        outputs = []
-        for i in range(len(batch_X)):
-            gradient = 0
-            output = batch_X[i]
-            for layer in self.layers:
-                output = layer.forward_propagation(output, self.dropout)
-            outputs.append(output)
-            error += self.loss.forward(batch_Y[i], output)
-            gradient = self.backward_propagation(batch_Y[i], output, gradient)
-        # TODO regularization
-        return outputs, error
+        return output
 
 
-    def backward_propagation(self, target, output, gradient):
+    def backward_propagation(self, output, target):
         """ Performs the backward propagation of the network """
 
-        gradient += self.loss.derivative(target, output)
+        gradient = self.loss.derivative(output, target)
 
         for layer in reversed(self.layers):
             gradient = layer.backward_propagation(gradient)
@@ -143,9 +139,9 @@ class Network:
         return gradient
 
 
-    def zero_gradient(self):
+    def reset_gradient(self):
         for layer in self.layers:
-            layer.zero_gradient()
+            layer.reset_gradient()
 
 
     def update_weights(self, learning_rate):
@@ -153,149 +149,81 @@ class Network:
             layer.update_weights(learning_rate, regularizator=self.regularizator, momentum=self.momentum, nesterov=self.nesterov)
 
 
-    def training_loop(self, X, Y, X_validation=None, Y_validation=None, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, metric=None, verbose=True):
-        """ The main training loop for the network
+    def training_loop(self, X_TR, Y_TR, X_VAL=[], Y_VAL=[], epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, metric=None, verbose=True):
+        
+        N = len(X_TR)
+        tr_loss_hist = []
+        val_loss_hist = []
+        tr_metric_hist = []
+        val_metric_hist = []
 
-        Parameters
-        ----------
-        X
-            The features of the training set
-        Y
-            The labels of the training set
-        X_validation : optional
-            The features of the validation set
-        Y_validation : optional
-            The labels of the validation set
-        epochs : int, optional
-            The targeted epochs of the training
-        learning_rate : float, optional
-            The learning rate
-        early_stopping: int, optional
-            The number epochs of no improvement after which the training stops
-        batch_size : int, optional
-            The batch size of the training
-        lr_decay : object, optional
-            The object describing learning rate decay strategy
-        metric : Metric, optional
-            Evaluation metric to be plotted
-        verbose : bool, optional
-            Wether to be verbose or not
-        """
-
-        N = len(X)
-        history = []  # for logging purposes
-        M = 0
-        if not(X_validation is None):  # If validation set is provided
-            val_history = []
-            M = len(X_validation)
-        else:
-            val_history = None  # used to check if validation set is present
-
-        if not(metric is None):
-            metric_history = []
-            metric_val_history = []
-
-        if not(lr_decay is None):
-            initial_learning_rate = learning_rate
-
+        #Move them outta here.
         if (verbose):
             print("Beginning training loop with " + str(epochs) + " targeted epochs over " + str(N) + " training elements and learning rate = " + str(learning_rate), end="")
             if (batch_size > 1):
                 print(" (batch size = " + str(batch_size) + ")", end="")
             if not(early_stopping is None):
                 print(", with early stopping = " + str(early_stopping), end="")
-            if not(val_history is None):
+            if len(X_VAL) != 0:
                 print(" and validation set present", end="")
             if not(lr_decay is None):
                 print(", with " + str(lr_decay))
             if not(metric is None):
                 print(". The evaluation metric is " + metric.name, end="")
-            print("")
+            print("")   
 
         es_epochs = 0  # counting early stopping epochs if needed
-        min_error = float('inf')
-        for i in range(epochs):
-            error = 0
-            outputs = []
-            targets = []
-            # shuffle order of inputs each epoch
-            temp = list(zip(X, Y))
-            random.shuffle(temp)
-            X, Y = zip(*temp)
-            penalty = 0
-            batches_X = [X[i:i+batch_size] for i in range(0, len(X), batch_size)]
-            batches_Y = [Y[i:i+batch_size] for i in range(0, len(Y), batch_size)]
-            for batch_X, targets in zip(batches_X, batches_Y):
-                self.zero_gradient()
-                outputs, err = self.forward_propagation(batch_X, targets)
-                error += err
-                if not (lr_decay is None):
-                    if (lr_decay.type == "linear"):
-                        if learning_rate > lr_decay.final_value:
-                            lr_decay_alpha = i/lr_decay.last_step
-                            learning_rate = (1 - lr_decay_alpha) * initial_learning_rate + lr_decay_alpha * lr_decay.final_value
-                self.update_weights(learning_rate)
+        min_error = float('inf') #@TODO Check why this is done
 
-            error /= N  # mean error over the set. 
-            history.append(error)
-            if not(metric is None):
-                metric_history.append(metric.compute(outputs, Y)) 
+        #TRAINING ACTUALLY BEGINS HERE.
+
+        for i in range(epochs):
+            # Training happens here
+            self.training_epoch(X_TR, Y_TR, batch_size, learning_rate)
+
+            # Should be checked!
+            if not (lr_decay is None):
+                if (lr_decay.type == "linear"):
+                    if learning_rate > lr_decay.final_value:
+                        lr_decay_alpha = i/lr_decay.last_step
+                        learning_rate = (1 - lr_decay_alpha) * learning_rate + lr_decay_alpha * lr_decay.final_value
+
+            # Compute learning curves 
+            tr_output = self.predict(X_TR)  #@TODO Should we calculate after weight update or reuse outputs from the forward propagation part?
+            val_output = self.predict(X_VAL)
+
+            tr_loss_hist.append(self.loss.compute(tr_output, Y_TR))
+            tr_metric_hist.append(metric.compute(tr_output, Y_TR))
+
+            val_loss_hist.append(self.loss.compute(val_output, Y_VAL))
+            val_metric_hist.append(metric.compute(val_output, Y_VAL))
                 
-            if not(val_history is None):
-                # if a validation set is given, we now compute the error over it
-                val_error = 0
-                validation_outputs = []
-                for j in range(M):
-                    output = X_validation[j]
-                    for layer in self.layers:
-                        output = layer.forward_propagation(output)
-                    val_error += self.loss.forward(output, Y_validation[j])  
-                    validation_outputs.append(output)   
-                val_error /= M
-                val_history.append(val_error)
-                if not(metric is None):
-                    metric_val_history.append( metric.compute(validation_outputs, Y_validation))
-                if (verbose): training_progress(i+1, epochs, suffix=("loss = %f, val_loss = %f" % (error, val_error)))
-            else:
-                # if no validation set, we simply output the current status
-                if (verbose): training_progress(i+1, epochs, suffix=("loss = %f" % (error)))
+            #@TODO Reformat using if into the f string
+            if (verbose): 
+                training_progress(i+1, epochs, suffix=f"loss = {tr_loss_hist[i]}%, val_loss = {val_loss_hist[i]}%")
+
+            #@TODO Check Early Stopping Implementation
             if not(early_stopping is None):
                 # with early stopping we need to check the current situation and
                 # stop if needed
-                if not(val_history is None):
-                    # we use the validation error if a validation set is given
-                    check_error = val_error
-                else:
-                    # otherwise we just use what we have, the training error
-                    check_error = error
+                check_error = val_loss_hist[i] or tr_loss_hist[i]
+
                 if check_error >= min_error or np.isnan(check_error):
                     # the error is increasing or is stable, or there was an
                     # overflow situation, hence we are going toward an ES
                     es_epochs += 1
                     if es_epochs == early_stopping:
-                        if not(val_history is None):
-                            if (verbose): print('\nEarly stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, error, val_error))
-                        else:
-                            if (verbose): print('\nEarly stopping on epoch %d of %d with loss = %f' % (i+1, epochs, error))
+                        if (verbose): 
+                             #@TODO Reformat using if into the f string
+                            print('\nEarly stopping on epoch %d of %d with loss = %f and val_loss = %f' % (i+1, epochs, tr_loss_hist[i], val_loss_hist[i]))
                         break
                 else:
                     # we're good
                     es_epochs = 0
                     min_error = check_error
         if (verbose): print("")
-
-        # return the data that we have gathered
-        if not(val_history is None):
-            if not(metric is None):
-                return history, val_history, metric_history, metric_val_history
-            else:
-                return history, val_history
-        else:
-            if not(metric is None):
-                return history, metric_history
-            else:
-                return history
-
+        return tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist 
+    
 
     def savenet(self, filename):
         """ Saves the neural network in a pickle """

@@ -1,195 +1,92 @@
-import numpy as np
 from weight_initialization import WeightInitialization, RandomUniform
 from activationfunctions import ActivationFunction, Identity
+import numpy as np
 
-class Layer:
-    """ Simple empty layer structure """
-
-    def __init__(self):
-        """ Initializes the layer with its parameters """
-
-        self.input = None
-        self.output = None
-
-
-    def forward_propagation(self, input, dropout=1):
-        """ Computes the output of the layer for a given input
-
-        Parameters
-        ----------
-        input
-            The input of the layer
-        dropout : float
-            Percentage of neurons to keep
-        """
-
-        raise NotImplementedError
-
-
-    def backward_propagation(self, output_error, learning_rate, momentum = 0, regularizator=None, nesterov=False):
-        """ Computes the delta-error over the input for a given delta-error over
-        the output and updates any parameter
-
-        Parameters
-        ----------
-        output_error
-            The gradient to use for the SGD
-        learning_rate : float
-            The learning rate to use
-        momentum : float, optional
-            The rate of momentum
-        regularizator : Regularizator
-            The regularizator to use
-        nesterov: bool,
-            The way to apply momentum heuristic: Nesterov or "Classical"
-        """
-
-        raise NotImplementedError
-
-
-class FullyConnectedLayer(Layer):
-    """ Simple layer, linear or with an activation function"""
-
+class FullyConnectedLayer():
     def __init__(self, in_size, out_size, activation: ActivationFunction = Identity(), init_strategy : WeightInitialization = RandomUniform()):
-        """ Initializes the layer with its dimensions. Can also specify the
-        activation function and the initialization function of its neurons.
-
-        Parameters
-        ----------
-        in_size : int
-            Number of input neurons
-        out_size : int
-            Number of output neurons
-        activation : ActivationFunction, optional
-            The activation function of this layer
-        init_strategy : str, optional
-            The type of initialization of the neurons of this layer.
-            Supported: [None, "xavier", "normalized_xavier", "he", "basic"]
-        """
+        self.in_size = in_size
+        self.out_size = out_size
+        
+        self.weights, self.bias = init_strategy.generate(in_size, out_size)
+        
         self.activation = activation
+        self.reset_gradient()
 
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
 
-        self.in_size = in_size
-        self.out_size = out_size
 
-        self.weights, self.bias = init_strategy.generate(in_size, out_size)
-
-
-    def get_weights(self):
-        """ Simple getter for the weights of this layer
-
-        Returns
-        -------
-        weights
-            The weights of this layer
-        """
-
-        return self.weights, self.bias
+    def reset_gradient(self):
+        self.weights_gradient = np.zeros(self.weights.shape) #not necessary
+        self.bias_gradient = np.zeros(self.bias.shape) #not necessary
 
 
     def forward_propagation(self, input, dropout=1, nesterov=0):
-        """ Computes the output of the layer for a given input
-
-        Parameters
-        ----------
-        input
-            The input of the layer
-        dropout : float
-            Percentage of neurons to keep
-        """
-
         self.input = input
 
         if nesterov != 0: 
-            #Save momentum alpha_dv, gradient will be add next
-            self.prev_weight_update = np.multiply(self.prev_weight_update, nesterov) 
-            self.prev_bias_update = np.multiply(self.prev_bias_update, nesterov) 
-
-            #Update the weighs before gradient computtion (Nesterov)
-            self.weights += self.prev_weight_update
-            self.bias += self.prev_bias_update
-            
-        # TODO: check overflow situations
+            self.neseterov_weight_update(nesterov)
 
         # check how many neurons to keep
-        keep = np.random.rand(self.weights.shape[0], self.weights.shape[1]) < dropout
-        newweights = np.multiply(self.weights, keep)
-        keep = np.random.rand(self.bias.shape[0], self.bias.shape[1]) < dropout
-        newbias = np.multiply(self.bias, keep)
-        self.output = np.dot(self.input, newweights) + newbias  # net output
-        if not(self.activation is None):
-            # the activation function is optional
-            # without it the output value is linear
-            self.activation_input = self.output
-            self.output = self.activation.forward(self.output)
+        not_dropped_units = np.random.rand(self.weights.shape[0], self.weights.shape[1]) < dropout
+        not_dropped_biases = np.random.rand(self.bias.shape[0], self.bias.shape[1]) < dropout
+
+        active_weights = np.multiply(self.weights, not_dropped_units)
+        active_bias = np.multiply(self.bias, not_dropped_biases)
+
+        self.net = np.dot(self.input, active_weights) + active_bias 
+        self.output = self.activation.forward(self.net)
+
         return self.output
 
 
-    def zero_gradient(self):
-        self.bias_gradient = 0
-        self.weights_gradient = np.zeros(self.weights.shape)
+    def neseterov_weight_update(self, nesterov): 
+        #Save momentum alpha_dv, gradient will be add next
+        self.prev_weight_update = np.multiply(self.prev_weight_update, nesterov) 
+        self.prev_bias_update = np.multiply(self.prev_bias_update, nesterov) 
+
+        #Update the weighs before gradient computtion (Nesterov)
+        self.weights += self.prev_weight_update
+        self.bias += self.prev_bias_update
 
 
-    def backward_propagation(self, gradient):
-        """ Computes the delta-error over the input for a given delta-error over
-        the output
-
-        Parameters
-        ----------
-        gradient
-            The gradient to use for the SGD
-        """
-
-        if not(self.activation is None):
-            # if there's activation function specified, then we compute its
-            # derivative
-            gradient = np.multiply(self.activation.derivative(self.activation_input), gradient)
+    #@TODO Change naming here
+    def backward_propagation(self, delta):
+        delta = np.multiply(self.activation.derivative(self.net), delta)
         
-        input_error = np.dot(gradient, self.weights.T)
+        input_error = np.dot(delta, self.weights.T)
 
         # the weights are updated according to their contribution to the error
-        self.weights_gradient += np.dot(self.input.T, gradient)
-        self.bias_gradient += gradient
+        self.weights_gradient += np.dot(self.input.T, delta)
+        self.bias_gradient += delta
 
         return input_error
 
 
     def update_weights(self, eta, regularizator=None, momentum = 0, nesterov=0):
-        """ Updates the weights of the layer according to the gradient computed
-        during the backward propagation
-
-        Parameters
-        ----------
-        eta : float
-            The learning rate to use
-        momentum : float, optional
-            The rate of momentum
-        nesterov: boolean
-            Flag used to save pervious weight update when using Nesterov momentum
-            In such a case the 'momentum' parameter MUST be 0 (or unset).
-        """
-
         # TODO: nesterov
-
         dW = eta*self.weights_gradient
         dB = eta*self.bias_gradient
 
-        if  regularizator: 
+        # Apply the regularization/penalty term to acheive weight decay.
+        if regularizator: 
             dW = dW - regularizator.derivative(self.weights)
             dB = dB - regularizator.derivative(self.bias)
 
+        # Momentum requires saving of previous gradients, to sum them to current one.
         if momentum > 0:
             dW += momentum*self.prev_weight_update
             dB += momentum*self.prev_bias_update
             self.prev_weight_update = dW
             self.prev_bias_update = dB
+
+        # Nesterov momentum requires saving of previous gradients, to sum them to current one.
         elif nesterov > 0:
             dW += nesterov*self.prev_weight_update
             dB += nesterov*self.prev_bias_update
             self.prev_weight_update = dW
             self.prev_bias_update = dB
 
+        #@TODO the same thing happens both for Classical and Nesterov Momentum, maybe the code can be simplified.
         self.weights += dW
         self.bias += dB
