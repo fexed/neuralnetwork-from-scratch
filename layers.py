@@ -1,6 +1,6 @@
 import numpy as np
-from math import sqrt
-
+from weight_initialization import WeightInitialization, RandomUniform
+from activationfunctions import ActivationFunction, Identity
 
 class Layer:
     """ Simple empty layer structure """
@@ -50,7 +50,7 @@ class Layer:
 class FullyConnectedLayer(Layer):
     """ Simple layer, linear or with an activation function"""
 
-    def __init__(self, in_size, out_size, activation = None, initialization_func = None):
+    def __init__(self, in_size, out_size, activation: ActivationFunction = Identity(), init_strategy : WeightInitialization = RandomUniform()):
         """ Initializes the layer with its dimensions. Can also specify the
         activation function and the initialization function of its neurons.
 
@@ -62,39 +62,19 @@ class FullyConnectedLayer(Layer):
             Number of output neurons
         activation : ActivationFunction, optional
             The activation function of this layer
-        initialization_func : str, optional
+        init_strategy : str, optional
             The type of initialization of the neurons of this layer.
             Supported: [None, "xavier", "normalized_xavier", "he", "basic"]
         """
         self.activation = activation
+
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
+
         self.in_size = in_size
         self.out_size = out_size
-        self.init_func = initialization_func
 
-
-    def init_weights(self):
-        if not(self.init_func is None):
-            if (self.init_func == "xavier"):  # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/#:~:text=each%20in%20turn.-,Xavier%20Weight%20Initialization,-The%20xavier%20initialization
-                l, u = -(1.0 / sqrt(self.in_size)), (1.0 / sqrt(self.in_size))
-                self.weights = np.random.uniform(low=l, high=u, size=(self.in_size, self.out_size))
-                self.bias = np.random.uniform(low=l, high=u, size=(1, self.out_size))
-            elif (self.init_func == "normalized_xavier"):  # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/#:~:text=to%20One%20Hundred-,Normalized%20Xavier%20Weight%20Initialization,-The%20normalized%20xavier
-                l, u = -(6.0 / sqrt(self.in_size + self.out_size)), (6.0 / sqrt(self.in_size + self.out_size))
-                self.weights = np.random.uniform(low=l, high=u, size=(self.in_size, self.out_size))
-                self.bias = np.random.uniform(low=l, high=u, size=(1, self.out_size))
-            elif (self.init_func == "he"):  # https://machinelearningmastery.com/weight-initialization-for-deep-learning-neural-networks/#:~:text=on%20ImageNet%20Classification.%E2%80%9D-,He%20Weight%20Initialization,-The%20he%20initialization
-                # for ReLU
-                dev = sqrt(2.0 / self.in_size)
-                self.weights = np.random.normal(loc=0.0, scale=dev, size=(self.in_size, self.out_size))
-                self.bias = np.random.normal(loc=0.0, scale=dev, size=(1, self.out_size))
-            elif (self.init_func == "basic"):
-                self.bias = [np.full(self.out_size, 0)]
-                self.weights = np.random.uniform(-1/self.in_size, 1/self.in_size, (self.in_size, self.out_size))
-        else:
-            self.weights = np.random.rand(self.in_size, self.out_size) - 0.5  # so to have few <0 and few >0
-            self.bias = np.random.rand(1, self.out_size) - 0.5  # so to have few <0 and few >0
+        self.weights, self.bias = init_strategy.generate(in_size, out_size)
 
 
     def get_weights(self):
@@ -106,7 +86,7 @@ class FullyConnectedLayer(Layer):
             The weights of this layer
         """
 
-        return self.weights
+        return self.weights, self.bias
 
 
     def forward_propagation(self, input, dropout=1, nesterov=0):
