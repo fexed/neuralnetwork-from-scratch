@@ -1,12 +1,15 @@
 class Logger(): 
-    def __init__(self, verbosity):
-        self.verobsity = verbosity
+    def __init__(self, verbose):
+        self.set_verbosity(verbose)
+
+    def set_verbosity(self, verbose):
+        self.verobse = verbose
+    
 
 class MLPLogger(Logger): 
-    def __init__(self, nn, training, verbosity):
-        self.nn = nn
-        self.training = training
-        super().__init__(verbosity)
+    def __init__(self, network, verbose):
+        self.nn = network
+        super().__init__(verbose)
     
     def summary(self): 
         """ A summary of the network, for logging and output purposes """
@@ -56,7 +59,7 @@ class MLPLogger(Logger):
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
 
     def training_preview(self): 
-        if (self.verobsity):
+        if (self.verobse):
             print("Beginning training loop with " + str(self.training.epochs) + " targeted epochs over " + str(self.training.N) + " training elements and learning rate = " + str(self.training.learning_rate), end="")
             if (self.training.batch_size > 1):
                 print(" (batch size = " + str(self.training.batch_size) + ")", end="")
@@ -87,7 +90,7 @@ class MLPLogger(Logger):
         fill : char, optional
             Character used to fill the progress bar
         """
-        if (self.verobsity): 
+        if (self.verobse): 
             progress = current_epoch/epochs
             digits = len(str(epochs))
             formattedepochs = ("{:0"+str(digits)+"d}").format(current_epoch)
@@ -100,14 +103,14 @@ class MLPLogger(Logger):
             print(txt + bar, end="")
 
     def early_stopping_log(self, i, tr_loss, val_loss):
-        if (self.verobsity): 
+        if (self.verobse): 
             print(f"\nEarly stopping on epoch {i+1} of {self.training.epochs} with loss={tr_loss }" +  
                     f"and val_loss = {val_loss}%f" if  not(val_loss is None) else "" )
 
 
 class GridSearchLogger(Logger): 
-    def __init__(self, search_space, verbosity):
-        super().__init__(verbosity)
+    def __init__(self, search_space, verbose):
+        super().__init__(verbose)
 
     def update_progress(self, progress, barlength=100, prefix="", fill="\u2588"):
         """ Prints a progress bar with the current progress

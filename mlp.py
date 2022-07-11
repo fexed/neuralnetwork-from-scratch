@@ -1,55 +1,99 @@
+from hyperparameter import HyperParameter
+from logger import MLPLogger
 from model import Model
 from layers import FullyConnectedLayer
-from neuralnetwork import Network
+from training import Training
 from utils import multiline_plot, log
-import pickle
+
 
 
 class MLP(Model): 
-    def __init__(self, name, architecture, hyperparameters = []):
-        super().__init__(name + '_MLP')
-        
+    def __init__(self, name, architecture, hyperparameters = []):        
         self.loss = architecture.loss 
         self.units = architecture.units
 
         self.activations = architecture.activations
         self.initializations = architecture.initializations
 
-        self.training_hps = {}
-        self.structural_hps = {} 
-
-        for hp in hyperparameters: 
-            getattr(self, 'training_hps' if hp.training else 'structural_hps')[hp.key] = hp.value()
-
-        self.build()
-
-
-    def build(self): 
-        reg = self.structural_hps.get('reg')
-        net = Network(self.name, self.loss, regularizator = reg)
+        self.layers = []
 
         for i in range(len(self.units) - 1):
-            net.add(FullyConnectedLayer(self.units[i], self.units[i+1], self.activations[i], self.initializations[i]))
+            self.layers.append(FullyConnectedLayer(self.units[i], self.units[i+1], self.activations[i], self.initializations[i]))
         
-        net.logger.summary()
-        self.net = net
+        self.structural_hps = {} 
+        self.training_hps = {}
 
+        for hp in hyperparameters: 
+            self.set_hyperparameter(hp)
+        
         self.trained = False
-        self.evaluated = False
+        self.training_algorithm = Training(self, self.training_hps)
 
-        super().create_model_folder()
+        self.logger = MLPLogger(self, True)
+
+        super().__init__(name + '_MLP')
+        #self.logger.summary() #Check parmaeters passage
+
+
+    def set_hyperparameter(self, hp: HyperParameter):
+        getattr(self, 'training_hps' if hp.training else 'structural_hps')[hp.key] = hp.value()
     
-
+    
     def reset(self): 
         print(f"Resetting the {self.name}")
         self.build()
 
 
+    def predict(self, X):
+        output = []
+
+        for i in range(len(X)):
+            o = X[i]
+            for layer in self.layers:
+                o = layer.forward_propagation(o)
+            output.append(o)
+
+        return output
+
+    def forward_propagation(self, p):
+        """ Performs the forward propagation of the network """
+        output = p
+        for layer in self.layers:
+            output = layer.forward_propagation(output, dropout=1)
+
+        return output
+
+    def backward_propagation(self, output, target):
+        """ Performs the backward propagation of the network """
+
+        gradient = self.loss.derivative(output, target)
+
+        for layer in reversed(self.layers):
+            gradient = layer.backward_propagation(gradient)
+        
+        return gradient
+
+
+    def reset_gradients(self):
+        for layer in self.layers:
+            layer.reset_gradients()
+
+
+    def update_weights(self, learning_rate):
+        for layer in self.layers:
+            layer.update_weights(learning_rate, **self.structural_hps)
+
+
+    def add(self, layer):
+        """ Adds another layer at the bottom of the network """
+        self.layers.append(layer)
+
+
     def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=''): 
         self.metric = metric #Not so elegant... 
 
-        tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist = self.net.training_loop(
-            X_TR, Y_TR, X_VAL, Y_VAL, **self.training_hps, metric=metric, verbose=verbose
+        tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist = self.training_algorithm(
+            X_TR, Y_TR, X_VAL, Y_VAL, metric=metric, verbose=verbose
         )
 
         history = [tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist]
@@ -66,8 +110,8 @@ class MLP(Model):
         self.val_metric = val_metric_hist[-1]
         
         self.trained = True
-    
 
+        
     def plot_training_curves(self, history, metric_name, folder ):
         legend_names = ["TR", "VL"] if len(history) == 2 else ["TR"]
             
@@ -81,48 +125,6 @@ class MLP(Model):
         )
 
 
-    def predict(self, X): 
-        return self.net.predict(X)
-
-
-    def evaluate(self, X_TS, Y_TS, metric = None): 
-        if metric and self.metric:
-            self.metric = metric
-
-        output = self.predict(X_TS)
-
-        self.ts_loss = self.loss.compute(output, Y_TS)
-        self.ts_metric = self.metric.compute(output, Y_TS)
-
-        self.evaluated = True
-        self.save()
-        
-
     def save(self):
         """ Saves the neural network in a pickle """
-        filename = f'{self.path}logs/mlp.pkl'
-
-        with open(filename, "wb") as savefile:
-            pickle.dump(self.__dict__, savefile)
-
-
-    def load(self, filename):
-        """ Loads the neural network from a pickle """
-
-        with open(filename, "rb") as savefile:
-            newnet = pickle.load(savefile)
-
-        self.__dict__.clear()  # clear current net
-        self.__dict__.update(newnet)
-
-
-    def results(self):
-        print(f"TR_LOSS:_{self.tr_loss}")
-        print(f"VAL_LOSS:_{self.val_loss}")
-        
-        print(f"TR_METRIC_{self.tr_metric}")
-        print(f"VAL_METRIC:_{self.val_metric}")
-
-        if self.evaluated:
-            print(f"TS_LOSS:_{self.ts_loss}")
-            print(f"TS_METRIC:_{self.ts_metric}")
+        super().save('MLP')

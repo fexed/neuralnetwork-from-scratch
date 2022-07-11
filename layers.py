@@ -10,13 +10,13 @@ class FullyConnectedLayer():
         self.weights, self.bias = init_strategy.generate(in_size, out_size)
         
         self.activation = activation
-        self.reset_gradient()
+        self.reset_gradients()
 
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
 
 
-    def reset_gradient(self):
+    def reset_gradients(self):
         self.weights_gradient = np.zeros(self.weights.shape) #not necessary
         self.bias_gradient = np.zeros(self.bias.shape) #not necessary
 

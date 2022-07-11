@@ -1,7 +1,7 @@
 from activationfunctions import Sigmoid
 from losses import BinaryCrossentropy, MSE
 from layers import FullyConnectedLayer
-from neuralnetwork import Network
+from training import Network
 from metrics import Accuracy
 from utils import multiline_plot
 from dataset_loader import load_monk

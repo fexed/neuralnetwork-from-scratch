@@ -2,7 +2,7 @@ import numpy as np
 from activationfunctions import Tanh
 from losses import MEE
 from layers import FullyConnectedLayer
-from neuralnetwork import Network
+from training import Network
 from regularizators import L2
 from utils import update_progress
 import time

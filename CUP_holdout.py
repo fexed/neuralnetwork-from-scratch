@@ -3,7 +3,7 @@ from activationfunctions import LeakyReLU, ReLU, Sigmoid, Tanh
 from losses import MEE
 from layers import FullyConnectedLayer
 from metrics import MeanEuclideanError
-from neuralnetwork import Network
+from training import Network
 from utils import plot_and_save, tr_vl_split, compare, multiline_plot
 from regularizators import L2
 import numpy as np

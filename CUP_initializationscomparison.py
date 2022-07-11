@@ -3,7 +3,7 @@ from activationfunctions import Tanh
 from losses import MEE
 from layers import FullyConnectedLayer
 from metrics import MeanEuclideanError
-from neuralnetwork import Network
+from training import Network
 from utils import tr_vl_split
 from dataset_loader import load_cup
 from regularizators import L2

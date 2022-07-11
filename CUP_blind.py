@@ -1,7 +1,7 @@
 from activationfunctions import Tanh
 from losses import MEE
 from layers import FullyConnectedLayer
-from neuralnetwork import Network
+from training import Network
 from dataset_loader import load_cup
 from regularizators import L2
 

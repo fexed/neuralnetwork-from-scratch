@@ -7,7 +7,7 @@ class Regularizator(HyperParameter):
 
         def __init__(self, type, l):
             super().__init__(name = type + "Regularization", training=False)
-            self.key = 'reg'
+            self.key = 'regularizator'
             self.type = type
             self.l = l
 
