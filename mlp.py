@@ -2,6 +2,7 @@ from model import Model
 from layers import FullyConnectedLayer
 from neuralnetwork import Network
 from utils import multiline_plot, log
+import pickle
 
 
 class MLP(Model): 
@@ -30,7 +31,7 @@ class MLP(Model):
         for i in range(len(self.units) - 1):
             net.add(FullyConnectedLayer(self.units[i], self.units[i+1], self.activations[i], self.initializations[i]))
         
-        net.summary()
+        net.logger.summary()
         self.net = net
 
         self.trained = False
@@ -66,11 +67,6 @@ class MLP(Model):
         
         self.trained = True
     
-    
-    def save(self):
-        # Probably this is not enough now
-        self.net.savenet(f'{self.path}logs/mlp.pkl')
-
 
     def plot_training_curves(self, history, metric_name, folder ):
         legend_names = ["TR", "VL"] if len(history) == 2 else ["TR"]
@@ -100,7 +96,26 @@ class MLP(Model):
 
         self.evaluated = True
         self.save()
-    
+        
+
+    def save(self):
+        """ Saves the neural network in a pickle """
+        filename = f'{self.path}logs/mlp.pkl'
+
+        with open(filename, "wb") as savefile:
+            pickle.dump(self.__dict__, savefile)
+
+
+    def load(self, filename):
+        """ Loads the neural network from a pickle """
+
+        with open(filename, "rb") as savefile:
+            newnet = pickle.load(savefile)
+
+        self.__dict__.clear()  # clear current net
+        self.__dict__.update(newnet)
+
+
     def results(self):
         print(f"TR_LOSS:_{self.tr_loss}")
         print(f"VAL_LOSS:_{self.val_loss}")
