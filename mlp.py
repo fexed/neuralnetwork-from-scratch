@@ -40,6 +40,8 @@ class MLP(Model):
 
 
     def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=''): 
+        self.logger.summary(self.name)
+
         tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist = self.training_algorithm(
             X_TR, Y_TR, X_VAL, Y_VAL, metric=metric, verbose=verbose
         )

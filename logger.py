@@ -7,15 +7,13 @@ class Logger():
     
 
 class MLPLogger(Logger): 
-    def __init__(self, network, verbose):
+    def __init__(self, network, verbose=True):
         self.nn = network
         super().__init__(verbose)
     
-    def summary(self): 
-        """ A summary of the network, for logging and output purposes """
-
+    def summary(self, name): 
         trainable_parameters = 0  # output purposes
-        print("Neural Network \"" + self.nn.name + "\"")
+        print("Neural Network \"" + name + "\"")
         print("+==== Structure")
         nlayers = len(self.nn.layers)
         try:
@@ -47,14 +45,12 @@ class MLPLogger(Logger):
             print("+==== Loss: " + self.nn.loss.name, end="")
         else:
             print("+====")
-        if not(self.nn.regularizator is None):
-            print(" and " + self.nn.regularizator.name + " regularizator with lambda = " + str(self.nn.regularizator.l), end="")
-        if (self.nn.momentum > 0):
-            print(" and momentum = " + str(self.nn.momentum), end="")
-        if (self.nn.dropout < 1):
-            print(" and dropout = " + str(self.nn.dropout), end="")
-        if (self.nn.nesterov):
-            print(" and Nesterov momentum", end="")
+        if not(self.nn.regularization is None):
+            print(" and " + self.nn.regularization.name + " regularization with lambda = " + str(self.nn.regularization.l), end="")
+        if (self.nn.momentum.alpha != 0):
+            print(" and " + str(self.nn.momentum.name) + "with alpha = ",str(self.nn.momentum.alpha) , end="")
+        if (self.nn.dropout.rate < 1):
+            print(" and dropout = " + str(self.nn.dropout.rate), end="")
         print("") 
         print("For a total of " + str(trainable_parameters) + " trainable parameters")
 
@@ -75,28 +71,13 @@ class MLPLogger(Logger):
             
 
     def training_progress(self, current_epoch, epochs, tr_loss, val_loss, barlength=50, fill="\u2588"): 
-        """ Prints a progress bar with the current training progress
-
-        Parameters
-        ----------
-        current_epoch : int
-            The current epoch of training
-        epochs : int
-            The max number of epochs of training
-        barlength : int, optional
-            The length of the progress bar
-        prefix : str, optional
-            A string to print before the progress bar
-        fill : char, optional
-            Character used to fill the progress bar
-        """
         if (self.verobse): 
             progress = current_epoch/epochs
             digits = len(str(epochs))
             formattedepochs = ("{:0"+str(digits)+"d}").format(current_epoch)
             num = int(round(barlength*progress))
 
-            losses = f"loss = {tr_loss}%" + f"val_loss = {val_loss}%" if not(val_loss is None) else "" 
+            losses = f"loss = {tr_loss}% " + f"val_loss = {val_loss}% " if not(val_loss is None) else "" 
             txt = "\rEpoch " + formattedepochs + " of " + str(epochs) + " " + losses
             bar = " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
 
@@ -113,18 +94,6 @@ class GridSearchLogger(Logger):
         super().__init__(verbose)
 
     def update_progress(self, progress, barlength=100, prefix="", fill="\u2588"):
-        """ Prints a progress bar with the current progress
-        Parameters
-        ----------
-        progress : float
-            The current progress, 0 <= progress <= 1
-        barlength : int, optional
-            The length of the progress bar
-        prefix : str, optional
-            A string to print before the progress bar
-        fill : char, optional
-            Character used to fill the progress bar
-        """
         num = int(round(barlength*progress))
         txt = "\r" + prefix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
         print(txt, end="")
