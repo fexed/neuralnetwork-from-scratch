@@ -3,10 +3,7 @@ class HyperParameter():
         self.name = name
         self.training = training
 
-    def value(self):
-        pass
-
-    def range(self):
+    def search_range(self):
         return None
     
     def __str__(self):

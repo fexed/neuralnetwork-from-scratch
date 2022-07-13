@@ -15,7 +15,7 @@ class Model():
     def predict(self, _): 
         pass
 
-    def evaluate(self, X, Y, loss = None, metric = None): 
+    def evaluate(self, X, Y, loss = None, metric: Metric = None): 
         output = self.predict(X)
 
         self.ts_loss = loss.compute(output, Y)
