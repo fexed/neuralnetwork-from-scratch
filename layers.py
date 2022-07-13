@@ -8,28 +8,28 @@ class FullyConnectedLayer():
         self.out_size = out_size
         
         self.weights, self.bias = init_strategy.generate(in_size, out_size)
-        
+
         self.activation = activation
         self.reset_gradients()
 
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
-
+        
 
     def reset_gradients(self):
         self.weights_gradient = np.zeros(self.weights.shape) #not necessary
         self.bias_gradient = np.zeros(self.bias.shape) #not necessary
 
 
-    def forward_propagation(self, input, dropout=1, nesterov=0):
+    def forward_propagation(self, input, dropout_rate=1, alpha=0, nesterov=False):
         self.input = input
 
-        if nesterov != 0: 
-            self.neseterov_weight_update(nesterov)
+        if nesterov: 
+            self.nesterov_weight_update(alpha)
 
         # check how many neurons to keep
-        not_dropped_units = np.random.rand(self.weights.shape[0], self.weights.shape[1]) < dropout
-        not_dropped_biases = np.random.rand(self.bias.shape[0], self.bias.shape[1]) < dropout
+        not_dropped_units = np.random.rand(self.weights.shape[0], self.weights.shape[1]) < dropout_rate
+        not_dropped_biases = np.random.rand(self.bias.shape[0], self.bias.shape[1]) < dropout_rate
 
         active_weights = np.multiply(self.weights, not_dropped_units)
         active_bias = np.multiply(self.bias, not_dropped_biases)
@@ -40,10 +40,10 @@ class FullyConnectedLayer():
         return self.output
 
 
-    def neseterov_weight_update(self, nesterov): 
+    def nesterov_weight_update(self, alpha): 
         #Save momentum alpha_dv, gradient will be add next
-        self.prev_weight_update = np.multiply(self.prev_weight_update, nesterov) 
-        self.prev_bias_update = np.multiply(self.prev_bias_update, nesterov) 
+        self.prev_weight_update = np.multiply(self.prev_weight_update, alpha) 
+        self.prev_bias_update = np.multiply(self.prev_bias_update, alpha) 
 
         #Update the weighs before gradient computtion (Nesterov)
         self.weights += self.prev_weight_update
@@ -63,30 +63,23 @@ class FullyConnectedLayer():
         return input_error
 
 
-    def update_weights(self, eta, regularizator=None, momentum = 0, nesterov=0):
+    def update_weights(self, eta, regularizator=None, alpha=0):
         # TODO: nesterov
+
         dW = eta*self.weights_gradient
         dB = eta*self.bias_gradient
 
-        # Apply the regularization/penalty term to acheive weight decay.
+        # Apply the regularization/penalty term t o acheive weight decay.
         if regularizator: 
             dW = dW - regularizator.derivative(self.weights)
             dB = dB - regularizator.derivative(self.bias)
 
-        # Momentum requires saving of previous gradients, to sum them to current one.
-        if momentum > 0:
-            dW += momentum*self.prev_weight_update
-            dB += momentum*self.prev_bias_update
+        # Apply momentum.
+        if alpha != 0:
+            dW += alpha*self.prev_weight_update
+            dB += alpha*self.prev_bias_update
+            # Then "delta new" is saved as "delta old"
             self.prev_weight_update = dW
             self.prev_bias_update = dB
-
-        # Nesterov momentum requires saving of previous gradients, to sum them to current one.
-        elif nesterov > 0:
-            dW += nesterov*self.prev_weight_update
-            dB += nesterov*self.prev_bias_update
-            self.prev_weight_update = dW
-            self.prev_bias_update = dB
-
-        #@TODO the same thing happens both for Classical and Nesterov Momentum, maybe the code can be simplified.
         self.weights += dW
         self.bias += dB

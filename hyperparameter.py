@@ -66,33 +66,25 @@ class LinearLearningRateDecay(HyperParameter):
 
 
 class Momentum(HyperParameter): 
-    def __init__(self, type, alpha):
-        super().__init__(self, type + "Momentum", training = False)
+    def __init__(self, alpha=0):
+        super().__init__("Momentum", training = False)
         self.key = 'momentum'
-        self.type = type
-        self.aplha = alpha
-
-
-class ClassicalMomentum(Momentum): 
-    def __init__(self, alpha):
-        super().__init__(self, "", alpha)
+        self.alpha = alpha
         self.nesterov = False
 
     def value(self):
-         return { self.final_value, self.last_step }
+        return { self.alpha, self.nesterov }
 
 
 class NesterovMomentum(Momentum): 
-    def __init__(self, alpha):
-        super().__init__(self, "Nesterov", alpha)
+    def __init__(self, alpha=0):
+        super().__init__(alpha)
+        self.name = "Nesterov " + self.name
         self.nesterov = True
-    
-    def value(self):
-         return { self.final_value, self.last_step }
 
 
 class Dropout(HyperParameter): 
-    def __init__(self, rate):
+    def __init__(self, rate=1):
         super().__init__("Dropout", training = False)
         self.rate = rate
 

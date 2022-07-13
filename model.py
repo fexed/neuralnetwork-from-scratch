@@ -4,8 +4,10 @@ import pickle
 import os
 
 class Model(): 
-    def __init__(self, name, ):
+    def __init__(self, name, logger):
         self.name = name
+        self.logger = logger
+
         self.create_model_folder()
 
         self.evaluated = False
@@ -13,14 +15,11 @@ class Model():
     def predict(self, _): 
         pass
 
-    def evaluate(self, X, Y, metric = None): 
-        if metric and self.metric:
-            self.metric = metric
-
+    def evaluate(self, X, Y, loss = None, metric = None): 
         output = self.predict(X)
 
-        self.ts_loss = self.loss.compute(output, Y)
-        self.ts_metric = self.metric.compute(output, Y)
+        self.ts_loss = loss.compute(output, Y)
+        self.ts_metric = metric.compute(output, Y)
 
         self.evaluated = True
         self.save()

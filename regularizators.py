@@ -1,21 +1,28 @@
+from turtle import forward
 import numpy as np
 from hyperparameter import HyperParameter
 
 
-class Regularizator(HyperParameter):
+class Regularization(HyperParameter):
         """ Base class for the regularation functions """
 
         def __init__(self, type, l):
             super().__init__(name = type + "Regularization", training=False)
-            self.key = 'regularizator'
+            self.key = 'regularization'
             self.type = type
             self.l = l
+
+        def forward(self, _): 
+            return 0
+
+        def forward(self, _): 
+            return 0
 
         def value(self):
             return self
 
-class L1(Regularizator):
-        """ L1 or Lasso regularizator """ 
+class L1(Regularization):
+        """ L1 or Lasso regularization """ 
 
         def __init__(self, l = 0.005):
             super().__init__("L1", l)
@@ -28,8 +35,8 @@ class L1(Regularizator):
             return 2 * self.l * weights
 
 
-class L2(Regularizator):
-        """ L2 or Tikhonov regularizator """
+class L2(Regularization):
+        """ L2 or Tikhonov regularization """
 
         def __init__(self, l = 0.005):
             super().__init__("L2", l)
@@ -47,8 +54,8 @@ class L2(Regularizator):
             return np.array(out)
 
 
-class Thrun(Regularizator):
-        """ Regularizator from Monk paper """
+class Thrun(Regularization):
+        """ Regularization from Monk paper """
 
         def __init__(self, l = 0.005):
             super().__init__("Thrun", l)

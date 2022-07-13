@@ -1,12 +1,14 @@
 import numpy as np
+from logger import MLPLogger
 
 class Training():
     """ Base class for the neural networks used in this project """
 
-    def __init__(self, network, hyperparameters):
+    def __init__(self, network, hyperparameters, logger):
     #momentum=0, dropout=0, nesterov=0, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, ):
         self.network = network
         self.hyperparameters = hyperparameters
+        self.logger = logger
 
 
     def __call__(self, X_TR, Y_TR, X_VAl, Y_VAL, metric=None, verbose=True):
@@ -53,8 +55,8 @@ class Training():
                         learning_rate = (1 - lr_decay_alpha) * learning_rate + lr_decay_alpha * lr_decay.final_value
 
             # Compute learning curves 
-            tr_output = self.network.predict(X_TR)  #@TODO Should we calculate after weight update or reuse outputs from the forward propagation part?
-            val_output = self.network.predict(X_VAL)
+            tr_output = self.network.forward_propagation(X_TR, inference=True)  #@TODO Should we calculate after weight update or reuse outputs from the forward_propagation propagation part?
+            val_output = self.network.forward_propagation(X_VAL, inference=True)
 
             tr_loss_hist.append(self.network.loss.compute(tr_output, Y_TR))
             tr_metric_hist.append(metric.compute(tr_output, Y_TR))
@@ -62,12 +64,12 @@ class Training():
             val_loss_hist.append(self.network.loss.compute(val_output, Y_VAL))
             val_metric_hist.append(metric.compute(val_output, Y_VAL))
     
-            self.network.logger.training_progress(i, epochs, tr_loss_hist[i], val_loss_hist[i])
+            self.logger.training_progress(i, epochs, tr_loss_hist[i], val_loss_hist[i])
 
             if(self.early_stopping_condition(tr_loss_hist[i])):
                 #self.network.logger.early_stopping_log()
                 break
-
+        
         return tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist 
     
     def early_stopping_condition(self, val): #@TODO Check Early Stopping Implementation
