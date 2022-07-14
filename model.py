@@ -4,11 +4,12 @@ import pickle
 import os
 
 class Model(): 
-    def __init__(self, name, logger):
+    def __init__(self, name, logger, make_folder=True):
         self.name = name
         self.logger = logger
-
-        self.create_model_folder()
+        
+        if(make_folder):
+            self.create_model_folder()
 
         self.evaluated = False
 

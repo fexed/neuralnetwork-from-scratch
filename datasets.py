@@ -10,6 +10,9 @@ class Dataset():
         self.X_TR, self.Y_TR = self.readfile(self.train_suffix )
         self.X_TS, self.Y_TS = self.readfile(self.test_suffix)
 
+        self.tr_size = len(self.X_TR)
+        self.ts_size = len(self.X_TS)
+
     def size(self): 
         return (self.input_size, self.output_size)
 

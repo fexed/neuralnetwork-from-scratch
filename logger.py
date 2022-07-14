@@ -5,6 +5,9 @@ class Logger():
     def set_verbosity(self, verbose):
         self.verobse = verbose
     
+class GridSearchLogger(): 
+    def __init__(self, grid_search): 
+        self.grdi_search = grid_search
 
 class MLPLogger(Logger): 
     def __init__(self, network, verbose=True):

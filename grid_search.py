@@ -1,54 +1,28 @@
+
 from datasets import Dataset
 from model import Model
+from logger import GridSearchLogger
+from mlp import MLP
 from time import time
 import os
 
-class Range(): 
-    def __init__(self, searchable_type, config): 
-        return iter(searchable_type.range(**config)) #@JUST an intuition, Need to be implemented
-
-class Constraints():
-    def __init__(self):
-        return None
-
-class SearchSpace(): 
-    def __init__(self, model_type, search_ranges):
-        self.model_type = model_type
-        self.search_ranges = search_ranges
-
-        self.cardinality = 1
-
-        self.iterable = []
-        self.fixed = []
-
-        for range in self.search_ranges: 
-            self.cardinality *= len(range)
-            if len(range) > 1: 
-                self.iterable.append(range) 
-            else: 
-                self.fixed.append(range)
-
-
-    def varying_parameters(self): 
-        return len(self.iterable)
-
-
-    def __set_MLP_setup__():
-        return None
-
-
 class GridSearch(): 
-    def __init__(self, dataset: Dataset, model: type, search_space: SearchSpace, metrics):
+    def __init__(self, dataset: Dataset, model_type: type[Model], verbose=True):
         self.dataset = dataset
-        self.model = self.model
-        self.search_space = search_space
+        self.model_type = self.model_type
+        self.verbose = verbose
+
+        if(model_type == MLP): 
+            self.set_space = self.__init_MLP_search_space__
 
         #suffix = time() if not overwrite else ''
-        self.path = f'_GRID_SEARCHCES/{self.model.name}/'
+        self.path = f'_GRID_SEARCHCES/{self.dataset.name}_{self.model_type}/'
         
         self.create_search_folders()
 
+        self.logger = GridSearchLogger()
 
+ 
     def preview(self):    
         return
 
@@ -61,3 +35,10 @@ class GridSearch():
         if not os.path.exists(self.path):
             os.makedirs(f'{self.path}/plots')
             os.makedirs(f"{self.path}/logs" )
+    
+
+    def __init_MLP_search_space__(self, architecture_space, hyperparameter_space, metric):
+        models = []
+        for architecture in architecture_space: 
+            for hyperparameters in hyperparameter_space: 
+                models.append(MLP(architecture, hyperparameters, verbose=self.verbose, make_folder=False))

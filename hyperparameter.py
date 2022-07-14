@@ -1,13 +1,16 @@
+import itertools
+
+
 class HyperParameter(): 
     def __init__(self, name, training):
         self.name = name
         self.training = training
 
-    def search_range(self):
-        return None
-    
     def __str__(self):
         return f"{self.name}"  
+
+    def search_space(hp_type, range):
+        return list(map(lambda r: hp_type(r), range))
 
 
 class Epochs(HyperParameter):
@@ -19,6 +22,9 @@ class Epochs(HyperParameter):
     def value(self):
         return self.n
 
+    def search_space(range): 
+        return HyperParameter.search_space(Epochs, range)
+
 
 class LearningRate(HyperParameter):
     def __init__(self, eta):
@@ -28,6 +34,9 @@ class LearningRate(HyperParameter):
 
     def value(self):
         return self.eta
+
+    def search_space(range): 
+        return HyperParameter.search_space(LearningRate, range)
 
 
 class EarlyStopping(HyperParameter):
@@ -39,6 +48,9 @@ class EarlyStopping(HyperParameter):
     def value(self):
         return self.es
 
+    def search_space(range): 
+        return HyperParameter.search_space(EarlyStopping, range)
+
 
 class BatchSize(HyperParameter): 
     def __init__(self, size):
@@ -48,6 +60,9 @@ class BatchSize(HyperParameter):
 
     def value(self):
         return self.size
+
+    def search_space(range): 
+        return HyperParameter.search_space(BatchSize, range)
 
 
 class LinearLearningRateDecay(HyperParameter): 
@@ -61,6 +76,10 @@ class LinearLearningRateDecay(HyperParameter):
     def value(self):
         return self
 
+    def search_space(last_step_range, final_value_range):
+        range = itertools.product(last_step_range, final_value_range)
+        return list(map(lambda r: LinearLearningRateDecay(r[0], r[1]), range))
+
 
 class Momentum(HyperParameter): 
     def __init__(self, alpha=0):
@@ -72,6 +91,9 @@ class Momentum(HyperParameter):
     def value(self):
         return { self.alpha, self.nesterov }
 
+    def search_space(range): 
+        return HyperParameter.search_space(Momentum, range)
+
 
 class NesterovMomentum(Momentum): 
     def __init__(self, alpha=0):
@@ -79,6 +101,8 @@ class NesterovMomentum(Momentum):
         self.name = "Nesterov " + self.name
         self.nesterov = True
 
+    def search_space(range): 
+        return HyperParameter.search_space(NesterovMomentum, range)
 
 class Dropout(HyperParameter): 
     def __init__(self, rate=1):
@@ -87,3 +111,6 @@ class Dropout(HyperParameter):
 
     def value(self):
         return self.rate
+
+    def search_space(range): 
+        return HyperParameter.search_space(Dropout, range)

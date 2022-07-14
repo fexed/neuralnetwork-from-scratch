@@ -7,7 +7,8 @@ class Architecture():
     def __init__(self, model): 
         if model == MLP: 
             self.define = self.__init_MLP__
-            self.range = self.__search_range_MLP__
+            self.search_space = self.__search_space_MLP__
+
 
     def __init_MLP__(self, loss, units, activations,  initializations=['basic']):
         self.units = units
@@ -32,7 +33,7 @@ class Architecture():
 
         return self
 
-    def __search_range_MLP__(self, io_sizes, loss,  hidden_units, activation, initialization, last_activation=None):
+    def __search_space_MLP__(self, io_sizes, loss,  hidden_units, activation, initialization, last_activation=None):
         combinations =  itertools.product(hidden_units,  activation, initialization)
 
         archs = []

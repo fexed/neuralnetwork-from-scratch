@@ -8,7 +8,7 @@ from utils import multiline_plot, log
 
 
 class MLP(Model): 
-    def __init__(self, name, architecture, hyperparameters = [], verbose=True): 
+    def __init__(self, name, architecture, hyperparameters = [], verbose=True, make_folder = True): 
            
         units = architecture.units
         activations = architecture.activations
@@ -25,7 +25,7 @@ class MLP(Model):
         for i in range(len(units) - 1):
             self.network.add(FullyConnectedLayer(units[i], units[i+1], activations[i], initializations[i]))
 
-        super().__init__(name + '_MLP', MLPLogger(self.network, verbose))
+        super().__init__(name + '_MLP', MLPLogger(self.network, verbose), make_folder)
 
         self.training_algorithm = Training(self.network, self.training_hps, logger=self.logger)
         self.trained = False
