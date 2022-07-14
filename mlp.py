@@ -39,7 +39,7 @@ class MLP(Model):
         return output
 
 
-    def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=''): 
+    def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=None): 
         self.logger.summary(self.name)
 
         tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist = self.training_algorithm(
@@ -47,9 +47,6 @@ class MLP(Model):
         )
 
         history = [tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist]
-        
-        #@TODO Move this to the training module.
-        log(f'{self.path}logs/training', history)
 
         self.plot_training_curves(history[0:2], self.network.loss.name, plot_folder)
         self.plot_training_curves(history[2:4], metric.name, plot_folder)
@@ -73,10 +70,10 @@ class MLP(Model):
             histories=list(history),
             ylabel=metric_name, xlabel="Epochs", 
             showlegend=True, showgrid=True, alternateDots=True,
-            savefile=f"{metric_name}_TR", prefix = folder + self.path
+            savefile=f"{metric_name}_TR", prefix = self.path if folder is None else folder 
         )
 
 
-    def save(self):
+    def save(self, custom_path = None):
         """ Saves the neural network in a pickle """
-        super().save('MLP')
+        super().save('MLP', custom_path)

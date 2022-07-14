@@ -102,6 +102,8 @@ def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epoch
         fig.set_size_inches(12, 8)
         if not(savefile is None): plt.savefig(prefix + "plots/" + savefile + ".png")
         plt.clf()
+
+        log(prefix + "logs/" + savefile, histories)
     return
 
 def roc_curve(title, FPR, TPR, AUC, xlabel="Specificity", ylabel="Sensitivity", savefile=None):

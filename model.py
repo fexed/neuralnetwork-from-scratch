@@ -25,7 +25,7 @@ class Model():
         self.evaluated = True
         self.save()
         
-
+    #@TODO this kind of result log must be changed in something less horrible, or at lest moved to the logger
     def results(self):
         print("")
         print(f"TR_LOSS:_{self.tr_loss}")
@@ -38,8 +38,9 @@ class Model():
             print(f"TS_LOSS:_{self.ts_loss}")
             print(f"TS_METRIC:_{self.ts_metric}")
 
-    def save(self, model_type):
-        filename = f'{self.path}logs/{model_type}.pkl'
+    def save(self, model_type, custom_path = None):
+        path = self.path if custom_path is None else custom_path
+        filename = f'{path}logs/{model_type}.pkl'
 
         with open(filename, "wb") as savefile:
             pickle.dump(self.__dict__, savefile)

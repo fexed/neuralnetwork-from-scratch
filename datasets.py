@@ -56,7 +56,7 @@ class Monk(Dataset):
 
 
 class CUP(Dataset): 
-    def __init__(self):        
+    def __init__(self, internal_split = None):        
         self.path = f'datasets/CUP/ML-CUP21-'
 
         self.train_suffix = 'TR'

@@ -1,8 +1,9 @@
 from hyperparameter import Momentum, Dropout, Momentum
+from regularizators import L2
 
 
 class Network(): 
-    def __init__(self, loss, regularization, momentum=Momentum(0), dropout=Dropout(1)):
+    def __init__(self, loss, regularization=L2(0), momentum=Momentum(0), dropout=Dropout(1)):
         self.loss = loss
         self.regularization = regularization
 
