@@ -3,7 +3,7 @@ from architecture import Architecture
 from hyperparameter import BatchSize, Epochs, LearningRate
 from losses import MEE, MSE
 from mlp import MLP
-from metrics import MeanEuclideanError
+from metrics import MeanSquaredError
 from regularizators import L2
 from datasets import CUP
 from utils import shuffle
@@ -21,13 +21,13 @@ input_size, output_size = _CUP.size()
 
 architecture = Architecture(MLP).define(
     units= [input_size, 20, 50, 20, output_size], 
-    activations = [ Tanh(), Sigmoid(), Tanh(), Identity()], 
+    activations = [Tanh(), Sigmoid(), Tanh(), Identity()], 
     loss = MEE(), 
     initializations = [He()]
 )
   
 hyperparameters = [
-    Epochs(1000),
+    Epochs(400),
     LearningRate(0.0001),
     BatchSize(300),
     L2(0.0005),
@@ -36,7 +36,7 @@ hyperparameters = [
 ]
 
 model = MLP("CUP_hodlout", architecture, hyperparameters)
-model.train(X_TR[0:1200], Y_TR[0:1200], X_TR[1200:-1], Y_TR[1200:-1], metric = MSE(), verbose=True)
+model.train(X_TR[0:1200], Y_TR[0:1200], X_TR[1200:-1], Y_TR[1200:-1], metric = MeanSquaredError(), verbose=True)
 
 #model.evaluate(X_TS, Y_TS)
 model.results()
