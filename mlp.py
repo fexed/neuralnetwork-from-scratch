@@ -1,4 +1,3 @@
-from hyperparameter import HyperParameter
 from logger import MLPLogger
 from model import Model
 from layers import FullyConnectedLayer
@@ -9,7 +8,6 @@ from utils import multiline_plot, log
 
 class MLP(Model): 
     def __init__(self, name, architecture, hyperparameters = [], verbose=True, make_folder = True): 
-           
         units = architecture.units
         activations = architecture.activations
         initializations = architecture.initializations
@@ -25,11 +23,12 @@ class MLP(Model):
         for i in range(len(units) - 1):
             self.network.add(FullyConnectedLayer(units[i], units[i+1], activations[i], initializations[i]))
 
-        super().__init__(name + '_MLP', MLPLogger(self.network, verbose), make_folder)
+        super().__init__(name + '_MLP', MLPLogger(name, architecture, hyperparameters, verbose), make_folder)
 
         self.training_algorithm = Training(self.network, self.training_hps, logger=self.logger)
         self.trained = False
     
+
     def predict(self, X):
         output = []
 
@@ -40,7 +39,7 @@ class MLP(Model):
 
 
     def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=None): 
-        self.logger.summary(self.name)
+        self.logger.summary()
 
         tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist = self.training_algorithm(
             X_TR, Y_TR, X_VAL, Y_VAL, metric=metric, verbose=verbose

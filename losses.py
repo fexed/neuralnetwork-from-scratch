@@ -8,7 +8,7 @@ class Loss():
         self.name = None
     
     def __str__(self):
-        f"Loss function: {self.name}" 
+        return f"Loss function: {self.name}" 
 
 
 class MEE(Loss):

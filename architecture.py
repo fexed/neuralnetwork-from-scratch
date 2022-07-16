@@ -3,13 +3,14 @@ from mlp import MLP
 
 class Architecture():
     def __init__(self, model): 
+        self.model = model
         if model == MLP: 
             self.define = self.__init_MLP__
             self.search_space = self.__search_space_MLP__
             self.__str__ = self.__str_MLP__
 
 
-    def __init_MLP__(self, loss, units, activations,  initializations=['basic']):
+    def __init_MLP__(self, loss, units, activations, initializations=['basic']):
         self.units = units
         self.activations = activations
         self.loss = loss
@@ -51,16 +52,20 @@ class Architecture():
 
         return archs
 
+    def __str__(self): 
+        if self.model == MLP: 
+            return self.__str_MLP__()
 
     def __str_MLP__(self) -> str:
-        hidden_layers = ""
+        
+        str = f"+==== Architecture ====+ \n"
+        str += f"|IN\t Input layer with {self.units[0]} units. \n"
+        for i in range(0, len(self.units) - 2):
+            str += f"|HID\t Hidden layer with {self.units[i+1]} units and {self.activations[i]} - {self.initializations[i]}. \n"
+    
 
-        for i in range(0, len(self.units) - 1):
-            hidden_layers += f"|HID\t Hidden layer with {self.units[i+1]} and {self.activations[i]} - {self.initializations[i]}"
+        str += f"|OUT\t Output layer with {self.units[-1]} units and {self.activations[-1]} - {self.initializations[-1]}. \n"
+        str += f"+==== {self.loss} ====+"
+        return str
 
-        return f""" 
-                |IN\t Input layer with {self.units[0]} units - 
-                {hidden_layers}
-                |OUT\t Output layer with {self.units[-1]} units and {self.activations[-1]} - {self.initializations[-1]}
-                """
     
