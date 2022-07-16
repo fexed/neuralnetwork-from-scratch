@@ -7,7 +7,10 @@ class FullyConnectedLayer():
         self.in_size = in_size
         self.out_size = out_size
         
+        self.init_strategy = init_strategy
+
         self.weights, self.bias = init_strategy.generate(in_size, out_size)
+        self.trainable_parameters = self.weights.size + self.bias.size
 
         self.activation = activation
         self.reset_gradients()
@@ -83,3 +86,9 @@ class FullyConnectedLayer():
             self.prev_bias_update = dB
         self.weights += dW
         self.bias += dB
+
+    def __str__(self): 
+        return f""" 
+                {type(self)}: {self.in_size} --> {self.out_size} units followed by {self.activation}. 
+                Free parameterts {self.trainable_parameters} - {self.init_strategy}. 
+                """

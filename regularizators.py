@@ -21,6 +21,10 @@ class Regularization(HyperParameter):
         def value(self):
             return self
 
+        def __str__(self): 
+            return f"{self.name} with lambda equal to {self.l}"
+
+
 class L1(Regularization):
         """ L1 or Lasso regularization """ 
 

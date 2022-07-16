@@ -16,6 +16,8 @@ class WeightInitialization(HyperParameter):
         # return weights, bias
         pass
 
+    def __str__(self):
+        return self.name
 
 class RandomUniform(WeightInitialization): 
     def __init__(self):

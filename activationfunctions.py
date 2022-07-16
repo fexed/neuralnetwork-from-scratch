@@ -7,6 +7,10 @@ class ActivationFunction:
     def __init__(self, name):
         self.name = name
 
+    def __str__(self):
+        return f"{self.name} activation function"
+
+
 class Identity(ActivationFunction): 
     """ Identity activation function """
 
@@ -18,6 +22,7 @@ class Identity(ActivationFunction):
 
     def derivative(self, _): 
         return 1 #np.identity(len(x))
+
 
 class Tanh(ActivationFunction):
     """ Tanh activation function """

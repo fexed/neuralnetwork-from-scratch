@@ -6,9 +6,6 @@ class HyperParameter():
         self.name = name
         self.training = training
 
-    def __str__(self):
-        return f"{self.name}"  
-
     def search_space(hp_type, range):
         return list(map(lambda r: hp_type(r), range))
 
@@ -24,6 +21,9 @@ class Epochs(HyperParameter):
 
     def search_space(range): 
         return HyperParameter.search_space(Epochs, range)
+        
+    def __str__(self):
+        return f"{self.name} number equal to {self.n}."  
 
 
 class LearningRate(HyperParameter):
@@ -37,19 +37,25 @@ class LearningRate(HyperParameter):
 
     def search_space(range): 
         return HyperParameter.search_space(LearningRate, range)
+        
+    def __str__(self):
+        return f"{self.name} eta equal to {self.eta}."
 
 
 class EarlyStopping(HyperParameter):
     def __init__(self, es):
         super().__init__("Early stopping", training = True)
         self.key = 'early_stopping'
-        super.es = es
+        self.es = es
 
     def value(self):
         return self.es
 
     def search_space(range): 
         return HyperParameter.search_space(EarlyStopping, range)
+    
+    def __str__(self):
+        return f"{self.name} since epoch {self.es}."
 
 
 class BatchSize(HyperParameter): 
@@ -63,6 +69,9 @@ class BatchSize(HyperParameter):
 
     def search_space(range): 
         return HyperParameter.search_space(BatchSize, range)
+    
+    def __str__(self): 
+        return f"{self.name} equal to {self.size}."
 
 
 class LinearLearningRateDecay(HyperParameter): 
@@ -79,6 +88,9 @@ class LinearLearningRateDecay(HyperParameter):
     def search_space(last_step_range, final_value_range):
         range = itertools.product(last_step_range, final_value_range)
         return list(map(lambda r: LinearLearningRateDecay(r[0], r[1]), range))
+    
+    def __str__(self):
+        return f"{self.name} from epoch {self.last_step} to value {self.final_value}."
 
 
 class Momentum(HyperParameter): 
@@ -89,10 +101,13 @@ class Momentum(HyperParameter):
         self.nesterov = False
 
     def value(self):
-        return { self.alpha, self.nesterov }
+        return self
 
     def search_space(range): 
         return HyperParameter.search_space(Momentum, range)
+
+    def __str__(self):
+        return f"{self.name} with alpha coefficient equal to {self.alpha}."
 
 
 class NesterovMomentum(Momentum): 
@@ -104,13 +119,18 @@ class NesterovMomentum(Momentum):
     def search_space(range): 
         return HyperParameter.search_space(NesterovMomentum, range)
 
+
 class Dropout(HyperParameter): 
     def __init__(self, rate=1):
         super().__init__("Dropout", training = False)
+        self.key = 'dropout'
         self.rate = rate
 
     def value(self):
-        return self.rate
+        return self
 
     def search_space(range): 
         return HyperParameter.search_space(Dropout, range)
+    
+    def __str__(self): 
+        return f"{self. name} rate equal to {self.rate}."

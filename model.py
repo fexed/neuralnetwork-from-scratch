@@ -62,3 +62,7 @@ class Model():
 
         os.makedirs(f'{self.path}/plots')
         os.makedirs(f"{self.path}/logs" )
+
+
+    def __str__(self): 
+        return f"Model: {self.name}"

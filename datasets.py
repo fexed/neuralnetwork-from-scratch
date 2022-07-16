@@ -15,6 +15,9 @@ class Dataset():
 
     def size(self): 
         return (self.input_size, self.output_size)
+    
+    def __str__(self): 
+        return f"{self.name} dataset" 
 
 
 class Monk(Dataset):

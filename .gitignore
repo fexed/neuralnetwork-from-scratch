@@ -5,3 +5,4 @@ plots/CUP_nesterov/*.png
 *.Identifier
 CM-ML-project.code-workspace
 _MODELS
+_GRID_SEARCHES

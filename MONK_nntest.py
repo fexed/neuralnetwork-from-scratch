@@ -17,8 +17,8 @@ X_TR, Y_TR, X_TS, Y_TS = MONK.getAll(one_hot=True)
 input_size, output_size = MONK.size()
 
 architecture = Architecture(MLP).define(
-    units= [input_size, 4, 4, output_size], 
-    activations = [Identity(), Identity(), Sigmoid()], 
+    units= [input_size, 4, output_size], 
+    activations = [Sigmoid()], 
     loss = MSE(), 
     initializations = [Xavier()]
 )

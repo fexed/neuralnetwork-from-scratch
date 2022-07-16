@@ -1,6 +1,4 @@
 import itertools
-from math import comb
-from activationfunctions import Identity
 from mlp import MLP
 
 class Architecture():
@@ -8,6 +6,7 @@ class Architecture():
         if model == MLP: 
             self.define = self.__init_MLP__
             self.search_space = self.__search_space_MLP__
+            self.__str__ = self.__str_MLP__
 
 
     def __init_MLP__(self, loss, units, activations,  initializations=['basic']):
@@ -33,6 +32,7 @@ class Architecture():
 
         return self
 
+
     def __search_space_MLP__(self, io_sizes, loss,  hidden_units, activation, initialization, last_activation=None):
         combinations =  itertools.product(hidden_units,  activation, initialization)
 
@@ -51,5 +51,16 @@ class Architecture():
 
         return archs
 
-    def __str__(self) -> str:
-        return f"Architecture composed by {len(self.units)} layers of { self.units } units. Objective function is {self.loss}. Last layer has {self.activations[-1]}" 
+
+    def __str_MLP__(self) -> str:
+        hidden_layers = ""
+
+        for i in range(0, len(self.units) - 1):
+            hidden_layers += f"|HID\t Hidden layer with {self.units[i+1]} and {self.activations[i]} - {self.initializations[i]}"
+
+        return f""" 
+                |IN\t Input layer with {self.units[0]} units - 
+                {hidden_layers}
+                |OUT\t Output layer with {self.units[-1]} units and {self.activations[-1]} - {self.initializations[-1]}
+                """
+    

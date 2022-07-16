@@ -6,6 +6,9 @@ class Loss():
 
     def __init__(self):
         self.name = None
+    
+    def __str__(self):
+        f"Loss function: {self.name}" 
 
 
 class MEE(Loss):
