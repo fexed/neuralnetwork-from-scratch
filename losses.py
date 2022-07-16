@@ -19,11 +19,11 @@ class MEE(Loss):
 
 
     def compute(self, outputs, targets):  # mean euclidean error loss
-        return np.mean(np.sqrt(np.sum(np.square(targets - outputs))))
+        return np.mean(np.sqrt(np.power(targets - outputs, 2)))
 
 
     def derivative(self, outputs, targets):  # derivative of MEE
-        return (outputs - targets)/(np.sqrt(np.sum(np.square(targets - outputs)))*np.size(targets))
+        return 2 * (targets - outputs)/(np.sqrt(np.sum(np.square(targets - outputs)))*np.size(targets))
 
 
 class MSE(Loss):

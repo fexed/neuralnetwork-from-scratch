@@ -1,13 +1,13 @@
 from activationfunctions import Identity, Sigmoid, Tanh
 from architecture import Architecture
 from hyperparameter import BatchSize, Epochs, LearningRate
-from losses import MSE
+from losses import MEE, MSE
 from mlp import MLP
 from metrics import MeanEuclideanError
-from regularizators import Thrun, L2
+from regularizators import L2
 from datasets import CUP
 from utils import shuffle
-from weight_initialization import He, Xavier
+from weight_initialization import He
 
 print("\n\n****TESTING NETWORK ON CUP" )
 
@@ -22,7 +22,7 @@ input_size, output_size = _CUP.size()
 architecture = Architecture(MLP).define(
     units= [input_size, 20, 50, 20, output_size], 
     activations = [ Tanh(), Sigmoid(), Tanh(), Identity()], 
-    loss = MSE(), 
+    loss = MEE(), 
     initializations = [He()]
 )
   
@@ -36,7 +36,7 @@ hyperparameters = [
 ]
 
 model = MLP("CUP_hodlout", architecture, hyperparameters)
-model.train(X_TR[0:1200], Y_TR[0:1200], X_TR[1200:-1], Y_TR[1200:-1], metric = MeanEuclideanError(), verbose=True)
+model.train(X_TR[0:1200], Y_TR[0:1200], X_TR[1200:-1], Y_TR[1200:-1], metric = MSE(), verbose=True)
 
 #model.evaluate(X_TS, Y_TS)
 model.results()
