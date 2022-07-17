@@ -7,7 +7,7 @@ class Regularization(HyperParameter):
         """ Base class for the regularation functions """
 
         def __init__(self, type, l):
-            super().__init__(name = type + "Regularization", training=False)
+            super().__init__(name = type + " Regularization", training=False)
             self.key = 'regularization'
             self.type = type
             self.l = l

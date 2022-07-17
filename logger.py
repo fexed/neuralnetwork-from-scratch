@@ -25,23 +25,15 @@ class MLPLogger(Logger):
         print(self.architecture)
         
         for hp in self.hyperparameters: 
-            print(hp)
+            if not hp.training: print(hp)
 
 
     def training_preview(self): 
-        if (self.verobse):
-            print("Beginetworking training loop with " + str(self.training.epochs) + " targeted epochs over " + str(self.training.N) + " training elements and learning rate = " + str(self.training.learning_rate), end="")
-            if (self.training.batch_size > 1):
-                print(" (batch size = " + str(self.training.batch_size) + ")", end="")
-            if not(self.training.early_stopping is None):
-                print(", with early stopping = " + str(self.training.early_stopping), end="")
-            if len(self.training.X_VAL) != 0:
-                print(" and validation set present", end="")
-            if not(self.training.lr_decay is None):
-                print(", with " + str(self.training.lr_decay))
-            if not(self.training.metric is None):
-                print(". The evaluation metric is " + self.training.metric.name, end="")
-            print("")   
+        print("")
+        if self.verobse:
+            print("Begin network training loop with:")
+            for hp in self.hyperparameters: 
+                if hp.training: print(hp)
             
 
     def training_progress(self, current_epoch, epochs, tr_loss, val_loss, barlength=50, fill="\u2588"): 
