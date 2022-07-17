@@ -26,7 +26,7 @@ class Accuracy(Metric):
 
     def compute(self, output, target):
         TP, TN, _, _  = logistic_to_confusion_matrix(output, target)
-        return  (TP + TN) / len(y)
+        return  (TP + TN) / len(target)
 
 
 class Precision(Metric): 
