@@ -7,18 +7,17 @@ class Dataset():
         self.name = name
         self.task = task
 
-        self.X_TR, self.Y_TR = self.readfile(self.train_suffix )
+        self.X_TR, self.Y_TR = self.readfile(self.train_suffix)
         self.X_TS, self.Y_TS = self.readfile(self.test_suffix)
 
         self.tr_size = len(self.X_TR)
         self.ts_size = len(self.X_TS)
 
     def size(self): 
-        return (self.input_size, self.output_size)
+        return self.input_size, self.output_size
     
     def __str__(self): 
         return f"{self.name} dataset" 
-
 
 class Monk(Dataset):
     def __init__(self, n):
@@ -49,14 +48,24 @@ class Monk(Dataset):
 
         return x, y
 
-    def getAll(self, one_hot = False): 
 
+    def getTR(self, one_hot = False): 
         if one_hot == True: 
-            self.X_TR, self.input_size = one_hot_encoding(self.X_TR)
-            self.X_TS, self.input_size = one_hot_encoding(self.X_TS )
+            X_TR, _ = one_hot_encoding(self.X_TR)
 
-        return self.X_TR, self.Y_TR, self.X_TS, self.Y_TS
+        return X_TR, self.Y_TR
 
+    def getTS(self, one_hot = False):
+        if one_hot == True: 
+            X_TS, _ = one_hot_encoding(self.X_TS)
+
+        return X_TS, self.Y_TS
+
+    def getAll(self, one_hot = False): 
+        X_TR, Y_TR = self.getTR(one_hot)
+        X_TS, Y_TS = self.getTS(one_hot)
+
+        return X_TR, Y_TR, X_TS, Y_TS
 
 class CUP(Dataset): 
     def __init__(self, internal_split = None):        
@@ -90,6 +99,12 @@ class CUP(Dataset):
         y = np.array(y)
 
         return x, y
+
+    def getTR(self): 
+        return self.X_TR, self.Y_TR, 
+        
+    def getTS(self): 
+        return self.X_TS, self.Y_TS
 
     def getAll(self): 
         return self.X_TR, self.Y_TR, self.X_TS, self.Y_TS

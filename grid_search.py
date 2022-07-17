@@ -1,6 +1,7 @@
 import numpy as np
 import pickle
 from datasets import Dataset
+from folding import FoldingStrategy, Holdout
 from losses import MEE
 from model import Model
 from logger import GridSearchLogger
@@ -22,30 +23,36 @@ class GridSearch():
         self.path = f'_GRID_SEARCHES/{self.name}_{self.dataset.name}/{suffix}/'
 
 
-    def create_model_folders(self, idx):
-        model_path = f'{self.path}/{idx}'
+    def create_model_folders(self, suffix):
+        model_path = f'{self.path}/{suffix}'
         if not os.path.exists(self.path):
             os.makedirs(f'{model_path}/plots')
             os.makedirs(f'{model_path}/logs')  
         return model_path
 
-    def start(self, metric = MEE()): 
+
+    def start(self, metric = MEE(), folding_strategy: FoldingStrategy = Holdout(0.2), repetitions = 1): 
         #TODO Implement gruid search logger.
         # self.logger.preview() Print a preview of the starting grid seach.
         self.results = []
 
-        X_TR, Y_TR ,_, _ = self.dataset.getAll()
-        X_TR, Y_TR, X_VAL, Y_VAL = X_TR[0:1000], Y_TR[0:1000], X_TR[1000:-1], Y_TR[1000:-1]
+        folding_cycles = folding_strategy(*self.dataset.getTR(), shuffle=True)
 
-        for i, model in enumerate(self.models):
-            model_path = self.create_model_folders(i)
+        for f, fc in enumerate(folding_cycles):
+            X_TR, Y_TR, X_VAL, Y_VAL = fc
+            fold_result = []
 
-            model.train(X_TR, Y_TR ,X_VAL, Y_VAL, metric , plot_folder=self.path)
-            model.save(model_path)
+            for i, model in enumerate(self.models):
+                model_path = self.create_model_folders(f'{i}_{f}')
 
-            self.results.append(model.val_metric)
+                model.train(X_TR, Y_TR ,X_VAL, Y_VAL, metric , plot_folder=self.path)
+                model.save(model_path)
+                fold_result.append[model.val_metric]
+
+            self.results.append(fold_result)
             
         self.searched = True
+
 
     def top_results(self, n):
         indexes = np.argpartition(np.array(self.results), -n)[-n:]
@@ -60,6 +67,7 @@ class GridSearch():
 
         with open(filename, "wb") as savefile:
             pickle.dump(self.results, savefile)
+
 
     def __init_MLP_search_space__(self, architecture_space, hyperparameter_space):
         self.models = []
