@@ -25,7 +25,7 @@ class GridSearch():
 
     def create_model_folders(self, suffix):
         model_path = f'{self.path}/{suffix}'
-        if not os.path.exists(self.path):
+        if not os.path.exists(model_path):
             os.makedirs(f'{model_path}/plots')
             os.makedirs(f'{model_path}/logs')  
         return model_path
@@ -40,18 +40,20 @@ class GridSearch():
 
         for f, fc in enumerate(folding_cycles):
             X_TR, Y_TR, X_VAL, Y_VAL = fc
+            print(len(X_TR), len(X_VAL))
             fold_result = []
 
             for i, model in enumerate(self.models):
                 model_path = self.create_model_folders(f'{i}_{f}')
 
-                model.train(X_TR, Y_TR ,X_VAL, Y_VAL, metric , plot_folder=self.path)
+                model.train(X_TR, Y_TR ,X_VAL, Y_VAL, metric , plot_folder = model_path + '/')
                 model.save(model_path)
-                fold_result.append[model.val_metric]
+                fold_result.append(model.val_metric)
 
             self.results.append(fold_result)
             
         self.searched = True
+        #@TODO Plot result matrix somewhere
 
 
     def top_results(self, n):

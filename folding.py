@@ -26,14 +26,14 @@ class Holdout(FoldingStrategy):
 
         self.X_TR = X[0:split]
         self.Y_TR = Y[0:split]
-        self.X_TS = X[split:-1] if split else []
-        self.Y_TS = Y[split:-1] if split else []
+        self.X_VAL = X[split:-1] if split else []
+        self.Y_VAL = Y[split:-1] if split else []
 
         return self
 
 
     def __iter__(self) -> Iterator[FoldingCycle]:  
-        return iter([(self.X_TR, self.Y_TR, self.X_TS, self.Y_TS)])
+        return iter([(self.X_TR, self.Y_TR, self.X_VAL, self.Y_VAL)])
 
 
     def data(self):
@@ -53,12 +53,14 @@ class KFold(FoldingStrategy):
         if shuffle: 
             X, Y = _shuffle(X,Y)
 
-            n = len(X)//self.k
+        n = len(X)//self.k
 
-            self.folds = [ ]
+        self.folds = [ ]
 
-            for i in range(k): 
-                self.folds.append([X[i*n: (i+1)*n], Y[i*n: (i+1)*n]]) 
+        for i in range(self.k): 
+            self.folds.append([X[i*n: (i+1)*n], Y[i*n: (i+1)*n]]) 
+
+        return self
 
 
     def __iter__(self): 
@@ -74,8 +76,6 @@ class FoldIterator():
 
         self.val_size = val_size
         self.tr_size = len(folds) - val_size
-
-        return self
 
 
     def _split_folds(self, start, elems):
@@ -95,6 +95,7 @@ class FoldIterator():
                 Y_TR.append(self.folds[i][1])
         
         return np.concatenate(X_TR), np.concatenate(Y_TR), np.concatenate(X_VAL), np.concatenate(Y_VAL)
+
 
     def __next__(self) -> FoldingCycle: 
         if self.i >= self.k: 

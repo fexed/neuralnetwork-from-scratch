@@ -40,7 +40,7 @@ class Model():
 
     def save(self, model_type, custom_path = None):
         path = self.path if custom_path is None else custom_path
-        filename = f'{path}logs/{model_type}.pkl'
+        filename = f'{path}/logs/{model_type}.pkl'
 
         with open(filename, "wb") as savefile:
             pickle.dump(self.__dict__, savefile)
