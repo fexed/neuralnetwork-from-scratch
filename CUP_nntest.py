@@ -37,7 +37,3 @@ hyperparameters = [
 
 model = MLP("CUP_hodlout", architecture, hyperparameters)
 model.train(X_TR[0:1200], Y_TR[0:1200], X_TR[1200:-1], Y_TR[1200:-1], metric = MeanSquaredError(), verbose=True)
-
-#model.evaluate(X_TS, Y_TS)
-model.results()
-

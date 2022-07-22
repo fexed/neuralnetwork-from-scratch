@@ -34,4 +34,3 @@ model = MLP("MONK" + str(monk), architecture, hyperparameters)
 model.train(X_TR, Y_TR, X_TS, Y_TS, metric = Accuracy(), verbose=True)
 
 model.evaluate(X_TS, Y_TS, loss= MSE(), metric = Accuracy())
-model.results()

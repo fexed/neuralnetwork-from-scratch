@@ -58,6 +58,9 @@ class MLP(Model):
         
         self.trained = True
 
+        self.logger.training_results(self.tr_loss, self.tr_metric, metric)
+        self.logger.validation_results(self.val_loss, self.val_metric, metric)
+
 
     # TODO move this to the training module.    
     def plot_training_curves(self, history, metric_name, folder ):

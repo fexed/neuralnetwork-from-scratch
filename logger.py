@@ -17,8 +17,8 @@ class MLPLogger(Logger):
         self.name = name
         self.architecture = architecture
         self.hyperparameters = hyperparameters
+
         super().__init__(verbose)
-    
 
     def summary(self): 
         print("Neural Network \"" + self.name + "\"")
@@ -54,6 +54,27 @@ class MLPLogger(Logger):
         if (self.verobse): 
             print(f"\nEarly stopping on epoch {i+1} of {self.training.epochs} with loss={tr_loss }" +  
                     f"and val_loss = {val_loss}%f" if  not(val_loss is None) else "" )
+
+
+    def __print_results(self, title, loss_val, metric_val, metric): 
+        if self.verobse:     
+            print("")
+            print(f"+==== {title} results ({self.name}): =====  ===== ====+")
+            print(f"+\t- {self.architecture.loss} = {loss_val}")
+            print(f"+\t- Evaluated {metric} = {metric_val}")
+            print("+==== ===== ==== ===== ==== ==== ===== ==== ====+")
+
+
+    def training_results(self, loss_val, metric_val, metric):
+        self.__print_results("Training", loss_val, metric_val, metric)
+
+
+    def validation_results(self, loss_val, metric_val, metric):
+        self.__print_results("Validation", loss_val, metric_val, metric)
+
+
+    def test_results(self, loss_val, metric_val, metric):
+        self.__print_results("Test", loss_val, metric_val, metric)
 
 
 class GridSearchLogger(Logger): 

@@ -13,8 +13,10 @@ class Model():
 
         self.evaluated = False
 
+
     def predict(self, _): 
         pass
+
 
     def evaluate(self, X, Y, loss = None, metric: Metric = None): 
         output = self.predict(X)
@@ -24,19 +26,9 @@ class Model():
 
         self.evaluated = True
         self.save()
-        
-    #@TODO this kind of result log must be changed in something less horrible, or at lest moved to the logger
-    def results(self):
-        print("")
-        print(f"TR_LOSS:_{self.tr_loss}")
-        print(f"VAL_LOSS:_{self.val_loss}")
-        
-        print(f"TR_METRIC_{self.tr_metric}")
-        print(f"VAL_METRIC:_{self.val_metric}")
 
-        if self.evaluated:
-            print(f"TS_LOSS:_{self.ts_loss}")
-            print(f"TS_METRIC:_{self.ts_metric}")
+        self.logger.test_results(self.ts_loss, self.ts_metric, metric)
+
 
     def save(self, model_type, custom_path = None):
         path = self.path if custom_path is None else custom_path
