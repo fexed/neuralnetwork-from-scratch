@@ -40,7 +40,6 @@ class GridSearch():
 
         for f, fc in enumerate(folding_cycles):
             X_TR, Y_TR, X_VAL, Y_VAL = fc
-            print(len(X_TR), len(X_VAL))
             fold_result = []
 
             for i, model in enumerate(self.models):
@@ -75,6 +74,7 @@ class GridSearch():
         self.models = []
         model_idx = 0
         for architecture in architecture_space: 
+            #print(architecture)
             for hyperparameters in hyperparameter_space: 
                 #@TODO Apply constraints here if necesary.
                 self.models.append(MLP(f'_{model_idx}', architecture, hyperparameters, verbose=self.verbose, make_folder=False))

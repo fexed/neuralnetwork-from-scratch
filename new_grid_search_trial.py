@@ -14,16 +14,16 @@ cup = CUP()
 architecture_space = Architecture(MLP).search_space(
     io_sizes= (cup.input_size, cup.output_size),
     loss=MSE(),
-    hidden_units=[ [20, 50, 20], [10, 25, 5]],
-    activation=[Tanh(), Sigmoid(), Tanh(), Identity()],
-    initialization=[Xavier(), He(), NormalizedXavier()],
-    last_activation=Identity()
+    hidden_units=[ [20, 50, 20] ],
+    activation=[[Tanh(), Sigmoid(), Tanh(), Identity()], [Tanh(), Tanh(), Tanh(), Identity()]],
+    initialization=[[Xavier(), He(), NormalizedXavier(), Xavier() ]],
+    #last_activation=Identity()
 )
 
 hyperparameter_space = SearchSpace([
     Epochs.search_space([100]),
-    LearningRate.search_space( [0.00001, 0.00002] ),
-    BatchSize.search_space( [175, 350, 700])
+    LearningRate.search_space([0.00001]),
+    BatchSize.search_space([175])
 ])
 
 gs = GridSearch("MIRACLE", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)

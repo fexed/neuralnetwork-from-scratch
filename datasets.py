@@ -51,13 +51,15 @@ class Monk(Dataset):
 
     def getTR(self, one_hot = False): 
         if one_hot == True: 
-            X_TR, _ = one_hot_encoding(self.X_TR)
+            X_TR, input_size = one_hot_encoding(self.X_TR)
+            self.input_size = input_size
 
         return X_TR, self.Y_TR
 
     def getTS(self, one_hot = False):
         if one_hot == True: 
-            X_TS, _ = one_hot_encoding(self.X_TS)
+            X_TS, input_size = one_hot_encoding(self.X_TS)
+            self.input_size = input_size
 
         return X_TS, self.Y_TS
 

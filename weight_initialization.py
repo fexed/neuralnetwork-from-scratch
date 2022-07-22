@@ -59,7 +59,7 @@ class NormalizedXavier(WeightInitialization):
         super().__init__("Normalized Xavier")
 
     def generate(self, input_size, output_size):
-        l, u = -(6.0 / sqrt(self.input_size + output_size)), (6.0 / sqrt(input_size + output_size))
+        l, u = -(6.0 / sqrt(input_size + output_size)), (6.0 / sqrt(input_size + output_size))
         weights = np.random.uniform(low=l, high=u, size=(input_size, output_size))
         bias = np.random.uniform(low=l, high=u, size=(1, output_size))
 
