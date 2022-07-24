@@ -2,7 +2,7 @@ import numpy as np
 import pickle
 from datasets import Dataset
 from folding import FoldingStrategy, Holdout
-from losses import MEE
+from metrics import MeanEuclideanError, Metric
 from model import Model
 from logger import GridSearchLogger
 from mlp import MLP
@@ -33,13 +33,14 @@ class GridSearch():
         return model_path
 
 
-    def start(self, metric = MEE(), folding_strategy: FoldingStrategy = Holdout(0.2)): 
+    def start(self, metric: Metric = MeanEuclideanError(), folding_strategy: FoldingStrategy = Holdout(0.2)): 
         self.logger.search_preview(folding_strategy) 
 
+        self.metric = metric
         self.results = []
+
         folding_cycles = folding_strategy(*self.dataset.getTR(), shuffle=True)
-
-
+        
         for i, model in enumerate(self.models):
             fold_result = []
             for f, fc in enumerate(folding_cycles):
@@ -53,22 +54,41 @@ class GridSearch():
             self.results.append([i, np.mean(fold_result), np.std(fold_result)])
             
         self.searched = True
-        #@TODO Plot result matrix somewhere
+        self.logger.end_message()
+        self.save_result_matrix()
+       
 
 
-    # def top_results(self, n):
-    #     indexes = np.argpartition(np.array(self.results), -n)[-n:]
+    def save_result_matrix(self, format='txt', matrix = None):
+        mat = np.matrix(self.results if matrix is None else matrix)
+        with open(f'{self.path}/RESULTS.{format}','wb') as f:
+            for line in mat:
+                np.savetxt(f, line, fmt='%.2f')
+    
 
-    #     print("Best models:")
-    #     for i, ind in enumerate(zip(indexes)): 
-    #         print(f"{i+1}): Index: {ind}, Model: {self.results[ind]}")
+    def top_results(self, n, save = True):
+        best_models = []
         
+        indexes = np.array(self.results)[:, 1].argsort()
+        ordered_indexes = indexes if self.metric.is_loss else reversed(indexes)
 
-    def save(self):
-        filename = f'{self.path}results_{self.name}.pkl'
+        if save: 
+            text_file = open(f'{self.path}BEST_MODELS.txt', "w")
+            text_file.write(f"Best models according to {self.metric}\n")
 
-        with open(filename, "wb") as savefile:
-            pickle.dump(self.results, savefile)
+        for i in range(n): 
+            j = ordered_indexes[i]
+            row = self.results[j]
+            i_model = self.logger.top_result_line(i+1, j, row[1], row[2])
+            best_models.append(i_model )
+            
+            if save:
+                text_file.write(f"{i_model}\n")
+        
+        if save:     
+            text_file.close()
+
+        return best_models
 
 
     def __init_MLP_search_space__(self, architecture_space, hyperparameter_space):
@@ -77,7 +97,7 @@ class GridSearch():
 
         for architecture in architecture_space: 
             for hyperparameters in hyperparameter_space: 
-                self.models.append(MLP(f'_{model_idx}', architecture, hyperparameters, verbose=self.verbose, make_folder=False))
+                self.models.append(MLP(f'{model_idx}_', architecture, hyperparameters, verbose=self.verbose, make_folder=False))
                 model_idx += 1
 
         self.logger = GridSearchLogger(self.name, self.dataset.name, self.dataset.cardinality(), self.model_type, len(self.models), self.verbose)

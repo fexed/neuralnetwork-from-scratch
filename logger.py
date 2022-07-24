@@ -7,22 +7,6 @@ class Logger():
         self.verbose = verbose
     
 
-class GridSearchLogger(Logger): 
-    def __init__(self, name, search_sapce, verbose = True): 
-        self.name = name
-        self.search_sapce = search_sapce
-
-        super().__init__(verbose)
-
-
-    def search_preview(self, model_type, combinations):
-        return
-
-
-    def search_results(self, values): 
-        print("")
-
-
 class MLPLogger(Logger): 
     def __init__(self, name, architecture, hyperparameters, verbose=True):
         self.name = name
@@ -114,3 +98,16 @@ class GridSearchLogger(Logger):
         num = int(round(barlength*progress))
         txt = "\r" + prefix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
         print(txt, end="")
+
+    def end_message(self):
+        print("")
+        print("GridSearch succefully terminated!")
+        print("")
+
+    def top_result_line(self, i, j, mean, std): 
+        line =  f"{i}): Model: {j}_* --- Mean: {mean} (Standard deviation over folds: {std})"
+
+        if self.verbose: 
+            print(line)
+
+        return line
