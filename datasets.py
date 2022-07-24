@@ -13,11 +13,16 @@ class Dataset():
         self.tr_size = len(self.X_TR)
         self.ts_size = len(self.X_TS)
 
+
     def size(self): 
         return self.input_size, self.output_size
     
+    def cardinality(self):
+        return len(self.X_TR)
+
     def __str__(self): 
-        return f"{self.name} dataset" 
+        return f"{self.name}" 
+
 
 class Monk(Dataset):
     def __init__(self, n):
@@ -30,6 +35,7 @@ class Monk(Dataset):
         self.output_size = 1
 
         super().__init__(f"MONK{n}", Task.BINARY_CLASSIFICATION)
+
 
     def readfile(self, set):
         file = open(self.path + set, 'r')
@@ -56,6 +62,7 @@ class Monk(Dataset):
 
         return X_TR, self.Y_TR
 
+
     def getTS(self, one_hot = False):
         if one_hot == True: 
             X_TS, input_size = one_hot_encoding(self.X_TS)
@@ -63,11 +70,13 @@ class Monk(Dataset):
 
         return X_TS, self.Y_TS
 
+
     def getAll(self, one_hot = False): 
         X_TR, Y_TR = self.getTR(one_hot)
         X_TS, Y_TS = self.getTS(one_hot)
 
         return X_TR, Y_TR, X_TS, Y_TS
+
 
 class CUP(Dataset): 
     def __init__(self, internal_split = None):        
@@ -80,6 +89,7 @@ class CUP(Dataset):
         self.output_size = 2
 
         super().__init__("CUP", Task.REGRESSION)
+
 
     def readfile(self, set):
         file = open(f'{self.path}{set}.csv', 'r')
@@ -102,11 +112,14 @@ class CUP(Dataset):
 
         return x, y
 
+
     def getTR(self): 
         return self.X_TR, self.Y_TR, 
-        
+
+
     def getTS(self): 
         return self.X_TS, self.Y_TS
+
 
     def getAll(self): 
         return self.X_TR, self.Y_TR, self.X_TS, self.Y_TS

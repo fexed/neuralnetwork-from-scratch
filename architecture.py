@@ -25,7 +25,6 @@ class Architecture():
         else: 
             raise Exception("Activation functions do not match with the number layers")
 
-        print(len(self.activations))
 
         if len(initializations) == 1: 
             self.initializations = list(initializations) * layer_num

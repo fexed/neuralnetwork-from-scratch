@@ -16,6 +16,7 @@ class Holdout(FoldingStrategy):
             raise Exception("Wrong splitting coefficient")
         
         self.val_size = val_size
+        self.k = 1
 
 
     def __call__(self, X, Y, shuffle = True):
@@ -40,7 +41,10 @@ class Holdout(FoldingStrategy):
         return self[0]
 
 
-# This only supports CV, nested one is not implemented yet.
+    def __str__(self): 
+        return  f"Holdout folding strategy: training - validation split is {(1-self.val_size)*100}% - {self.val_size*100}%"
+
+
 class KFold(FoldingStrategy):
     """ KFold CV data structure to directly iterate on """
 
@@ -64,7 +68,11 @@ class KFold(FoldingStrategy):
 
 
     def __iter__(self): 
-        return FoldIterator(self.folds, self.k, self.val_size,)
+        return FoldIterator(self.folds, self.k, self.val_size)
+
+    
+    def __str__(self): 
+        return f"K-Fold strategy with K = {self.k}. Validation set composed by {self.val_size} of the {self.k} folds."
 
 
 class FoldIterator():

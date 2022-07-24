@@ -17,15 +17,7 @@ class SearchSpace():
                 self.fixed.append(subspace)
 
         self.subspaces = subspaces
-        self.elements = itertools.product(*subspaces)
+        self.elements = [ elems for elems in itertools.product(*subspaces)]
 
     def __iter__(self): 
-        return SpaceIterator(self.elements)
-
-
-class SpaceIterator():
-    def __init__(self, elements) :
-        self.elements = elements
-
-    def __next__(self): 
-        return self.elements.__next__()
+        return self.elements.__iter__()
