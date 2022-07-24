@@ -4,8 +4,9 @@ import pickle
 import os
 
 class Model(): 
-    def __init__(self, name, logger, make_folder=True):
+    def __init__(self, name, logger, description = "", make_folder=True):
         self.name = name
+        self.description = description
         self.logger = logger
         
         if(make_folder):
@@ -32,10 +33,19 @@ class Model():
 
     def save(self, model_type, custom_path = None):
         path = self.path if custom_path is None else custom_path
-        filename = f'{path}/logs/{model_type}.pkl'
+        filename = f'{path}/logs/{model_type}'
 
-        with open(filename, "wb") as savefile:
+        with open(filename + '.pkl', "wb") as savefile:
             pickle.dump(self.__dict__, savefile)
+
+        text_file = open(filename + ".txt", "w")
+ 
+        #write string to file
+        text_file.write(self.name)
+        text_file.write(self.description)
+        
+        #close file
+        text_file.close()
 
 
     def load(self, filename):

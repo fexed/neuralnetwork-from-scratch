@@ -3,7 +3,7 @@ from model import Model
 from layers import FullyConnectedLayer
 from network import Network
 from training import Training
-from utils import multiline_plot, log
+from utils import multiline_plot
 
 
 class MLP(Model): 
@@ -15,15 +15,18 @@ class MLP(Model):
         self.structural_hps = {} 
         self.training_hps = {} 
         
+        description = f'{architecture}\n'
+
         for hp in hyperparameters: 
             getattr(self, 'training_hps' if hp.training else 'structural_hps')[hp.key] = hp.value()
+            description += f'{hp} \n' 
         
         self.network = Network(architecture.loss, **self.structural_hps )
 
         for i in range(len(units) - 1):
             self.network.add(FullyConnectedLayer(units[i], units[i+1], activations[i], initializations[i]))
 
-        super().__init__(name + '_MLP', MLPLogger(name, architecture, hyperparameters, verbose), make_folder)
+        super().__init__(name + '_MLP', MLPLogger(name, architecture, hyperparameters, verbose), description, make_folder)
 
         self.training_algorithm = Training(self.network, self.training_hps, logger=self.logger)
         self.trained = False

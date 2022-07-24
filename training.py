@@ -1,8 +1,7 @@
 import numpy as np
-from logger import MLPLogger
 
 class Training():
-    """ Base class for the neural networks used in this project """
+    """ Base class for the neural networks training """
 
     def __init__(self, network, hyperparameters, logger):
     #momentum=0, dropout=0, nesterov=0, epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, ):
@@ -57,7 +56,8 @@ class Training():
                         learning_rate = (1 - lr_decay_alpha) * learning_rate + lr_decay_alpha * lr_decay.final_value
 
             # Compute learning curves 
-            tr_output = self.network.forward_propagation(X_TR, inference=True)  #@TODO Should we calculate after weight update or reuse outputs from the forward_propagation propagation part?
+            tr_output = self.network.forward_propagation(X_TR, inference=True)  
+            #@TODO Should we calculate after weight update or reuse outputs from the forward_propagation propagation part?
             val_output = self.network.forward_propagation(X_VAL, inference=True)
 
             tr_loss_hist.append(self.network.loss.compute(tr_output, Y_TR))
