@@ -26,7 +26,7 @@ class FullyConnectedLayer():
 
     def forward_propagation(self, input, dropout_rate=1, alpha=0, nesterov=False):
         self.input = input
-
+        
         if nesterov: 
             self.nesterov_weight_update(alpha)
 
@@ -52,7 +52,6 @@ class FullyConnectedLayer():
         self.weights += self.prev_weight_update
         self.bias += self.prev_bias_update
 
-
     #@TODO Change naming here
     def backward_propagation(self, delta):
         delta = np.multiply(self.activation.derivative(self.net), delta)
@@ -67,8 +66,6 @@ class FullyConnectedLayer():
 
 
     def update_weights(self, eta, regularizator=None, alpha=0):
-        # TODO: nesterov
-
         dW = eta*self.weights_gradient
         dB = eta*self.bias_gradient
 
@@ -84,6 +81,7 @@ class FullyConnectedLayer():
             # Then "delta new" is saved as "delta old"
             self.prev_weight_update = dW
             self.prev_bias_update = dB
+
         self.weights += dW
         self.bias += dB
 

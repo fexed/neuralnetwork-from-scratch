@@ -43,9 +43,6 @@ class Network():
      
     def update_weights(self, learning_rate):
         for layer in self.layers:
-            if self.momentum.nesterov:
-                layer.nesterov_weight_update(self.momentum.alpha) 
-            else:
                 layer.update_weights(learning_rate, self.regularization, self.momentum.alpha)
 
 
