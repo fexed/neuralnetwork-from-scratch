@@ -26,7 +26,7 @@ class Accuracy(Metric):
         super().__init__("Accuracy", Task.BINARY_CLASSIFICATION)
 
     def compute(self, output, target):
-        TP, TN, _, _  = __logistic_to_confusion_matrix(output, target)
+        TP, TN, _, _  = logistic_to_confusion_matrix(output, target)
         return  (TP + TN) / len(target)
 
 
@@ -35,7 +35,7 @@ class Precision(Metric):
         super().__init__("Precision", Task.BINARY_CLASSIFICATION)
 
     def compute(self, output, target):
-        TP, _, FP, _  = __logistic_to_confusion_matrix(output, target)
+        TP, _, FP, _  = logistic_to_confusion_matrix(output, target)
         return  TP/(TP + FP + 1e-5)
 
 
@@ -44,7 +44,7 @@ class Recall(Metric):
         super().__init__("Recall (Sensitivity)", Task.BINARY_CLASSIFICATION)
 
     def compute(self, output, target):
-        TP, _, _, FN  = __logistic_to_confusion_matrix(output, target)
+        TP, _, _, FN  = logistic_to_confusion_matrix(output, target)
         return  TP/(TP + FN + 1e-5)
 
 
@@ -53,7 +53,7 @@ class Specificity(Metric):
         super().__init__("Specificity", Task.BINARY_CLASSIFICATION)
 
     def compute(self, output, target):
-        _, TN, FP, _  = __logistic_to_confusion_matrix(output, target)
+        _, TN, FP, _  = logistic_to_confusion_matrix(output, target)
         return  TN/(FP + TN + 1e-5)
 
 
@@ -75,7 +75,7 @@ class MeanEuclideanError(Metric):
         return MEE().compute(output, target)
 
 
-def __logistic_to_confusion_matrix(output, target):
+def logistic_to_confusion_matrix(output, target):
     #if x.shape[1] != 1:
         #raise Exception("Multinomial classification not supported yet")
     
