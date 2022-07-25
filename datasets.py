@@ -26,7 +26,7 @@ class Dataset():
 
 class Monk(Dataset):
     def __init__(self, n):
-        self.path = f'datasets/MONK/monks-{n}.'
+        self.path = f'DATASETS/MONK/monks-{n}.'
 
         self.train_suffix = 'train'
         self.test_suffix = 'test'
@@ -80,7 +80,7 @@ class Monk(Dataset):
 
 class CUP(Dataset): 
     def __init__(self, internal_split = None):        
-        self.path = f'datasets/CUP/ML-CUP21-'
+        self.path = f'DATASETS/CUP/ML-CUP21-'
 
         self.train_suffix = 'TR'
         self.test_suffix = 'TS'
