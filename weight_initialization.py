@@ -19,6 +19,7 @@ class WeightInitialization(HyperParameter):
     def __str__(self):
         return self.name
 
+
 class RandomUniform(WeightInitialization): 
     def __init__(self):
         super().__init__("Random Uniform")

@@ -73,6 +73,7 @@ class Training():
                 break
         
         return tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist 
+ 
     
     def early_stopping_condition(self, val): #@TODO Check Early Stopping Implementation
         if self.early_stopping:

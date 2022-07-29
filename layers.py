@@ -52,7 +52,7 @@ class FullyConnectedLayer():
         self.weights += self.prev_weight_update
         self.bias += self.prev_bias_update
 
-    #@TODO Change naming here
+
     def backward_propagation(self, delta):
         delta = np.multiply(self.activation.derivative(self.net), delta)
         
@@ -84,6 +84,7 @@ class FullyConnectedLayer():
 
         self.weights += dW
         self.bias += dB
+
 
     def __str__(self): 
         return f""" 

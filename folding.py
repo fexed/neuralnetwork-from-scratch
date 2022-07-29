@@ -2,13 +2,16 @@ from typing import Iterator
 from utils import shuffle as _shuffle
 import numpy as np
 
+
 class FoldingStrategy(): 
     def __init__(): 
         return
 
+
 class FoldingCycle(): 
     def __next__():
         return
+
 
 class Holdout(FoldingStrategy): 
     def __init__(self,  val_size=0, ):
@@ -33,7 +36,7 @@ class Holdout(FoldingStrategy):
         return self
 
 
-    def __iter__(self) -> Iterator[FoldingCycle]:  
+    def __iter__(self):  
         return iter([(self.X_TR, self.Y_TR, self.X_VAL, self.Y_VAL)])
 
 
@@ -105,7 +108,7 @@ class FoldIterator():
         return np.concatenate(X_TR), np.concatenate(Y_TR), np.concatenate(X_VAL), np.concatenate(Y_VAL)
 
 
-    def __next__(self) -> FoldingCycle: 
+    def __next__(self): 
         if self.i >= self.k: 
             raise StopIteration
         else:

@@ -3,6 +3,7 @@ from mlp import MLP
 from search_space import SearchSpace
 from weight_initialization import RandomUniform
 
+
 class Architecture():
     def __init__(self, model): 
         self.model = model
@@ -38,12 +39,11 @@ class Architecture():
 
     def __search_space_MLP__(self, io_sizes, loss,  hidden_units, activation, initialization, last_activation=None):
         combinations =  itertools.product(hidden_units,  activation, initialization)
-        #@TODO RIPRENDERE DA QUIII.
         archs = []
         for c in combinations:
             archs.append(Architecture(MLP).define(
                 loss=loss,
-                units = [io_sizes[0], *c[0], io_sizes[1]], #*hidden_units, 
+                units = [io_sizes[0], *c[0], io_sizes[1]],
                 activations = c[1], 
                 initializations = c[2],
             ))

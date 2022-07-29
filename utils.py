@@ -51,6 +51,7 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
+
 def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="dark", showlegend=True, showgrid=False, savefile=None, alternateDots=False, prefix=""): 
     """ Plots multiple data curves on the same cartesian plane
 
@@ -105,6 +106,7 @@ def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epoch
 
         log(prefix + "logs/" + savefile, histories)
     return
+
 
 def roc_curve(title, FPR, TPR, AUC, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
     """ Plots the ROC curve

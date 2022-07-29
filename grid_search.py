@@ -11,7 +11,7 @@ import os
 
  
 class GridSearch(): 
-    def __init__(self, name, dataset: Dataset, model_type: type[Model], verbose=True):
+    def __init__(self, name, dataset: Dataset, model_type, verbose=True):
         self.name = name
         self.verbose = verbose
         self.dataset = dataset

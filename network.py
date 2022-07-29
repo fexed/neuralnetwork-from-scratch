@@ -23,7 +23,7 @@ class Network():
         if inference: 
             for layer in self.layers: 
                 output = layer.forward_propagation(output)
-        else: #It's training
+        else:  # It's training
             for layer in self.layers:
                 output = layer.forward_propagation(output, self.dropout.rate, self.momentum.alpha, self.momentum.nesterov) 
         

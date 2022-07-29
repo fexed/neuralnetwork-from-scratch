@@ -2,6 +2,7 @@ import numpy as np
 from metrics import Task
 from preprocessing import one_hot_encoding
 
+
 class Dataset():
     def __init__(self, name, task = Task.REGRESSION): 
         self.name = name
@@ -17,8 +18,10 @@ class Dataset():
     def size(self): 
         return self.input_size, self.output_size
     
+    
     def cardinality(self):
         return len(self.X_TR)
+
 
     def __str__(self): 
         return f"{self.name}" 

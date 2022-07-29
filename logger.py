@@ -99,10 +99,12 @@ class GridSearchLogger(Logger):
         txt = "\r" + prefix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
         print(txt, end="")
 
+
     def end_message(self):
         print("")
         print("GridSearch succefully terminated!")
         print("")
+
 
     def top_result_line(self, i, j, mean, std): 
         line =  f"{i}): Model: {j}_* --- Mean: {mean} (Standard deviation over folds: {std})"

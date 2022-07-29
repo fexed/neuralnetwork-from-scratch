@@ -19,5 +19,6 @@ class SearchSpace():
         self.subspaces = subspaces
         self.elements = [ elems for elems in itertools.product(*subspaces)]
 
+
     def __iter__(self): 
         return self.elements.__iter__()

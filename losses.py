@@ -58,10 +58,9 @@ class BinaryCrossentropy(Loss):
         return np.mean(targets/outputs_clipped - (1-targets)/(1-outputs_clipped))
 
 
-class MulticlassCrossentropy(Loss):
+class MulticlassCrossentropy(Loss):  # TODO implement
     """ Multiclass Crossentropy loss """
 
-    # TODO implement
     def __init__(self):
         self.name = "Multiclass Crossentropy"
 
