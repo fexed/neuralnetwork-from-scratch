@@ -1,19 +1,43 @@
-import numpy as np
-from grid_search import grid_search
-from regularizators import L2
-from dataset_loader import load_cup
-from preprocessing import continuous_standardizer, min_max_normalizer
-from utils import tr_vl_split
+from architecture import Architecture
+from datasets import CUP
+from folding import Holdout, KFold
+from grid_search import GridSearch
+from hyperparameter import BatchSize, Epochs, HyperParameter, LearningRate, Momentum
+from metrics import MeanEuclideanError 
+from mlp import MLP
+from losses import MEE, MSE
+from activationfunctions import Identity, Sigmoid, Tanh
+from search_space import SearchSpace
+from weight_initialization import NormalizedXavier, Xavier, He
 
+cup = CUP()
 
-X, Y = load_cup(verbose=True, file="training")
+MIN_LAYERS, MAX_LAYERS = 3, 3
+MIN_UNITS, MAX_UNITS = 20, 50
+UNITS_INCR = 10
 
-#res = grid_search(10, 2, X, Y, layers=[0], units=[23], learning_rates=[0.0025], batch_sizes=[16, 32, 64], init_functions=["normalized_xavier"], momentums=[0.25, 0.5, 0.75, 0.85, 0.9, 0.99], regularizators=[None], dropouts=[0], nesterovs=[0], epochs=22500000, verbose=False, early_stopping=150)
-res = grid_search(10, 2, X, Y, layers=[0], units=list(range(21, 24, 1)), learning_rates=[0.00125, 0.001, 0.000625], batch_sizes=[1], init_functions=["normalized_xavier"], momentums=[0], regularizators=[None, L2(l = 1e-4), L2(l = 1e-5)], dropouts=[0], nesterovs=[0], epochs=1500, verbose=False, early_stopping=100)
-result_file = open("datasets/CUP/grid_search/results.txt", "w")
-print("CUP\n")
-result_file.write("CUP:\n")
-for i in range (0, 10):
-    result_file.write(str(i+1)+": "+str(res[i])+"\n")
-    print("\n" + str(res[i]))
-result_file.close()
+units_space = []
+activation_space = [[Sigmoid()]]
+initialization_space = [[Xavier()]]
+for L in range(MIN_LAYERS, MAX_LAYERS + 1):
+    for u in range(MIN_UNITS, MAX_UNITS + 1, UNITS_INCR):
+        units_space.append([u] * L)
+
+architecture_space = Architecture(MLP).search_space(
+    io_sizes= (cup.input_size, cup.output_size),
+    loss=MSE(),
+    hidden_units=[ [60, 50, 35], [60, 50, 35], [60, 50, 35], [60, 50, 35] ],
+    activation=[[Tanh(), Tanh(), Tanh(), Identity()] ],
+    initialization=[[Xavier(), He(), NormalizedXavier(), Xavier() ]],
+    last_activation=Identity()
+)
+
+hyperparameter_space = SearchSpace([
+    Epochs.search_space([100]),
+    LearningRate.search_space([0.00001]),
+    BatchSize.search_space([175])
+])
+
+gs = GridSearch("MIRACLE", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)
+gs.start(metric=MeanEuclideanError(), folding_strategy=KFold(2,1))
+gs.top_results(2)

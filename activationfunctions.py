@@ -4,15 +4,31 @@ import numpy as np
 class ActivationFunction:
     """ Base class for the activation functions """
 
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f"{self.name} activation function"
+
+
+class Identity(ActivationFunction): 
+    """ Identity activation function """
+
     def __init__(self):
-        self.name = None
+        super().__init__("Identity")
+
+    def forward(self, x): 
+        return x
+
+    def derivative(self, _): 
+        return 1 #np.identity(len(x))
 
 
 class Tanh(ActivationFunction):
     """ Tanh activation function """
 
     def __init__(self):
-        self.name = "Tanh"
+        super().__init__("Tanh")
 
 
     def forward(self, x):
@@ -31,14 +47,14 @@ class Sigmoid(ActivationFunction):
     """ Sigmoid activation function """
 
     def __init__(self):
-        self.name = "Sigmoid"
+        super().__init__("Sigmoid")
 
 
     def forward(self, x):
         """ Returns the sigmoid value of x """
 
         # 1/(1+e^{-x})
-        return 1 / (1 + np.exp(np.dot(-1, x)))
+        return 1 / (1 + np.exp(-x))
 
 
     def derivative(self, x):
@@ -52,7 +68,7 @@ class ReLU(ActivationFunction):
     """ ReLU activation function """
 
     def __init__(self, epsilon = 1e-5):
-        self.name = "ReLU"
+        super().__init__("ReLU")
         self.epsilon = epsilon
 
 
@@ -72,7 +88,7 @@ class LeakyReLU(ActivationFunction):
     """ Leaky ReLU activation function """
 
     def __init__(self, leak = 0.3):
-        self.name = "ReLU"
+        super().__init__( "LeakyReLU")
         self.leak = leak
 
 
@@ -94,7 +110,7 @@ class Softmax(ActivationFunction):  # TODO: check this
     """ Softmax activation function """
 
     def __init__(self):
-        self.name = "Softmax"
+        super().__init__( "Softmax")
 
 
     def forward(self, x):

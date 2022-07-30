@@ -1,47 +1,3 @@
-def update_progress(progress, barlength=100, prefix="", fill="\u2588"):
-    """ Prints a progress bar with the current progress
-
-    Parameters
-    ----------
-    progress : float
-        The current progress, 0 <= progress <= 1
-    barlength : int, optional
-        The length of the progress bar
-    prefix : str, optional
-        A string to print before the progress bar
-    fill : char, optional
-        Character used to fill the progress bar
-    """
-
-    num = int(round(barlength*progress))
-    txt = "\r" + prefix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
-    print(txt, end="")
-
-
-def training_progress(current_epoch, epochs, barlength=50, suffix="", fill="\u2588"):
-    """ Prints a progress bar with the current training progress
-
-    Parameters
-    ----------
-    current_epoch : int
-        The current epoch of training
-    epochs : int
-        The max number of epochs of training
-    barlength : int, optional
-        The length of the progress bar
-    prefix : str, optional
-        A string to print before the progress bar
-    fill : char, optional
-        Character used to fill the progress bar
-    """
-    progress = current_epoch/epochs
-    digits = len(str(epochs))
-    formattedepochs = ("{:0"+str(digits)+"d}").format(current_epoch)
-    num = int(round(barlength*progress))
-    txt = "\rEpoch " + formattedepochs + " of " + str(epochs) + " " + suffix + " [" + fill*num + " "*(barlength - num) + "] " + "{:.2f}".format(progress*100) + "%"
-    print(txt, end="")
-
-
 def tr_vl_split(X, Y, ratio=0.25):
     """ Splits a dataset into two parts with random elements
 
@@ -95,7 +51,8 @@ def plot_and_save(title, history, validation_history=None, ylabel="Loss", xlabel
     if not(savefile is None): plot.savefig("plots/" + savefile + ".png")
     plot.clf()
 
-def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="Spectral", showlegend=True, showgrid=False, savefile=None, alternateDots=False): 
+
+def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epochs", style="dark", showlegend=True, showgrid=False, savefile=None, alternateDots=False, prefix=""): 
     """ Plots multiple data curves on the same cartesian plane
 
     Parameters
@@ -126,10 +83,13 @@ def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epoch
     l = len(histories)
     plt.rcParams.update({'font.size': 18})
 
+
+    sns.set()
+
     with sns.color_palette(style, n_colors=l):
         fig, ax = plt.subplots()
-        for  i  in range(l):
-            lStyle = ':' if ( alternateDots and i % 2 == 0) else '-'
+        for  i  in reversed(range(l)):
+            lStyle = '-' if ( alternateDots and i % 2 == 0) else ':'
             ax.plot(histories[i], label=legend_names[i], linestyle=lStyle, linewidth=2)
             
         ax.set_ylabel(ylabel)
@@ -141,9 +101,12 @@ def multiline_plot(title, histories, legend_names, ylabel="Loss",  xlabel="Epoch
         
         plt.gca().margins(x=0)
         fig.set_size_inches(12, 8)
-        if not(savefile is None): plt.savefig("plots/" + savefile + ".png")
+        if not(savefile is None): plt.savefig(prefix + "plots/" + savefile + ".png")
         plt.clf()
+
+        log(prefix + "logs/" + savefile, histories)
     return
+
 
 def roc_curve(title, FPR, TPR, AUC, xlabel="Specificity", ylabel="Sensitivity", savefile=None):
     """ Plots the ROC curve
@@ -240,7 +203,7 @@ def log(filename, data):
     """
 
     import pickle
-    with open("logs/"+ filename + ".pkl", "wb") as logfile:
+    with open(filename + ".pkl", "wb") as logfile:
         pickle.dump(data, logfile)
 
 

@@ -1,110 +1,105 @@
 import numpy as np
-from activationfunctions import Tanh
-from losses import MEE
-from layers import FullyConnectedLayer
-from neuralnetwork import Network
-from regularizators import L2
-from utils import update_progress
-import time
-from kfold import KFold
+import pickle
+from datasets import Dataset
+from folding import FoldingStrategy, Holdout
+from metrics import MeanEuclideanError, Metric
+from model import Model
+from logger import GridSearchLogger
+from mlp import MLP
+from time import time
+import os
+
+ 
+class GridSearch(): 
+    def __init__(self, name, dataset: Dataset, model_type, verbose=True):
+        self.name = name
+        self.verbose = verbose
+        self.dataset = dataset
+        self.model_type = model_type
+
+        if(model_type == MLP): 
+            self.set_space = self.__init_MLP_search_space__
+
+        suffix = time() 
+        self.path = f'_GRID_SEARCHES/{self.name}_{self.dataset.name}/{suffix}/'
 
 
-def grid_search(input_size, output_size, X, y,
-                layers=list(range(5)),  # number of hidden layers - 1
-                units=list(range(5, 100, 5)),
-                learning_rates=list(np.arange(0.01, 0.1, 0.01)),
-                batch_sizes=None,
-                init_functions=["xavier", "normalized_xavier", "he", "basic"],
-                momentums=[0, 0.8, 0.9, 0.99, 0.999],
-                regularizators=[None, L2(l = 0.005), L2(l = 0.015)],
-                dropouts=[0, 0.5, 0.8],
-                nesterovs=[True, False],
-                epochs=500, verbose=True, early_stopping=25, folds=3):
+    def create_model_folders(self, suffix):
+        model_path = f'{self.path}/{suffix}'
+        if not os.path.exists(model_path):
+            os.makedirs(f'{model_path}/plots')
+            os.makedirs(f'{model_path}/logs')
 
-    if (batch_sizes==None):
-        batch_sizes=[1, input_size]
-    n_combinations = len(layers)*len(units)*len(learning_rates)*len(init_functions)*len(momentums)*len(regularizators)*len(batch_sizes)*len(dropouts)*folds*len(nesterovs)
-    if (verbose): print("Grid search on " + str(n_combinations) + " combinations")
-    if (verbose):
-        print("\tinput_size:", input_size)
-        print("\toutput_size:", output_size)
-        print("\tlayers:", layers)
-        print("\tunits:", units)
-        print("\tlearning_rates:", learning_rates)
-        print("\tbatch_sizes:", batch_sizes)
-        print("\tinit_functions:", init_functions)
-        print("\tmomentums:", momentums)
-        print("\tregularizators:", regularizators)
-        print("\tdropouts:", dropouts)
-        print("\tnesterovs:", nesterovs)
-        print("\tfolds:", folds)
-    results = []  # to store the results and return the best 10
+        return model_path
 
-    try:
-        tested = 0  # for the progressbar
-        start = time.time()  # for ETA calc
-        progress = 0
-        digits = len(str(n_combinations))
-        formattedtested = ("{:0"+str(digits)+"d}").format(tested)
-        ETA = "ETA --h --m --s"
-        update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
-        for N in layers:
-            for M in units:
-                for E in learning_rates:
-                    for dropout in dropouts:
-                        for momentum in momentums:
-                            for nesterov in nesterovs:
-                                for regularizator in regularizators:
-                                        for init_f in init_functions:
-                                            for B in batch_sizes:
-                                                kfold = KFold(folds, X, y)
-                                                final_TR_losses_mean = 0
-                                                final_VL_losses_mean = 0
-                                                epochs_done_mean = 0
-                                                while (kfold.hasNext()):
-                                                    xtr, xvl, ytr, yvl = kfold.next_fold()
-                                                    net = Network("GRIDSEARCH_" + str(N) + "L_" + str(M) + "U_" + str(E) + "LR", MEE(), momentum=momentum, regularizator=regularizator, dropout=dropout, nesterov=nesterov)
-                                                    net.add(FullyConnectedLayer(input_size, M, Tanh(), initialization_func = init_f))
-                                                    for i in range(N):  # N+1 hidden layers, plus input and output layers
-                                                        net.add(FullyConnectedLayer(M, M, Tanh(), initialization_func = init_f))
-                                                    net.add(FullyConnectedLayer(M, output_size, initialization_func = init_f))  # TODO parametrize output
-                                                    if (verbose): net.summary()
-                                                    history, val_history = net.training_loop(xtr, ytr, X_validation=xvl, Y_validation=yvl, epochs=epochs, learning_rate=E, batch_size=B, verbose=verbose, early_stopping=early_stopping)
-                                                    final_TR_losses_mean += history[-1]
-                                                    final_VL_losses_mean += val_history[-1]
-                                                    epochs_done_mean += len(history)
-                                                    tested += 1
-                                                    progress = tested/n_combinations
-                                                    digits = len(str(n_combinations))
-                                                    formattedtested = ("{:0"+str(digits)+"d}").format(tested)
-                                                    elapsedtime = time.time() - start
-                                                    ETAtime = time.gmtime((elapsedtime * (n_combinations / tested)) - elapsedtime)
-                                                    ETA = "ETA " + time.strftime("%Hh %Mm %Ss", ETAtime)
-                                                    update_progress(progress, prefix = ETA + " " + formattedtested + "/" + str(n_combinations), barlength=80)
 
-                                                final_TR_losses_mean /= folds
-                                                final_VL_losses_mean /= folds
-                                                epochs_done_mean /= folds
-                                                results.append({"TR_loss":final_TR_losses_mean,
-                                                                "VL_loss":final_VL_losses_mean,  # better indicator
-                                                                "layers":N,
-                                                                "units":M,
-                                                                "learning_rate":E,
-                                                                "batch_size":B,
-                                                                "init_function":init_f,
-                                                                "momentum":momentum,
-                                                                "regularizator":(regularizator.name if regularizator else "None"),
-                                                                "regularization_lambda":(regularizator.l if regularizator else 0),
-                                                                "dropout":dropout,
-                                                                "epochs":epochs_done_mean})
+    def start(self, metric: Metric = MeanEuclideanError(), folding_strategy: FoldingStrategy = Holdout(0.2)): 
+        self.logger.search_preview(folding_strategy) 
 
-                                                if (verbose): print("")
-    finally:
-        results.sort(key = lambda x: x['VL_loss'], reverse=False)
-        if (verbose):
-            print("Best: " + str(results[0]))
-            print("Top 10:")
-            for i in range (0, 10):
-                print("\t" + str(results[i]))
-        return results[0:10]
+        self.metric = metric
+        self.results = []
+
+        folding_cycles = folding_strategy(*self.dataset.getTR(), shuffle=True)
         
+        for i, model in enumerate(self.models):
+            fold_result = []
+            for f, fc in enumerate(folding_cycles):
+                model_path = self.create_model_folders(f'{i}_{f}')
+                
+                model.train(*fc, metric , plot_folder = model_path + '/')
+                model.save(model_path)
+
+                fold_result.append(model.val_metric)
+
+            self.results.append([i, np.mean(fold_result), np.std(fold_result)])
+            
+        self.searched = True
+        self.logger.end_message()
+        self.save_result_matrix()
+       
+
+
+    def save_result_matrix(self, format='txt', matrix = None):
+        mat = np.matrix(self.results if matrix is None else matrix)
+        with open(f'{self.path}/RESULTS.{format}','wb') as f:
+            for line in mat:
+                np.savetxt(f, line, fmt='%.2f')
+    
+
+    def top_results(self, n, save = True):
+        best_models = []
+        
+        indexes = np.array(self.results)[:, 1].argsort()
+        ordered_indexes = indexes if self.metric.is_loss else reversed(indexes)
+
+        if save: 
+            text_file = open(f'{self.path}BEST_MODELS.txt', "w")
+            text_file.write(f"Best models according to {self.metric}\n")
+
+        for i in range(n): 
+            j = ordered_indexes[i]
+            row = self.results[j]
+            i_model = self.logger.top_result_line(i+1, j, row[1], row[2])
+            best_models.append(i_model )
+            
+            if save:
+                text_file.write(f"{i_model}\n")
+        
+        if save:     
+            text_file.close()
+
+        return best_models
+
+
+    def __init_MLP_search_space__(self, architecture_space, hyperparameter_space):
+        self.models = []
+        model_idx = 0
+
+        for architecture in architecture_space: 
+            for hyperparameters in hyperparameter_space: 
+                self.models.append(MLP(f'{model_idx}_', architecture, hyperparameters, verbose=self.verbose, make_folder=False))
+                model_idx += 1
+
+        self.logger = GridSearchLogger(self.name, self.dataset.name, self.dataset.cardinality(), self.model_type, len(self.models), self.verbose)
+
+        return self
