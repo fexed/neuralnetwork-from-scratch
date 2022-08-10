@@ -6,7 +6,7 @@ from mlp import MLP
 from metrics import Accuracy
 from regularizators import Thrun, L2
 from datasets import Monk
-from weight_initialization import Xavier
+from weight_initialization import RandomUniform
 
 monk = 3
 print("\n\n****TESTING NETWORK ON MONK" + str(monk))
@@ -20,7 +20,7 @@ architecture = Architecture(MLP).define(
     units= [input_size, 4, output_size], 
     activations = [Sigmoid()], 
     loss = MSE(), 
-    initializations = [Xavier()]
+    initializations = [RandomUniform()]
 )
   
 hyperparameters = [

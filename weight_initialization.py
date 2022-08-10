@@ -27,8 +27,7 @@ class RandomUniform(WeightInitialization):
     def generate(self, input_size, output_size):
         bias = [np.full(output_size, 0)]
         weights = np.random.uniform(-1/input_size, 1/input_size, (input_size, output_size))
-
-        return weights, bias
+        return weights, np.array(bias, dtype='float64')
 
 
 class He(WeightInitialization): 
