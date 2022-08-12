@@ -26,16 +26,19 @@ class GridSearch():
         if not os.path.exists(self.path):
              os.makedirs(f'{self.path}')
 
-    def create_model_folders(self, suffix):
+    def create_model_folders(self, suffix, plots = False):
         model_path = f'{self.path}/{suffix}'
         if not os.path.exists(model_path):
-            os.makedirs(f'{model_path}/plots')
+
+            if plots: 
+                os.makedirs(f'{model_path}/plots')
+
             os.makedirs(f'{model_path}/logs')
 
         return model_path
 
 
-    def start(self, metric: Metric = MeanEuclideanError(), folding_strategy: FoldingStrategy = Holdout(0.2)): 
+    def start(self, metric: Metric = MeanEuclideanError(), folding_strategy: FoldingStrategy = Holdout(0.2), restart_from = 0, plots=False): 
         self.logger.search_preview(folding_strategy) 
 
         self.metric = metric
@@ -44,13 +47,12 @@ class GridSearch():
         folding_cycles = folding_strategy(*self.dataset.getTR(), shuffle=True) 
         os.path.join(self.path, 'RESULTS.txt')
        
-        
-        for i, model in enumerate(self.models):
+        for i, model in enumerate(self.models[restart_from: -1]):
             fold_result = []
             for f, fc in enumerate(folding_cycles):
-                model_path = self.create_model_folders(f'{i}_{f}')
+                model_path = self.create_model_folders(f'{i+restart_from}_{f}', plots)
                 
-                model.train(*fc, metric , plot_folder = model_path + '/')
+                model.train(*fc, metric, plot_folder = model_path + '/' if plots else None) #,)
                 model.save(model_path)
 
                 fold_result.append(model.val_metric)

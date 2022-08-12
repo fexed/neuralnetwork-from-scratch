@@ -40,5 +40,5 @@ hyperparameter_space = SearchSpace([
 ])
 
 gs = GridSearch("MIRACLE", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)
-gs.start(metric=MeanEuclideanError(), folding_strategy=KFold(4))
+gs.start(metric=MeanEuclideanError(), folding_strategy=KFold(4), plots=False)
 gs.top_results(200)

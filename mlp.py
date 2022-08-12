@@ -50,8 +50,9 @@ class MLP(Model):
 
         history = [tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist]
 
-        self.plot_training_curves(history[0:2], self.network.loss.name, plot_folder)
-        self.plot_training_curves(history[2:4], metric.name, plot_folder)
+        if not (plot_folder is None):
+            self.plot_training_curves(history[0:2], self.network.loss.name, plot_folder)
+            self.plot_training_curves(history[2:4], metric.name, plot_folder)
 
         self.tr_loss = tr_loss_hist[-1]
         self.val_loss = val_loss_hist[-1]
@@ -85,4 +86,4 @@ class MLP(Model):
 
     def reset(self):
         self.network.reset_weights()
-        self.network.reset_gradients()
+        self.network.reset_gradients
