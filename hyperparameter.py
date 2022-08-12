@@ -1,5 +1,5 @@
 import itertools
-
+import random
 
 class HyperParameter(): 
     def __init__(self, name, training):
@@ -139,6 +139,15 @@ class NesterovMomentum(Momentum):
     def search_space(range): 
         return HyperParameter.search_space(NesterovMomentum, range)
 
+
+class RandomizedMomentum(Momentum): 
+    def __call__(self, alpha=0):
+        return NesterovMomentum(alpha) if bool(random.getrandbits(1)) else Momentum(alpha)
+        
+        
+    def search_space(range): 
+        return HyperParameter.search_space(RandomizedMomentum, range)
+        
 
 class Dropout(HyperParameter): 
     def __init__(self, rate=1):

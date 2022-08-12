@@ -2,7 +2,7 @@ from architecture import Architecture
 from datasets import CUP
 from folding import KFold
 from grid_search import GridSearch
-from hyperparameter import BatchSize, Epochs, LearningRate, Momentum, NesterovMomentum
+from hyperparameter import BatchSize, Epochs, LearningRate, Momentum, NesterovMomentum, RandomizedMomentum
 from metrics import MeanEuclideanError 
 from mlp import MLP
 from losses import MSE
@@ -32,11 +32,11 @@ architecture_space = Architecture(MLP).search_space(
 )
 
 hyperparameter_space = SearchSpace([
-    Epochs.search_space([800]),
-    LearningRate.search_space([0.00005, 0.0001, 0.0005 ]),
-    BatchSize.search_space([32, 64 ,128, 256]), 
-    [*Momentum.search_space([0, 0.01, 0.001]), *NesterovMomentum.search_space([0.01, 0.001])],
-    Regularization.search_space(L2, [0, 0.00005, 0.00001 ])
+    Epochs.search_space([600]),
+    LearningRate.search_space([0.00001, 0.0001, 0.001 ]),
+    BatchSize.search_space([64 ,128, 256]), 
+    RandomizedMomentum.search_space([0, 0.001, 0.0001]),
+    Regularization.search_space(L2, [ 0.00001,  0.0001, 0.001])
 ])
 
 gs = GridSearch("MIRACLE", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)
