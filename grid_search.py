@@ -23,6 +23,8 @@ class GridSearch():
         suffix = time() 
         self.path = f'_GRID_SEARCHES/{self.name}_{self.dataset.name}/{suffix}/'
 
+        if not os.path.exists(self.path):
+             os.makedirs(f'{self.path}')
 
     def create_model_folders(self, suffix):
         model_path = f'{self.path}/{suffix}'
@@ -39,7 +41,9 @@ class GridSearch():
         self.metric = metric
         self.results = []
 
-        folding_cycles = folding_strategy(*self.dataset.getTR(), shuffle=True)
+        folding_cycles = folding_strategy(*self.dataset.getTR(), shuffle=True) 
+        os.path.join(self.path, 'RESULTS.txt')
+       
         
         for i, model in enumerate(self.models):
             fold_result = []
@@ -52,6 +56,10 @@ class GridSearch():
                 fold_result.append(model.val_metric)
 
             self.results.append([i, np.mean(fold_result), np.std(fold_result)])
+
+            result_file = open(f'{self.path}RESULTS.txt', "a")
+            result_file.write(f"{self.results[i]}\n")
+            result_file.close()
             
         self.searched = True
         self.logger.end_message()
@@ -61,7 +69,7 @@ class GridSearch():
 
     def save_result_matrix(self, format='txt', matrix = None):
         mat = np.matrix(self.results if matrix is None else matrix)
-        with open(f'{self.path}/RESULTS.{format}','wb') as f:
+        with open(f'{self.path}/FINAL_RESULTS.{format}','wb') as f:
             for line in mat:
                 np.savetxt(f, line, fmt='%.2f')
     

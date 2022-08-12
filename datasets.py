@@ -82,8 +82,8 @@ class Monk(Dataset):
 
 
 class CUP(Dataset): 
-    def __init__(self, internal_split = None):        
-        self.path = f'DATASETS/CUP/ML-CUP21-'
+    def __init__(self, internal_split = True):        
+        self.path =  'DATASETS/CUP/internal-CUP-' if internal_split else 'DATASETS/CUP/ML-CUP21-' 
 
         self.train_suffix = 'TR'
         self.test_suffix = 'TS'
