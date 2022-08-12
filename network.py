@@ -50,3 +50,7 @@ class Network():
         for layer in self.layers:
             layer.reset_gradients()
     
+    def reset_weights(self):
+        for layer in self.layers:
+            layer.reset_weights()
+    

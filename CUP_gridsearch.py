@@ -1,15 +1,15 @@
 from architecture import Architecture
 from datasets import CUP
-from folding import Holdout, KFold
+from folding import KFold
 from grid_search import GridSearch
-from hyperparameter import BatchSize, Epochs, HyperParameter, LearningRate, Momentum, NesterovMomentum
+from hyperparameter import BatchSize, Epochs, LearningRate, Momentum, NesterovMomentum
 from metrics import MeanEuclideanError 
 from mlp import MLP
-from losses import MEE, MSE
+from losses import MSE
 from regularizators import L2, Regularization
-from activationfunctions import Identity, ReLU, Sigmoid, Tanh
+from activationfunctions import Identity, Sigmoid
 from search_space import SearchSpace
-from weight_initialization import NormalizedXavier, RandomUniform
+from weight_initialization import  He, Xavier
 
 cup = CUP(internal_split=True)
 
@@ -25,20 +25,20 @@ for L in range(MIN_LAYERS, MAX_LAYERS + 1):
 architecture_space = Architecture(MLP).search_space(
     io_sizes= (cup.input_size, cup.output_size),
     loss=MSE(),
-    hidden_units= [[20, 50, 20]],
-    activation=[[Tanh()]],
-    initialization=[[RandomUniform()]],
+    hidden_units= units_space,
+    activation=[[Sigmoid()]],
+    initialization=[[Xavier()], [He()]],
     last_activation=Identity()
 )
 
 hyperparameter_space = SearchSpace([
-    Epochs.search_space([400]),
-    LearningRate.search_space([0.0001 ]), #0.001 ,0.005, 0.01
-    BatchSize.search_space([256]), #32, 64, 128, 
-    #*[Momentum.search_space([0, 0.01, 0.001]), NesterovMomentum.search_space([0.01, 0.001])],
-    Regularization.search_space(L2, [0, 0.0001, ]) #0.005
+    Epochs.search_space([800]),
+    LearningRate.search_space([0.00005, 0.0001, 0.0005 ]),
+    BatchSize.search_space([32, 64 ,128, 256]), 
+    [*Momentum.search_space([0, 0.01, 0.001]), *NesterovMomentum.search_space([0.01, 0.001])],
+    Regularization.search_space(L2, [0, 0.00005, 0.00001 ])
 ])
 
 gs = GridSearch("MIRACLE", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)
 gs.start(metric=MeanEuclideanError(), folding_strategy=KFold(4))
-gs.top_results(2)
+gs.top_results(200)

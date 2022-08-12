@@ -81,3 +81,8 @@ class MLP(Model):
     def save(self, custom_path = None):
         """ Saves the neural network in a pickle """
         super().save('MLP', custom_path)
+
+
+    def reset(self):
+        self.network.reset_weights()
+        self.network.reset_gradients()

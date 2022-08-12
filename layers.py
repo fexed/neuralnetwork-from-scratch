@@ -18,10 +18,14 @@ class FullyConnectedLayer():
         self.prev_weight_update = 0  # for momentum purposes
         self.prev_bias_update = 0  # for momentum purposes
         
-
+        
     def reset_gradients(self):
         self.weights_gradient = np.zeros(self.weights.shape) #not necessary
         self.bias_gradient = np.zeros(self.bias.shape) #not necessary
+
+
+    def reset_weights(self):
+        self.weights, self.bias = self.init_strategy.generate(self.in_size, self.out_size)
 
 
     def forward_propagation(self, input, dropout_rate=1, alpha=0, nesterov=False):

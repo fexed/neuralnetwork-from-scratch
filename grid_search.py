@@ -54,6 +54,7 @@ class GridSearch():
                 model.save(model_path)
 
                 fold_result.append(model.val_metric)
+                model.reset()
 
             self.results.append([i, np.mean(fold_result), np.std(fold_result)])
 

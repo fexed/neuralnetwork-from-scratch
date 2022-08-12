@@ -68,3 +68,6 @@ class Model():
 
     def __str__(self): 
         return f"Model: {self.name}"
+
+    def reset():
+        pass
