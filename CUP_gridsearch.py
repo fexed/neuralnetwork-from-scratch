@@ -7,26 +7,25 @@ from metrics import MeanEuclideanError
 from mlp import MLP
 from losses import MSE
 from regularizators import L2, Regularization
-from activationfunctions import Identity, Sigmoid
+from activationfunctions import Identity, Sigmoid, Tanh
 from search_space import SearchSpace
 from weight_initialization import  He, Xavier
 
 cup = CUP(internal_split=True)
 
-MIN_LAYERS, MAX_LAYERS = 2, 6
-MIN_UNITS, MAX_UNITS = 10, 100
+MIN_LAYERS, MAX_LAYERS = 3, 4
+MIN_UNITS, MAX_UNITS = 10, 70
 UNITS_INCR = 30
 
 units_space = []
-for L in range(MIN_LAYERS, MAX_LAYERS + 1):
-    for u in range(MIN_UNITS, MAX_UNITS + 1, UNITS_INCR):
-        units_space.append([u] * L)
+for u in range(MIN_UNITS, MAX_UNITS + 1, UNITS_INCR):
+    units_space.append([u] * 3)
 
 architecture_space = Architecture(MLP).search_space(
     io_sizes= (cup.input_size, cup.output_size),
     loss=MSE(),
-    hidden_units= units_space,
-    activation=[[Sigmoid()]],
+    hidden_units=units_space,
+    activation=[[Tanh()]],
     initialization=[[Xavier()], [He()]],
     last_activation=Identity()
 )
