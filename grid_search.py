@@ -58,7 +58,7 @@ class GridSearch():
                 fold_result.append(model.val_metric)
                 model.reset()
 
-            self.results.append([i, np.mean(fold_result), np.std(fold_result)])
+            self.results.append([i+restart_from, np.mean(fold_result), np.std(fold_result)])
 
             result_file = open(f'{self.path}RESULTS.txt', "a")
             result_file.write(f"{self.results[i]}\n")
