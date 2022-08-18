@@ -21,12 +21,15 @@ class WeightInitialization(HyperParameter):
 
 
 class RandomUniform(WeightInitialization): 
-    def __init__(self):
+    def __init__(self, bound = None):
+        self.bound = bound
         super().__init__("Random Uniform")
     
     def generate(self, input_size, output_size):
         bias = [np.full(output_size, 0)]
-        weights = np.random.uniform(-1/input_size, 1/input_size, (input_size, output_size))
+        if (self.bound is None): 
+            self.bound = [-1/input_size, 1/input_size]
+        weights = np.random.uniform(*self.bound, (input_size, output_size))
         return weights, np.array(bias, dtype='float64')
 
 
@@ -59,7 +62,7 @@ class NormalizedXavier(WeightInitialization):
         super().__init__("Normalized Xavier")
 
     def generate(self, input_size, output_size):
-        l, u = -(6.0 / sqrt(input_size + output_size)), (6.0 / sqrt(input_size + output_size))
+        l, u = -(sqrt(6.0) / sqrt(input_size + output_size)), (sqrt(6.0) / sqrt(input_size + output_size))
         weights = np.random.uniform(low=l, high=u, size=(input_size, output_size))
         bias = np.random.uniform(low=l, high=u, size=(1, output_size))
 
