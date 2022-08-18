@@ -76,7 +76,7 @@ class FullyConnectedLayer():
         # Apply the regularization/penalty term t o acheive weight decay.
         if regularizator: 
             dW = dW - regularizator.derivative(self.weights)
-            dB = dB - regularizator.derivative(self.bias)
+            # dB = dB - regularizator.derivative(self.bias)
 
         # Apply momentum.
         if alpha != 0:
