@@ -14,8 +14,8 @@ from weight_initialization import He, Xavier
 cup = CUP(internal_split=True)
 
 MIN_LAYERS, MAX_LAYERS = 2, 2
-MIN_UNITS, MAX_UNITS = 30, 45
-UNITS_INCR = 2
+MIN_UNITS, MAX_UNITS = 32, 43
+UNITS_INCR = 1
 
 units_space = []
 for u in range(MIN_UNITS, MAX_UNITS + 1, UNITS_INCR):
@@ -33,9 +33,9 @@ architecture_space = Architecture(MLP).search_space(
 hyperparameter_space = SearchSpace([
     Epochs.search_space([800]),
     LearningRate.search_space([0.0001]),
-    BatchSize.search_space([64, 128]), 
-    Momentum.search_space([0.001, 0.0005, 0.00025, 0.0001]),
-    Regularization.search_space(L2, [0.00001, 0.000025, 0.00005, 0.0001, 0.00025, 0.0005, 0.001]),
+    BatchSize.search_space([128]), 
+    Momentum.search_space([0.0005]),
+    Regularization.search_space(L2, [0.000025]),
     EarlyStopping.search_space([50])
 ])
 
