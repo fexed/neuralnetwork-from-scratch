@@ -11,8 +11,8 @@ class Training():
         self.logger = logger
 
 
-    def __call__(self, X_TR, Y_TR, X_VAl, Y_VAL, metric=None, verbose=True):
-        return self.training_loop(X_TR, Y_TR, X_VAl, Y_VAL,  metric= metric, verbose=verbose, **self.hyperparameters)
+    def __call__(self, X_TR, Y_TR, X_VAl, Y_VAL, metric=None, verbose=True, second_metric=None):
+        return self.training_loop(X_TR, Y_TR, X_VAl, Y_VAL,  metric= metric, second_metric=second_metric, verbose=verbose, **self.hyperparameters)
 
 
     def training_epoch(self, X, Y, batch_size, eta): 
@@ -30,11 +30,13 @@ class Training():
             self.network.update_weights(eta) # apply backprop and delta rule to update weights 
 
 
-    def training_loop(self, X_TR, Y_TR, X_VAL=[], Y_VAL=[], metric=None, verbose=True, epochs=1000, 
+    def training_loop(self, X_TR, Y_TR, X_VAL=[], Y_VAL=[], metric=None, second_metric=None, verbose=True, epochs=1000, 
         learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, epoch_shuffle=True):
  
         self.logger.training_preview()
         
+        if second_metric:
+            second_metric_hist = [[], []]
 
         N = len(X_TR)
         tr_loss_hist = []
@@ -66,18 +68,22 @@ class Training():
             val_output = self.network.forward_propagation(X_VAL, inference=True)
 
             tr_loss_hist.append(self.network.loss.compute(tr_output, Y_TR))
-            tr_metric_hist.append(metric.compute(tr_output, Y_TR))
-            
             val_loss_hist.append(self.network.loss.compute(val_output, Y_VAL))
+            
+            tr_metric_hist.append(metric.compute(tr_output, Y_TR))
             val_metric_hist.append(metric.compute(val_output, Y_VAL))
-    
+
+            if second_metric:
+                second_metric_hist[0].append(second_metric.compute(tr_output, Y_TR))
+                second_metric_hist[1].append(second_metric.compute(val_output, Y_VAL))
+
             self.logger.training_progress(i, epochs, tr_loss_hist[i], val_loss_hist[i])
 
             if(self.early_stopping_condition(val_loss_hist[i])):
                 #self.network.logger.early_stopping_log()
                 break
         
-        return tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist 
+        return [ tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist, *second_metric_hist ]
  
     
     def early_stopping_condition(self, val): #@TODO Check Early Stopping Implementation

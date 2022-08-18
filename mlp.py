@@ -41,24 +41,25 @@ class MLP(Model):
         return output
 
 
-    def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=None): 
+    def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=None, second_metric=None): 
         self.logger.summary()
 
-        tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist = self.training_algorithm(
-            X_TR, Y_TR, X_VAL, Y_VAL, metric=metric, verbose=verbose
-        )
-
-        history = [tr_loss_hist, val_loss_hist, tr_metric_hist, val_metric_hist]
-
+        history = self.training_algorithm( X_TR, Y_TR, X_VAL, Y_VAL, metric=metric, verbose=verbose, second_metric=second_metric)
+        print(len(history))
         if not (plot_folder is None):
             self.plot_training_curves(history[0:2], self.network.loss.name, plot_folder)
             self.plot_training_curves(history[2:4], metric.name, plot_folder)
 
-        self.tr_loss = tr_loss_hist[-1]
-        self.val_loss = val_loss_hist[-1]
+            # Evaluate two function on training
+            if not (second_metric is None): 
+                print(history[4:6])
+                self.plot_training_curves(history[4:6], second_metric.name, plot_folder)
+
+        self.tr_loss = history[0][-1]
+        self.val_loss = history[1][-1]
         
-        self.tr_metric = tr_metric_hist[-1]
-        self.val_metric = val_metric_hist[-1]
+        self.tr_metric = history[2][-1]
+        self.val_metric = history[3][-1]
         
         self.trained = True
 
@@ -77,7 +78,7 @@ class MLP(Model):
             histories=list(history),
             ylabel=metric_name, xlabel="Epochs", 
             showlegend=True, showgrid=True, alternateDots=True,
-            savefile=f"{metric_name}_TR", prefix = self.path if folder is None else folder 
+            savefile=f"{metric_name}_TR", prefix = self.path # if folder is None else folder 
         )
 
 
