@@ -1,4 +1,5 @@
 import numpy as np
+from utils import shuffle
 
 class Training():
     """ Base class for the neural networks training """
@@ -29,11 +30,12 @@ class Training():
             self.network.update_weights(eta) # apply backprop and delta rule to update weights 
 
 
-    def training_loop(self, X_TR, Y_TR, X_VAL=[], Y_VAL=[], metric=None, verbose=True,
-        epochs=1000, learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None):
+    def training_loop(self, X_TR, Y_TR, X_VAL=[], Y_VAL=[], metric=None, verbose=True, epochs=1000, 
+        learning_rate=0.01, early_stopping=None, batch_size=1, lr_decay=None, epoch_shuffle=True):
  
         self.logger.training_preview()
         
+
         N = len(X_TR)
         tr_loss_hist = []
         val_loss_hist = []
@@ -45,6 +47,9 @@ class Training():
         self.early_stopping = early_stopping
 
         for i in range(epochs):
+            if epoch_shuffle:
+                X_TR,Y_TR = shuffle(X_TR, Y_TR)
+
             # Training happens here
             self.training_epoch(X_TR, Y_TR, batch_size, learning_rate)
 
