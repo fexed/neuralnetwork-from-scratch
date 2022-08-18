@@ -35,8 +35,7 @@ class Training():
  
         self.logger.training_preview()
         
-        if second_metric:
-            second_metric_hist = [[], []]
+        second_metric_hist = [[], []]
 
         N = len(X_TR)
         tr_loss_hist = []
@@ -49,19 +48,6 @@ class Training():
         self.early_stopping = early_stopping
 
         for i in range(epochs):
-            if epoch_shuffle:
-                X_TR,Y_TR = shuffle(X_TR, Y_TR)
-
-            # Training happens here
-            self.training_epoch(X_TR, Y_TR, batch_size, learning_rate)
-
-            # Should be checked!
-            if not (lr_decay is None):
-                if (lr_decay.type == "linear"):
-                    if learning_rate > lr_decay.final_value:
-                        lr_decay_alpha = i/lr_decay.last_step
-                        learning_rate = (1 - lr_decay_alpha) * learning_rate + lr_decay_alpha * lr_decay.final_value
-
             # Compute learning curves 
             tr_output = self.network.forward_propagation(X_TR, inference=True)  
             #@TODO Should we calculate after weight update or reuse outputs from the forward_propagation propagation part?
@@ -78,6 +64,20 @@ class Training():
                 second_metric_hist[1].append(second_metric.compute(val_output, Y_VAL))
 
             self.logger.training_progress(i, epochs, tr_loss_hist[i], val_loss_hist[i])
+
+            if epoch_shuffle:
+                X_TR,Y_TR = shuffle(X_TR, Y_TR)
+
+            # Training happens here
+            self.training_epoch(X_TR, Y_TR, batch_size, learning_rate)
+
+            if not (lr_decay is None):
+                if (lr_decay.type == "linear"):
+                    if learning_rate > lr_decay.final_value:
+                        lr_decay_alpha = i/lr_decay.last_step
+                        learning_rate = (1 - lr_decay_alpha) * learning_rate + lr_decay_alpha * lr_decay.final_value
+
+
 
             if(self.early_stopping_condition(val_loss_hist[i])):
                 #self.network.logger.early_stopping_log()
