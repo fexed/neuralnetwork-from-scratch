@@ -68,7 +68,7 @@ class Training():
     
             self.logger.training_progress(i, epochs, tr_loss_hist[i], val_loss_hist[i])
 
-            if(self.early_stopping_condition(tr_loss_hist[i])):
+            if(self.early_stopping_condition(val_loss_hist[i])):
                 #self.network.logger.early_stopping_log()
                 break
         
@@ -81,15 +81,15 @@ class Training():
             # stop if needed
             check_error = val
 
-            if check_error >= min_error or np.isnan(check_error):
+            if check_error >= self.min_error or np.isnan(check_error):
                 # the error is increasing or is stable, or there was an
                 # overflow situation, hence we are going toward an ES
-                es_epochs += 1
-                if es_epochs == self.early_stopping:
+                self.es_epochs += 1
+                if self.es_epochs == self.early_stopping:
                    return True
             else:
                 # we're good
-                es_epochs = 0
-                min_error = check_error
+                self.es_epochs = 0
+                self.min_error = check_error
                 return False
 

@@ -65,6 +65,8 @@ class MLP(Model):
         self.logger.training_results(self.tr_loss, self.tr_metric, metric)
         self.logger.validation_results(self.val_loss, self.val_metric, metric)
 
+        return history
+
     
     def plot_training_curves(self, history, metric_name, folder ):
         legend_names = ["TR", "VL"] if len(history) == 2 else ["TR"]

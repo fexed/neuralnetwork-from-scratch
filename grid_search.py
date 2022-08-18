@@ -49,16 +49,18 @@ class GridSearch():
        
         for i, model in enumerate(self.models[restart_from: -1]):
             fold_result = []
+            epochs = []
             for f, fc in enumerate(folding_cycles):
                 model_path = self.create_model_folders(f'{i+restart_from}_{f}', plots)
                 
-                model.train(*fc, metric, plot_folder = model_path + '/' if plots else None) #,)
+                hists = model.train(*fc, metric, plot_folder = model_path + '/' if plots else None) #,)
                 model.save(model_path)
 
                 fold_result.append(model.val_metric)
+                epochs.append(len(hists[0]))
                 model.reset()
 
-            self.results.append([i+restart_from, np.mean(fold_result), np.std(fold_result)])
+            self.results.append([i+restart_from, np.mean(fold_result), np.std(fold_result), np.mean(epochs), np.std(epochs)])
 
             result_file = open(f'{self.path}RESULTS.txt', "a")
             result_file.write(f"{self.results[i]}\n")
