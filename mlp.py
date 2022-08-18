@@ -45,14 +45,12 @@ class MLP(Model):
         self.logger.summary()
 
         history = self.training_algorithm( X_TR, Y_TR, X_VAL, Y_VAL, metric=metric, verbose=verbose, second_metric=second_metric)
-        print(len(history))
         if not (plot_folder is None):
             self.plot_training_curves(history[0:2], self.network.loss.name, plot_folder)
             self.plot_training_curves(history[2:4], metric.name, plot_folder)
 
             # Evaluate two function on training
             if not (second_metric is None): 
-                print(history[4:6])
                 self.plot_training_curves(history[4:6], second_metric.name, plot_folder)
 
         self.tr_loss = history[0][-1]
