@@ -32,7 +32,11 @@ class FullyConnectedLayer():
         self.input = input
         
         if nesterov: 
-            self.nesterov_weight_update(alpha)
+            self.old_w = np.copy(self.weights)
+            self.old_b = np.copy(self.bias)
+
+            self.weights -= self.prev_weight_update
+            self.bias -= self.prev_bias_update
 
         # check how many neurons to keep
         not_dropped_units = np.random.rand(self.weights.shape[0], self.weights.shape[1]) < dropout_rate
@@ -44,17 +48,11 @@ class FullyConnectedLayer():
         self.net = np.dot(self.input, active_weights) + active_bias 
         self.output = self.activation.forward(self.net)
 
+        if nesterov:
+            self.weights = self.old_w
+            self.bias = self.old_b
+
         return self.output
-
-
-    def nesterov_weight_update(self, alpha): 
-        #Save momentum alpha_dv, gradient will be add next
-        self.prev_weight_update = np.multiply(self.prev_weight_update, alpha) 
-        self.prev_bias_update = np.multiply(self.prev_bias_update, alpha) 
-
-        #Update the weighs before gradient computtion (Nesterov)
-        self.weights += self.prev_weight_update
-        self.bias += self.prev_bias_update
 
 
     def backward_propagation(self, delta):
@@ -80,11 +78,12 @@ class FullyConnectedLayer():
 
         # Apply momentum.
         if alpha != 0:
-            dW += alpha*self.prev_weight_update
-            dB += alpha*self.prev_bias_update
+            dW += self.prev_weight_update
+            dB += self.prev_bias_update
+                
             # Then "delta new" is saved as "delta old"
-            self.prev_weight_update = dW
-            self.prev_bias_update = dB
+            self.prev_weight_update = alpha * dW
+            self.prev_bias_update = alpha * dB
 
         self.weights += dW
         self.bias += dB

@@ -21,11 +21,10 @@ class Training():
 
         self.network.reset_gradients() #reset the gradient
 
-        batch_gradient = 0
         for batch_X, batch_Y in zip(batches_X, batches_Y):
             for pattern, target in zip(batch_X, batch_Y):
                 pattern_output = self.network.forward_propagation(pattern)
-                batch_gradient += self.network.backward_propagation(pattern_output, target)
+                self.network.backward_propagation(pattern_output, target)
 
             self.network.update_weights(eta) # apply backprop and delta rule to update weights 
 
