@@ -26,12 +26,12 @@ class Training():
                 pattern_output = self.network.forward_propagation(pattern)
                 self.network.backward_propagation(pattern_output, target)
 
+            # Implicitly compute the mean over gradients in the same epoch, scaling the eta parameter.
+            scaled_eta = eta 
             if gradient_mean: 
-                # Tune eta according to the number of momentum computed during an epoch, implementing least mean squares
-                # This is equivalent to compute the mean of the gradient computed at epoch. 
-                eta = eta* len(batch_X)/len(X) 
+                scaled_eta *= len(batch_X)/len(X)
 
-            self.network.update_weights(eta) # apply backprop and delta rule to update weights 
+            self.network.update_weights(scaled_eta) # apply backprop and delta rule to update weights 
 
 
     def training_loop(self, X_TR, Y_TR, X_VAL=[], Y_VAL=[], metric=None, second_metric=None, verbose=True, epochs=1000, 

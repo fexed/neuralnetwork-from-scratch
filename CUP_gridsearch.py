@@ -2,7 +2,7 @@ from architecture import Architecture
 from datasets import CUP
 from folding import KFold
 from grid_search import GridSearch
-from hyperparameter import BatchSize, Epochs, LearningRate, Momentum, EarlyStopping
+from hyperparameter import BatchSize, Epochs, LearningRate, Momentum, EarlyStopping, RandomizedMomentum
 from metrics import MeanEuclideanError 
 from mlp import MLP
 from losses import MSE
@@ -13,9 +13,9 @@ from weight_initialization import He, Xavier
 
 cup = CUP(internal_split=True)
 
-MIN_LAYERS, MAX_LAYERS = 2, 2
-MIN_UNITS, MAX_UNITS = 32, 43
-UNITS_INCR = 1
+#MIN_LAYERS, MAX_LAYERS = 2, 3
+MIN_UNITS, MAX_UNITS = 10, 40
+UNITS_INCR = 15
 
 units_space = []
 for u in range(MIN_UNITS, MAX_UNITS + 1, UNITS_INCR):
@@ -32,13 +32,13 @@ architecture_space = Architecture(MLP).search_space(
 
 hyperparameter_space = SearchSpace([
     Epochs.search_space([800]),
-    LearningRate.search_space([0.0001]),
-    BatchSize.search_space([128]), 
-    Momentum.search_space([0.0005]),
-    Regularization.search_space(L2, [0.000025]),
-    EarlyStopping.search_space([50])
+    LearningRate.search_space([0.0001, 0.00001, 0.00001]),
+    BatchSize.search_space([ 128 ]), 
+    RandomizedMomentum.search_space([0.0001, 0.001, 0.001 ]),
+    Regularization.search_space(L2, [0.0001, 0.00001, 0.000001]),
+    EarlyStopping.search_space([25, 50])
 ])
 
-gs = GridSearch("MIRACLE", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)
+gs = GridSearch("ANXIETY", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)
 gs.start(metric=MeanEuclideanError(), folding_strategy=KFold(4), plots=False)
 gs.top_results(200)
