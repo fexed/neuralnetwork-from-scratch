@@ -37,8 +37,6 @@ class Network():
 
         for layer in reversed(self.layers):
             gradient = layer.backward_propagation(gradient)
-        
-        return gradient
 
      
     def update_weights(self, learning_rate):
