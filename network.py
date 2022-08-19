@@ -33,7 +33,7 @@ class Network():
     def backward_propagation(self, output, target):
         """ Performs the backward propagation of the network """
 
-        gradient = self.loss.derivative(output, target)
+        gradient = - self.loss.derivative(output, target)
 
         for layer in reversed(self.layers):
             gradient = layer.backward_propagation(gradient)

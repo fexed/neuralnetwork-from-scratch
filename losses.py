@@ -23,7 +23,7 @@ class MEE(Loss):
 
 
     def derivative(self, outputs, targets):  # derivative of MEE
-        return 2 * (targets - outputs)/(np.sqrt(np.sum(np.square(targets - outputs))))
+        return -2 * (targets - outputs)/(np.sqrt(np.sum(np.square(targets - outputs))))
 
 
 class MSE(Loss):
@@ -38,7 +38,7 @@ class MSE(Loss):
 
 
     def derivative(self, outputs, targets):  # derivative of MSE
-        return 2 * (targets - outputs)
+        return -2 * (targets - outputs)
 
 
 class BinaryCrossentropy(Loss):
@@ -55,7 +55,7 @@ class BinaryCrossentropy(Loss):
 
     def derivative(self, outputs, targets):  # TODO check this
         outputs_clipped = np.clip(outputs, 1e-15, 1-1e-15)  # avoids div by 0
-        return np.mean(targets/outputs_clipped - (1-targets)/(1-outputs_clipped))
+        return -np.mean(targets/outputs_clipped - (1-targets)/(1-outputs_clipped))
 
 
 class MulticlassCrossentropy(Loss):  # TODO implement
