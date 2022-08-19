@@ -15,7 +15,7 @@ class Training():
         return self.training_loop(X_TR, Y_TR, X_VAl, Y_VAL,  metric= metric, second_metric=second_metric, verbose=verbose, **self.hyperparameters)
 
 
-    def training_epoch(self, X, Y, batch_size, eta): 
+    def training_epoch(self, X, Y, batch_size, eta, gradient_mean = True): 
         batches_X = [X[i:i+batch_size] for i in range(0, len(X), batch_size)] 
         batches_Y = [Y[i:i+batch_size] for i in range(0, len(Y), batch_size)] 
 
@@ -25,6 +25,11 @@ class Training():
             for pattern, target in zip(batch_X, batch_Y):
                 pattern_output = self.network.forward_propagation(pattern)
                 self.network.backward_propagation(pattern_output, target)
+
+            if gradient_mean: 
+                # Tune eta according to the number of momentum computed during an epoch, implementing least mean squares
+                # This is equivalent to compute the mean of the gradient computed at epoch. 
+                eta = eta* len(batch_X)/len(X) 
 
             self.network.update_weights(eta) # apply backprop and delta rule to update weights 
 

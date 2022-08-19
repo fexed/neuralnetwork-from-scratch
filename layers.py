@@ -56,15 +56,15 @@ class FullyConnectedLayer():
 
 
     def backward_propagation(self, delta):
-        delta = np.multiply(self.activation.derivative(self.net), delta)
+        delta = np.multiply(delta, self.activation.derivative(self.net))
         
-        input_error = np.dot(delta, self.weights.T)
+        summed_delta_w = np.dot(delta, self.weights.T)
 
         # the weights are updated according to their contribution to the error
         self.weights_gradient += np.dot(self.input.T, delta)
         self.bias_gradient += delta
 
-        return input_error
+        return summed_delta_w
 
 
     def update_weights(self, eta, regularizator=None, alpha=0):
