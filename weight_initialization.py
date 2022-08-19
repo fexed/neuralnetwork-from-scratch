@@ -10,10 +10,6 @@ class WeightInitialization(HyperParameter):
         # self.output_size = output_size
 
     def generate(self, input_size, output_size): 
-        #@TODO check if this can be deleted or should just be refactored in another subclass. 
-        weights = np.random.rand(input_size, output_size) - 0.5  # so to have few <0 and few >0
-        bias = np.random.rand(1, output_size) - 0.5  # so to have few <0 and few >0
-        # return weights, bias
         pass
 
     def __str__(self):
