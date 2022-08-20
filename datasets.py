@@ -84,6 +84,7 @@ class Monk(Dataset):
 class CUP(Dataset): 
     def __init__(self, internal_split = True):        
         self.path =  'DATASETS/CUP/internal-CUP-' if internal_split else 'DATASETS/CUP/ML-CUP21-' 
+        self.internal_split = internal_split
 
         self.train_suffix = 'TR'
         self.test_suffix = 'TS'
@@ -107,7 +108,7 @@ class CUP(Dataset):
 
             x.append([list(map(lambda x_i: float(x_i), vals[1:11]))])
 
-            if set == self.train_suffix :
+            if set == self.train_suffix or self.internal_split:
                 y.append([list(map(lambda y_i: float(y_i), vals[11:13]))])
 
         x = np.array(x)
