@@ -41,7 +41,7 @@ class MLP(Model):
         return output
 
 
-    def train(self, X_TR, Y_TR, X_VAL, Y_VAL, metric, verbose = True, plot_folder=None, second_metric=None): 
+    def train(self, X_TR, Y_TR, X_VAL = None, Y_VAL = None, metric = None, verbose = True, plot_folder=None, second_metric=None): 
         self.logger.summary()
 
         history = self.training_algorithm( X_TR, Y_TR, X_VAL, Y_VAL, metric=metric, verbose=verbose, second_metric=second_metric)
@@ -76,7 +76,7 @@ class MLP(Model):
             histories=list(history),
             ylabel=metric_name, xlabel="Epochs", 
             showlegend=True, showgrid=True, alternateDots=True,
-            savefile=f"{metric_name}_TR", prefix = self.path # if folder is None else folder 
+            savefile=f"{metric_name}_TR", prefix = self.path  # if folder is None else folder 
         )
 
 

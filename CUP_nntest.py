@@ -25,8 +25,8 @@ architecture = Architecture(MLP).define(
 )
   
 hyperparameters = [
-    Epochs(220),
-    LearningRate(0.0001),
+    Epochs(200),
+    LearningRate(0.0005),
     BatchSize(128),
     Momentum(0.001),
     L2(0.000025)
