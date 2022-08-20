@@ -18,17 +18,17 @@ _CUP = CUP(internal_split=True)
 input_size, output_size = _CUP.size()
 
 architecture = Architecture(MLP).define(
-    units= [input_size, 42, 42, output_size], 
+    units= [input_size, 40, 40, output_size], 
     activations = [Tanh(), Tanh(), Identity()], 
     loss = MSE(), 
     initializations = [He()]
 )
   
 hyperparameters = [
-    Epochs(200),
-    LearningRate(0.0005),
+    Epochs(210),
+    LearningRate(0.0001),
     BatchSize(128),
-    Momentum(0.001),
+    Momentum(0.0001),
     L2(0.000025)
 ]
 
@@ -36,8 +36,9 @@ results = []
 for i in range(10):
     X_TR, Y_TR, X_TS, Y_TS = _CUP.getAll()
     X_TR, Y_TR = shuffle(X_TR, Y_TR)
+    X_TR, X_VL, Y_TR, Y_VL = tr_vl_split(X_TR, Y_TR, ratio=0.25)
     model = MLP("CUP_finaltest", architecture, hyperparameters)
-    hists = model.train(X_TR, Y_TR, metric = MeanEuclideanError(), verbose=True, plot_folder="")
+    hists = model.train(X_TR, Y_TR, X_VL, Y_VL, metric = MeanEuclideanError(), verbose=True, plot_folder="")
     results.append(model.tr_metric)
 
 print("\n\n****RESULTS" )
