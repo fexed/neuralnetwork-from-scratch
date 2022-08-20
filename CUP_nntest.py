@@ -15,11 +15,6 @@ print("\n\n****TESTING NETWORK ON CUP" )
 
 _CUP = CUP(internal_split=True)
 
-X_TR, Y_TR, X_TS, Y_TS = _CUP.getAll()
-X_TR, Y_TR = shuffle(X_TR, Y_TR)
-X_TR, X_VL, Y_TR, Y_VL = tr_vl_split(X_TR, Y_TR, ratio=0.25)
-
-
 input_size, output_size = _CUP.size()
 
 architecture = Architecture(MLP).define(
@@ -30,22 +25,39 @@ architecture = Architecture(MLP).define(
 )
   
 hyperparameters = [
-    Epochs(800),
-    LearningRate(0.00005),
+    Epochs(220),
+    LearningRate(0.0001),
     BatchSize(128),
     Momentum(0.001),
-    L2(2.5e-5),
-    EarlyStopping(50)
+    L2(0.000025)
 ]
 
-folding_strategy=KFold(4)
-folding_cycles = folding_strategy(X_TR, Y_TR, shuffle=True)
 results = []
-for f, fc in enumerate(folding_cycles):
-    model = MLP("CUP_holdout", architecture, hyperparameters)
-    hists = model.train(*fc, metric = MeanEuclideanError(), verbose=True, plot_folder='')
+for i in range(10):
+    X_TR, Y_TR, X_TS, Y_TS = _CUP.getAll()
+    X_TR, Y_TR = shuffle(X_TR, Y_TR)
+    model = MLP("CUP_finaltest", architecture, hyperparameters)
+    hists = model.train(X_TR, Y_TR, metric = MeanEuclideanError(), verbose=True, plot_folder="")
     results.append(model.tr_metric)
 
-print("\n\n****TESTING NETWORK ON CUP" )
-print(np.mean(results))
-print(np.std(results))
+print("\n\n****RESULTS" )
+print("MEE mean:", np.mean(results))
+print("MEE  dev:", np.std(results))
+
+
+print("\n\n****FINAL CUP RESULTS" )
+_CUP = CUP(internal_split=False)
+X_TR, Y_TR, X_TS, Y_TS = _CUP.getAll()
+model = MLP("CUP_finaltest", architecture, hyperparameters)
+hists = model.train(X_TR, Y_TR, metric = MeanEuclideanError(), verbose=True, plot_folder="")
+results = model.predict(X_TS)
+output_file = open("datasets/CUP/arbitraryvalues_ML-CUP21-TS.csv", "w")
+output_file.write("#Federico Matteoni, Riccardo Parente, Sergio Latrofa\n"+
+                  "#arbitraryvalues\n"+
+                  "#ML CUP21\n"+
+                  "#22/08/2022\n")
+count = 1
+for data in results:
+    output_file.write(str(count)+","+str(data[0][0])+","+str(data[0][1])+"\n")
+    count += 1
+output_file.close()

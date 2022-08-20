@@ -55,17 +55,25 @@ class Training():
             # Compute learning curves 
             tr_output = self.network.forward_propagation(X_TR, inference=True)  
             #@TODO Should we calculate after weight update or reuse outputs from the forward_propagation propagation part?
-            val_output = self.network.forward_propagation(X_VAL, inference=True)
+            if (X_VAL):
+                val_output = self.network.forward_propagation(X_VAL, inference=True)
+            else: val_output = 0
 
             tr_loss_hist.append(self.network.loss.compute(tr_output, Y_TR))
-            val_loss_hist.append(self.network.loss.compute(val_output, Y_VAL))
+            if (Y_VAL):
+                val_loss_hist.append(self.network.loss.compute(val_output, Y_VAL))
+            else: val_loss_hist.append(0)
             
             tr_metric_hist.append(metric.compute(tr_output, Y_TR))
-            val_metric_hist.append(metric.compute(val_output, Y_VAL))
+            if (Y_VAL):
+                val_metric_hist.append(metric.compute(val_output, Y_VAL))
+            else: val_metric_hist.append(0)
 
             if second_metric:
                 second_metric_hist[0].append(second_metric.compute(tr_output, Y_TR))
-                second_metric_hist[1].append(second_metric.compute(val_output, Y_VAL))
+                if (Y_VAL):
+                    second_metric_hist[1].append(second_metric.compute(val_output, Y_VAL))
+                else: second_metric_hist[1].append(0)
 
             self.logger.training_progress(i, epochs, tr_loss_hist[i], val_loss_hist[i])
 
