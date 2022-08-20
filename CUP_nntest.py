@@ -32,18 +32,22 @@ hyperparameters = [
     L2(0.000025)
 ]
 
-results = []
+trresults = []
+vlresults = []
 for i in range(10):
     X_TR, Y_TR, X_TS, Y_TS = _CUP.getAll()
     X_TR, Y_TR = shuffle(X_TR, Y_TR)
     X_TR, X_VL, Y_TR, Y_VL = tr_vl_split(X_TR, Y_TR, ratio=0.25)
     model = MLP("CUP_finaltest", architecture, hyperparameters)
     hists = model.train(X_TR, Y_TR, X_VL, Y_VL, metric = MeanEuclideanError(), verbose=True, plot_folder="")
-    results.append(model.tr_metric)
+    trresults.append(model.tr_metric)
+    vlresults.append(model.val_metric)
 
 print("\n\n****RESULTS" )
-print("MEE mean:", np.mean(results))
-print("MEE  dev:", np.std(results))
+print("MEE mean tr:", np.mean(trresults))
+print("MEE  dev tr:", np.std(trresults))
+print("MEE mean vl:", np.mean(vlresults))
+print("MEE  dev vl:", np.std(vlresults))
 
 
 print("\n\n****FINAL CUP RESULTS" )
