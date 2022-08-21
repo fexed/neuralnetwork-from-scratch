@@ -55,12 +55,14 @@ class GridSearch():
                 
                 hists = model.train(*fc, metric, plot_folder = model_path + '/' if plots else None) #,)
                 model.save(model_path)
-
-                fold_result.append(model.val_metric)
+                
+                fold_result[0].append(model.tr_metric)
+                fold_result[1].append(model.val_metric)
+                
                 epochs.append(len(hists[0]))
                 model.reset()
-
-            self.results.append([i+restart_from, np.mean(fold_result), np.std(fold_result), np.mean(epochs), np.std(epochs)])
+            
+            self.results.append([i+restart_from, np.mean(fold_result[0]), np.std(fold_result[0]), np.mean(fold_result[1]), np.std(fold_result[1]),np.mean(epochs), np.std(epochs)])
 
             result_file = open(f'{self.path}RESULTS.txt', "a")
             result_file.write(f"{self.results[i]}\n")
