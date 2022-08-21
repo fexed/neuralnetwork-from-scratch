@@ -14,8 +14,8 @@ from weight_initialization import He, Xavier
 cup = CUP(internal_split=True)
 
 #MIN_LAYERS, MAX_LAYERS = 2, 3
-MIN_UNITS, MAX_UNITS = 10, 40
-UNITS_INCR = 15
+MIN_UNITS, MAX_UNITS = 35, 45
+UNITS_INCR = 5
 
 units_space = []
 for u in range(MIN_UNITS, MAX_UNITS + 1, UNITS_INCR):
@@ -32,11 +32,11 @@ architecture_space = Architecture(MLP).search_space(
 
 hyperparameter_space = SearchSpace([
     Epochs.search_space([800]),
-    LearningRate.search_space([0.0001, 0.00001, 0.00001]),
+    LearningRate.search_space([0.001, 0.0005, 0.00025]),
     BatchSize.search_space([ 128 ]), 
-    RandomizedMomentum.search_space([0.0001, 0.001, 0.001 ]),
-    Regularization.search_space(L2, [0.0001, 0.00001, 0.000001]),
-    EarlyStopping.search_space([25, 50])
+    RandomizedMomentum.search_space([0.0005, 0.00075, 0.00025 ]),
+    Regularization.search_space(L2, [0.000075, 0.00005, 0.000025]),
+    EarlyStopping.search_space([50])
 ])
 
 gs = GridSearch("ANXIETY", cup, MLP, verbose=True).set_space(architecture_space, hyperparameter_space)
