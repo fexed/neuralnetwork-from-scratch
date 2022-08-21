@@ -48,7 +48,7 @@ class GridSearch():
         os.path.join(self.path, 'RESULTS.txt')
        
         for i, model in enumerate(self.models[restart_from: -1]):
-            fold_result = []
+            fold_result = [[],[]]
             epochs = []
             for f, fc in enumerate(folding_cycles):
                 model_path = self.create_model_folders(f'{i+restart_from}_{f}', plots)
